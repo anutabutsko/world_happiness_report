@@ -20,262 +20,179 @@ Read in Dataset
 
 ```{r}
 getwd()
+setwd("/Users/emmahorton/Documents/GitHub/world_happiness_report/Datasets/")
 df <- read.csv("WorldHappinessReport.csv")
-View(df)
+#View(df)
 
 ```
 
 View Head
 ```{r}
-head(df)
+#head(df)
+#tail(df)
 ```
 
-Handle Missing
+View Missing
 ```{r}
 summary(df)
 ```
 Cleaning Data for Regional Indicator
 
 ```{r}
-df[df$Regional.Indicator == "", ]
+df[df$Regional.Indicator == "",]
 ```
 
 Missing Regions Replacement
 ```{r}
- df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Angola',
-                           Regional.Indicator,
-                           "Southern Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Belize',
-                           Regional.Indicator,
-                           "Central America"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Bhutan',
-                           Regional.Indicator,
-                           "South Asia"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Central African Republic',
-                           Regional.Indicator,
-                           "Cenral Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Congo (Kinshasa)',
-                           Regional.Indicator,
-                           "Cenral Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Cuba',
-                           Regional.Indicator,
-                           "Caribbean"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Czechia',
-                           Regional.Indicator,
-                           "Central Europe"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Djibouti',
-                           Regional.Indicator,
-                           "East Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Eswatini',
-                           Regional.Indicator,
-                           "South Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Guyana',
-                           Regional.Indicator,
-                           "Anglophone Caribbean"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Oman',
-                           Regional.Indicator,
-                           "Middle East"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Qatar',
-                           Regional.Indicator,
-                           "Middle East"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Somalia',
-                           Regional.Indicator,
-                           "East Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Somaliland region',
-                           Regional.Indicator,
-                           "East Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'South Sudan',
-                           Regional.Indicator,
-                           "North Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Sudan',
-                           Regional.Indicator,
-                           "North Africa"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Suriname',
-                           Regional.Indicator,
-                           "South America"))
+cleaning <- df %>%
+  mutate(Regional.Indicator = case_when(
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Angola' ~ "Southern Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Belize' ~ "Central America",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Bhutan' ~ "South Asia",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Central African Republic' ~ "Central Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Congo (Kinshasa)' ~ "Central Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Cuba' ~ "Caribbean",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Czechia' ~ "Central Europe",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Djibouti' ~ "East Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Eswatini' ~ "Southern Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Guyana' ~ "Anglophone Caribbean",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Oman' ~ "Middle East",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Qatar' ~ "Middle East",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Somalia' ~ "East Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Somaliland region' ~ "East Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'South Sudan' ~ "North Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Sudan' ~ "North Africa",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Suriname' ~ "South America",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Syria' ~ "Middle East",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Trinidad and Tobago' ~ "Caribbean",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Turkiye' ~ "Central and Eastern Europe",
+    (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'State of Palestine' ~ "West Asia",
+    TRUE ~ Regional.Indicator
+  ))
 
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Syria',
-                           Regional.Indicator,
-                           "Middle East"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Trinidad and Tobago',
-                           Regional.Indicator,
-                           "Caribbean"))
-df %>%
-  mutate(Regional.Indicator = ifelse(is.na(Regional.Indicator) & Country.Name == 'Turkiye',
-                           Regional.Indicator,
-                           "Central and Eastern Europe"))
+```
 
-
-
+Verify Region does not contain empty values
+```{r}
+cleaning[cleaning$Regional.Indicator == "", ]
+```
+```{r}
+View(cleaning)
 ```
 
 
 Cleaning Data Median Values for Numeric Variables
 
 ```{r}
-cleaning <- df
+medians <- cleaning %>% 
+  summarize(across(where(is.numeric), ~median(., na.rm = TRUE)))
 
-cleaning$Log.GDP.Per.Capita <- ifelse(is.na(cleaning$Log.GDP.Per.Capita),                           median(cleaning$Log.GDP.Per.Capita,
-          na.rm = TRUE),
-        cleaning$Log.GDP.Per.Capita)
+cleaning <- cleaning %>%
+  mutate(across(where(is.numeric), ~ifelse(is.na(.), medians[[cur_column()]], .)))
 
-cleaning$Social.Support <- ifelse(is.na(cleaning$Social.Support),
-                                  median(cleaning$Social.Support,
-                                  na.rm = TRUE),
-                          cleaning$Social.Support)
-cleaning$Social.Support <- ifelse(is.na(cleaning$Social.Support),
-                                  median(cleaning$Social.Support,
-                                  na.rm = TRUE),
-                          cleaning$Social.Support)
-cleaning$Healthy.Life.Expectancy.At.Birth <- ifelse(is.na(cleaning$Healthy.Life.Expectancy.At.Birth),             
-                                                    median(cleaning$Healthy.Life.Expectancy.At.Birth,
-                                                           na.rm = TRUE),
-                                                    cleaning$Healthy.Life.Expectancy.At.Birth)
-cleaning$Freedom.To.Make.Life.Choices <- ifelse(is.na(cleaning$Freedom.To.Make.Life.Choices),                   
-                                                median(cleaning$Freedom.To.Make.Life.Choices,
-                                                       na.rm = TRUE),
-                                                cleaning$Freedom.To.Make.Life.Choices)
-cleaning$Generosity <- ifelse(is.na(cleaning$Generosity),                           
-                              median(cleaning$Generosity,
-                                  na.rm = TRUE),
-                          cleaning$Generosity)
-cleaning$Perceptions.Of.Corruption <- ifelse(is.na(cleaning$Perceptions.Of.Corruption),                           
-                              median(cleaning$Perceptions.Of.Corruption,
-                                  na.rm = TRUE),
-                          cleaning$Perceptions.Of.Corruption)
-cleaning$Positive.Affect <- ifelse(is.na(cleaning$Positive.Affect),                           
-                              median(cleaning$Positive.Affect,
-                                  na.rm = TRUE),
-                          cleaning$Positive.Affect)
-cleaning$Negative.Affect <- ifelse(is.na(cleaning$Negative.Affect),                           
-                              median(cleaning$Negative.Affect,
-                                  na.rm = TRUE),
-                          cleaning$Negative.Affect)
-cleaning$Confidence.In.National.Government <- ifelse(is.na(cleaning$Confidence.In.National.Government),                 
-                              median(cleaning$Confidence.In.National.Government,
-                                  na.rm = TRUE),
-                          cleaning$Confidence.In.National.Government)
- 
 summary(cleaning)
 ```
-
+```{r}
+unique(cleaning$Regional.Indicator)
+```
+Attach Continents
+```{r}
+cleaning <- df %>%
+  mutate(Continent = case_when(
+    Regional.Indicator %in% c("South Asia", "Commonwealth of Independent States", "Southeast Asia", 
+                  "East Asia", "Middle East", "West Asia") ~ "Asia",
+    Regional.Indicator %in% c("Central and Eastern Europe", "Western Europe", "Central Europe") ~ "Europe",
+    Regional.Indicator %in% c("Middle East and North Africa", "Southern Africa", "Sub-Saharan Africa", 
+                  "Central Africa", "East Africa", "North Africa") ~ "Africa",
+    Regional.Indicator %in% c("Latin America and Caribbean", "North America and ANZ", "Central America", 
+                  "Caribbean", "Anglophone Caribbean", "South America") ~ "Americas",
+    Regional.Indicator == "North America and ANZ" ~ "Oceania",
+    TRUE ~ "Other" 
+  ))
+```
 Outlier Detection on Life Ladder
 
 ```{r}
-summary(cleaning)
-boxplot(Life.Ladder ~ Regional.Indicator, data = cleaning,
-        main = "Life Ladder Distribution by Region",
-        xlab = "Region", ylab = "Life Ladder")
+boxplot(Life.Ladder ~ Continent, data = cleaning,
+        main = "Life Ladder Distribution by Continent",
+        xlab = "Continent", ylab = "Life Ladder")
 
 ```
+
+
+
 Outlier Detection on Log.GDP.Per.Capita
 ```{r}
-summary(cleaning)
-boxplot(Log.GDP.Per.Capita ~ Regional.Indicator, data = cleaning,
-        main = "Log.GDP.Per.Capita Distribution by Region",
-        xlab = "Region", ylab = "Log.GDP.Per.Capita")
+boxplot(Log.GDP.Per.Capita ~ Continent, data = cleaning,
+        main = "Log.GDP.Per.Capita Distribution by Continent",
+        xlab = "Continent", ylab = "Log.GDP.Per.Capita")
 ```
 
 Outlier Detection on Social Support
 ```{r}
-summary(cleaning)
-boxplot(Social.Support ~ Regional.Indicator, data = cleaning,
-        main = "Social Support Distribution by Region",
-        xlab = "Region", ylab = "Social Support")
+boxplot(Social.Support ~ Continent, data = cleaning,
+        main = "Social Support Distribution by Continent",
+        xlab = "Continent", ylab = "Social Support")
 ```
 Outlier Detection on Healthy Life Expectancy
 
 ```{r}
-summary(cleaning)
-boxplot(Healthy.Life.Expectancy.At.Birth ~ Regional.Indicator, data = cleaning,
-        main = "Healthy Life Expectancy Distribution by Region",
-        xlab = "Region", ylab = "Healthy Life Expectancy")
+boxplot(Healthy.Life.Expectancy.At.Birth ~ Continent, data = cleaning,
+        main = "Healthy Life Expectancy Distribution by Continent",
+        xlab = "Continent", ylab = "Healthy Life Expectancy")
 ```
 
 
 Outlier Detection on Freedom.To.Make.Life.Choices
 
 ```{r}
-summary(cleaning)
-boxplot(Freedom.To.Make.Life.Choices ~ Regional.Indicator, data = cleaning,
-        main = "Freedom in Life Choice Distribution by Region",
-        xlab = "Region", ylab = "Freedom in Life Choice")
+boxplot(Freedom.To.Make.Life.Choices ~ Continent, data = cleaning,
+        main = "Freedom in Life Choice Distribution by Continent",
+        xlab = "Continent", ylab = "Freedom in Life Choice")
 ```
 
 Outlier Detection on Generosity
 
 
 ```{r}
-summary(cleaning)
-boxplot(Generosity ~ Regional.Indicator, data = cleaning,
-        main = "Generosity Distribution by Region",
-        xlab = "Region", ylab = "Generosity")
+boxplot(Generosity ~ Continent, data = cleaning,
+        main = "Generosity Distribution by Continent",
+        xlab = "Continent", ylab = "Generosity")
 ```
 
 
 Outlier Detection on Corruption Perception
 ```{r}
 summary(cleaning)
-boxplot(Perceptions.Of.Corruption ~ Regional.Indicator, data = cleaning,
-        main = "Perception of Corruption Distribution by Region",
-        xlab = "Region", ylab = "Perception of Corruption")
+boxplot(Perceptions.Of.Corruption ~ Continent, data = cleaning,
+        main = "Perception of Corruption Distribution by Continent",
+        xlab = "Continent", ylab = "Perception of Corruption")
 ```
 
 
 Outlier Detection on Positive Affect by Region
 ```{r}
-summary(cleaning)
-boxplot(Positive.Affect ~ Regional.Indicator, data = cleaning,
-        main = "Positive.Affect Distribution by Region",
-        xlab = "Region", ylab = "Positive.Affect")
+boxplot(Positive.Affect ~ Continent, data = cleaning,
+        main = "Positive.Affect Distribution by Continent",
+        xlab = "Continent", ylab = "Positive.Affect")
 ```
 
 
 Outlier Detection on Negative Effect
 ```{r}
-summary(cleaning)
-boxplot(Negative.Affect ~ Regional.Indicator, data = cleaning,
-        main = "Negative Effect Distribution by Region",
-        xlab = "Region", ylab = "Negative Effect")
+boxplot(Negative.Affect ~ Continent, data = cleaning,
+        main = "Negative Effect Distribution by Continent",
+        xlab = "Continent", ylab = "Negative Effect")
 ```
 
-```{r}
-unique(cleaning$Regional.Indicator)
-```
 Save DataFrame in a Pretty Name
 ```{r}
 cleaning -> happydf
 ```
 
-
-
-
-
 Export Data to CSV
 ```{r}
-
-write.csv(cleaning,"/Users/emmahorton/DataScience/DataMunging/Project2/HappyDataFrame", row.names=FALSE)
+write.csv(cleaning,"/Users/emmahorton/Documents/GitHub/world_happiness_report/Cleaning/HappyDataFrame", row.names=FALSE)
 ```
-
-
 
 
