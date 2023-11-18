@@ -192,7 +192,7 @@ cleaning -> happydf
 
 Export Data to CSV
 ```{r}
-write.csv(cleaning,"/Users/emmahorton/Documents/GitHub/world_happiness_report/Cleaning/HappyDataFrame", row.names=FALSE)
+write.csv(happydf,"/Users/emmahorton/Documents/GitHub/world_happiness_report/Cleaning/HappyDataFrame", row.names=FALSE)
 ```
 
 
