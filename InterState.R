@@ -35,7 +35,7 @@ continents <- c('W. Hemisphere', 'Europe', 'Africa',
 # creating two different dataframes for analysis based on 
 # battles on continent and then battles fought on continent
 # with distinction based on country
-result <- war.continent.filter(interStateWar.clean, continents, 'WarNum')
+result <- war.continent.filter(interStateWar.clean, continents)
 war.continent <- result$war.continent
 war.country.continent <- result$war.country.continent
 
