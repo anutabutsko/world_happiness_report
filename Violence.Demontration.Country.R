@@ -10,10 +10,5 @@ demonstration.table <- completeness(demonstration.event[,-1], 'Demonstrations by
 
 column.join <- setNames(colnames(country.region)[1], colnames(violent.event)[1])
 
-country.join <- join.df(violent.event,country.region, column.join)
+country.join <- join.df(violent.event, country.region, column.join)
 
-look <- ggplot(country.join, aes(x = Year, y = Events, col= region))+
-  geom_point(size = 0.3, position = 'jitter')
-
-
-ggplotly(look)

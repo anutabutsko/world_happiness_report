@@ -24,6 +24,10 @@ interStateWar.clean <- interStateWar.clean %>%
   mutate(WhereFought = recode(as.character(WhereFought), 
                               !!!wherefought.category))
 
+interStateWar.clean <- us.name(interStateWar.clean)
+column.join <- setNames(colnames(country.region)[1], colnames(interStateWar.clean)[5])
+interStateWar.clean <- join.df(interStateWar.clean, country.region, column.join)
+interStateWar.clean <- subset(interStateWar.clean, select = -c(WarType))
 # list of continents 
 continents <- c('W. Hemisphere', 'Europe', 'Africa',
                 'Middle East','Asia', 'Oceania')
@@ -31,7 +35,7 @@ continents <- c('W. Hemisphere', 'Europe', 'Africa',
 # creating two different dataframes for analysis based on 
 # battles on continent and then battles fought on continent
 # with distinction based on country
-result <- war.continent.filter(interStateWar.clean, continents)
+result <- war.continent.filter(interStateWar.clean, continents, 'WarNum')
 war.continent <- result$war.continent
 war.country.continent <- result$war.country.continent
 
@@ -74,3 +78,48 @@ top.25 <- as.data.frame(state.war[state.war$total > quantile(state.war$total, pr
 # now. For instance Western Europe has a lot of political power, but the USA has the largest military might. 
 
 # A Treemap may be a good option to look at region.contineent.join
+
+
+# Determine the duration of the war 
+# war.duration function contained in DataAnalysis
+
+# identify difference 
+day <- war.duration(interStateWar.clean, 7, 10, 13,16)
+month <- war.duration(interStateWar.clean, 6, 9, 12,15)
+year <- war.duration(interStateWar.clean, 8,11, 14,17)
+
+# change month to days
+month.asday<- apply(month, 2, function(x) x*30.4167)
+
+# create a column on the duration of the year with a base of year
+interStateWar.clean$war.duration <- ((day + month.asday)/365) + year
+summary(interStateWar.clean)
+
+# ANAYLSIS: the majority of the wars are between 1 and 2 years. This data set is right
+# skewed as we can see that out max is 10 years but 50% of the data fell 
+# between 0.178 and 2.447 years. 
+
+# ANAYLSIS: We can see the summary for the column "Outcome' which mainly ranges between 1 
+# and 2. this Category is more so categorical than numeric since each number refers to the
+# outcome of each country. If you look at documentation, then we can se that a majority of
+# outcomes results in a win or loss.
+
+# List used to convert the outcome from numerical to categorial
+outcome.category <- c(
+  `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
+  `4` = 'The war was transformed into another type of war',
+  `5` = 'The war is ongoing as of 12/31/2007', `6` = 'Stalemate',
+  `7` = 'Conflict continues at below war level', `8` = 'changed sides'
+)
+
+# Change the numerical value of Where Fight Occurred to categorical variable
+# !!! operator allows you to pass the contents of a list as individual arguments to a function
+interStateWar.clean <- interStateWar.clean %>%
+  mutate(Outcome = recode(as.character(Outcome), 
+                              !!!outcome.category))
+
+table(interStateWar.clean$Outcome)
+
+interStateWar.State.Outcomes <- interStateWar.clean%>%
+  group_by(StateName, Outcome)%>%
+  count()

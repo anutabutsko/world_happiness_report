@@ -13,8 +13,9 @@ library(stringr) # for string detection
 library(d3Tree)
 
 country.region <- read_csv('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/Datasets/continents.csv')
-country.region <- country.region%>%
+country.region <- country.region %>%
   select('name', 'region', 'sub-region')
+
 # completeness check of the data and turning it into
 # a ggplot table
 completeness <- function(df, title){
@@ -60,7 +61,9 @@ war.continent.filter <- function(interStateWar.clean, continents){
       filter(str_detect(WhereFought, i))
     
     # getting occurrences of wars fought on continent
-    continent.only <- count.filter(x)
+    continent.only <- x%>%
+      distinct(x[,1])%>%
+      summarize(Occurrence = n())
     
     # getting occurrences of wars fought on continent
     # and country 
@@ -77,6 +80,20 @@ war.continent.filter <- function(interStateWar.clean, continents){
   }
   return(list(war.continent = war.continent, war.country.continent = war.country.continent))
 }
+
+us.name <- function(df){
+  df%>%
+  mutate_all(~ifelse(.== 'United States of America', 'United States', . ))
+}
+
+war.duration <- function(df, column1, column2, column3, column4) {
+  ifelse(!is.na(df[,column3]), 
+         duration <- abs((df[,column4] - df[,column3])
+         +(df[,column2] - df[,column1])),
+         duration  <- abs((df[,column2] - df[,column1])))
+  print(duration)
+}
+
 
 
 
