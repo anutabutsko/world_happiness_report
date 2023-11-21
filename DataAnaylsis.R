@@ -16,6 +16,10 @@ country.region <- read_csv('/Users/yuhanburgess/Documents/GitHub/world_happiness
 country.region <- country.region %>%
   select('name', 'region', 'sub-region')
 
+# list of continents 
+continents <- c('W. Hemisphere', 'Europe', 'Africa',
+                'Middle East','Asia', 'Oceania')
+
 # completeness check of the data and turning it into
 # a ggplot table
 completeness <- function(df, title){
@@ -94,6 +98,16 @@ war.duration <- function(df, column1, column2, column3, column4) {
   print(duration)
 }
 
-
-
-
+continent.region.uni <- function(df){
+  df <- df %>%
+    mutate(region.mirror = case_when(
+      `sub-region` == 'Western Asia' ~ 'Middle East',
+      str_detect(`sub-region`, 'Europe') ~ 'Europe',
+      str_detect(`sub-region`, 'Africa') ~ 'Africa',
+      str_detect(`sub-region`, 'America') ~ 'W. Hemisphere',
+      str_detect(`sub-region`, 'Australia') ~ 'Oceania',
+      (is.na(`sub-region`))~ `Continent`, 
+      TRUE ~ `sub-region`  # Default case when none of the conditions are met
+    ))
+  
+}

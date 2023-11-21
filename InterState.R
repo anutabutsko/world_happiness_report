@@ -28,9 +28,9 @@ interStateWar.clean <- us.name(interStateWar.clean)
 column.join <- setNames(colnames(country.region)[1], colnames(interStateWar.clean)[5])
 interStateWar.clean <- join.df(interStateWar.clean, country.region, column.join)
 interStateWar.clean <- subset(interStateWar.clean, select = -c(WarType))
-# list of continents 
-continents <- c('W. Hemisphere', 'Europe', 'Africa',
-                'Middle East','Asia', 'Oceania')
+# # list of continents 
+# continents <- c('W. Hemisphere', 'Europe', 'Africa',
+#                 'Middle East','Asia', 'Oceania')
 
 # creating two different dataframes for analysis based on 
 # battles on continent and then battles fought on continent
@@ -40,10 +40,11 @@ war.continent <- result$war.continent
 war.country.continent <- result$war.country.continent
 
 
-by.part <- c("Country Name" = "Country.Name")
+by.part <- c("Country Name" = "name")
 region.continent.join <- distinct(join.df(war.country.continent, 
-                                  location.country, by.part))
+                                          country.region, by.part))
 
+region.continent.join <- continent.region.uni(region.continent.join)
 
 region.continent.join$Occurrence <- as.numeric(region.continent.join$Occurrence)
 
@@ -84,7 +85,8 @@ top.25 <- as.data.frame(state.war[state.war$total > quantile(state.war$total, pr
 # war.duration function contained in DataAnalysis
 
 # identify difference 
-day <- war.duration(interStateWar.clean, 7, 10, 13,16)
+day <- war.duration(interStateWar.clean, 7, 10, 13,16)%>%
+  rename("war.duration" = 'EndDay1')
 month <- war.duration(interStateWar.clean, 6, 9, 12,15)
 year <- war.duration(interStateWar.clean, 8,11, 14,17)
 
@@ -92,7 +94,8 @@ year <- war.duration(interStateWar.clean, 8,11, 14,17)
 month.asday<- apply(month, 2, function(x) x*30.4167)
 
 # create a column on the duration of the year with a base of year
-interStateWar.clean$war.duration <- ((day + month.asday)/365) + year
+war.duration <- ((day + month.asday)/365) + year
+interStateWar.clean <- cbind(interStateWar.clean, war.duration)
 summary(interStateWar.clean)
 
 # ANAYLSIS: the majority of the wars are between 1 and 2 years. This data set is right
