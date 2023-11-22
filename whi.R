@@ -1,5 +1,5 @@
 setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
-source("DataAnaylsis.R")
+source("FunctionFile.R")
 whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
 
 

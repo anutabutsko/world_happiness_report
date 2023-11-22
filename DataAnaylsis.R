@@ -1,113 +1,57 @@
-# install.packages(GGally')
-# install.packages('gt')
-# install.packages('treemap')
-library(readr)
-library(GGally) # ggcorr
-library(plotly) # interactive map
-library(dplyr)
-library(ggplot2)
-library(gt) # table 
-library(gridExtra) # getting multiple tables in one window
-library(treemap) # boxing based off proportion
-library(stringr) # for string detection
-library(d3Tree)
+setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
+source("whi.R")
+source("InterState.R")
+source("IntraState.R")
+# source("Violence.Demontration.Country.R")
 
-country.region <- read_csv('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/Datasets/continents.csv')
-country.region <- country.region %>%
-  select('name', 'region', 'sub-region')
+# InterState Analysis
+summary(interStateWar.clean)
 
-# list of continents 
-continents <- c('W. Hemisphere', 'Europe', 'Africa',
-                'Middle East','Asia', 'Oceania')
+# ANAYLSIS: the majority of the wars are between 1 and 2 years. This data set is right
+# skewed as we can see that out max is 10 years but 50% of the data fell 
+# between 0.178 and 2.447 years. 
 
-# completeness check of the data and turning it into
-# a ggplot table
-completeness <- function(df, title){
-  complete.prop <- apply(df, 2, function(x) (1- (sum(is.na(x)/length(x))))*100)
-  
-  complete.df <- data.frame(Sub_Indexs = colnames(df), Completeness = complete.prop)
-  complete.df%>%
-    gt()%>%
-    tab_header(title = md(title),
-               subtitle = md('`Completeness Table`'))
-  
-}
+# ANAYLSIS: We can see the summary for the column "Outcome' which mainly ranges between 1 
+# and 2. this Category is more so categorical than numeric since each number refers to the
+# outcome of each country. If you look at documentation, then we can se that a majority of
+# outcomes results in a win or loss.
 
-count.filter <- function(sub.df){
-  df <- sub.df%>%
-  summarize(Occurrence = n())
-  
-  return(df)
-}
+summary(inter.region.continent.join)
+# ANAYLSIS: There is a right skew to the graph where a majority of countries are in a 
+# war 2-3 times on a continent
 
-join.df <- function(df1, df2, x){
-  df.join <- distinct(left_join(df1, df2, by = x))
-  return(df.join)
-}
+print(war.count.by.continent) 
+summary(war.count.by.continent)
 
-StateWar.filter <- function(df){
-  df <- df%>%
-    # changing the values that represent NA and unknown to NA values 
-    mutate_all(~ifelse(.== -9 | .== -8, NA, . ))%>%
-    # removing column containing version of csv file 
-    select(-c(Version))
-  return(df)
-}
+print(war.count.by.country.continent)
+summary(war.count.by.country.continent)
 
-war.continent.filter <- function(interStateWar.clean, continents){
-  war.continent <-data.frame()
-  war.country.continent <-data.frame()
-  
-  for(i in continents){
-    # subset df based on the continent 
-    # that war occurred
-    x <- interStateWar.clean%>%
-      filter(str_detect(WhereFought, i))
-    
-    # getting occurrences of wars fought on continent
-    continent.only <- x%>%
-      distinct(x[,1])%>%
-      summarize(Occurrence = n())
-    
-    # getting occurrences of wars fought on continent
-    # and country 
-    continent.state <- x %>%
-      group_by(`Country Name` = StateName) %>%
-      summarize(Occurrence = n())
-    
-    # Add a column for the continent
-    continent.state$Continent <- i
-    
-    # Combine results into a data frame
-    war.continent <- rbind(war.continent, data.frame(Continent = i, continent.only))
-    war.country.continent <- rbind(war.country.continent, continent.state)
-  }
-  return(list(war.continent = war.continent, war.country.continent = war.country.continent))
-}
+summary(war.participation.by.country)
 
-us.name <- function(df){
-  df%>%
-  mutate_all(~ifelse(.== 'United States of America', 'United States', . ))
-}
+top.25 <- as.data.frame(inter.state.war[inter.state.war$total > quantile(inter.state.war$total, prob=.75),])
+# ANAYLSIS: Looking at countries, and counting number of interstate wars they have participated in
+# we can see that France is at the top with 21 appearances 
 
-war.duration <- function(df, column1, column2, column3, column4) {
-  ifelse(!is.na(df[,column3]), 
-         duration <- abs((df[,column4] - df[,column3])
-         +(df[,column2] - df[,column1])),
-         duration  <- abs((df[,column2] - df[,column1])))
-  print(duration)
-}
+# Analysis of Inter-state data set
 
-continent.region.uni <- function(df){
-  df <- df %>%
-    mutate(region.mirror = case_when(
-      `sub-region` == 'Western Asia' ~ 'Middle East',
-      str_detect(`sub-region`, 'Europe') ~ 'Europe',
-      str_detect(`sub-region`, 'Africa') ~ 'Africa',
-      str_detect(`sub-region`, 'America') ~ 'W. Hemisphere',
-      str_detect(`sub-region`, 'Australia') ~ 'Oceania',
-      (is.na(`sub-region`))~ `Continent`, 
-      TRUE ~ `sub-region`  # Default case when none of the conditions are met
-    ))
-  
-}
+# CAVEAT: There may be some wars that are continued from another. this can be determined by looking at
+# Transto column. There are very few wars that meet this requirement so we count those that transition into
+# a different war as different instances 
+
+# BIASIS: From the data we can see that wars fought in W.Hemisphere, Africa, and Oceania is comparatively
+# smaller than those of Europe, Middle East, and Asia. This could suggest that the data is skewed
+# more to the western thought/western focus on wars. There may be a lake of information about countries
+# that are not super powers
+
+# ANAYLSIS: Besides countries that reside within the continent, the next largest regional powers to fight
+# on the continent is Western Europe and North America. This suggests a correlation between the colonial past
+# and control that Western Europe had on each continent. It may also suggests who is the world power in war right
+# now. For instance Western Europe has a lot of political power, but the USA has the largest military might. 
+
+# A Treemap may be a good option to look at region.contineent.join
+
+
+# Determine the duration of the war 
+# war.duration function contained in DataAnalysis
+
+table(interStateWar.clean$Outcome)
