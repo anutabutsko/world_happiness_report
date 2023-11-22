@@ -2,7 +2,7 @@ setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
 source("whi.R")
 source("InterState.R")
 source("IntraState.R")
-# source("Violence.Demontration.Country.R")
+source("Violence.Demontration.Country.R")
 
 # InterState Analysis
 summary(interStateWar.clean)
@@ -78,3 +78,16 @@ print(top.25)
 table(interStateWar.clean$Outcome)
 
 table(total.distinct.wars$StartYear1)
+# 1914: WWII | There could have been an increase in wars due to fractional disrepare in the government after the
+# WW. On average there seemes to be 1-2 wars a year (this does not look at the duration so a country may end in
+# a year not listed in the table)
+
+summary(violent.event.per.year)
+head(arrange(violent.event.per.year,desc(TotalEvents)), n = 10)
+# Majority of violent events look to be focused on areas centered near the equator,
+# areas such as the middle east and northern Africa, Central and South America, as well as
+# some asian countries. 
+
+summary(demonstration.event.per.year)
+head(arrange(demonstration.event.per.year,desc(TotalEvents)), n = 10)
+

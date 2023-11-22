@@ -43,12 +43,25 @@ completeness <- function(df, title){
   
 }
 
-count.filter <- function(sub.df){
-  df <- sub.df%>%
-    summarize(Occurrence = n())
+# used to count occurrences of 'Events' within the Violenc.Demonstration.Country.R
+count.filter <- function(sub.df, ..., value.col = "Events") {
+  group.vars <- enquos(...) # it turns the arguments provided into a list of quoted expressions
+  
+  # does operation without any grouping
+  if (length(group_vars) == 0) {
+    df <- sub.df %>%
+      summarize(Occurrence = n(), TotalEvents = sum(!!sym(value.col), na.rm = TRUE))
+    
+    # does sum operation based off grouping
+  } else {
+    df <- sub.df %>%
+      group_by(!!!group.vars) %>%
+      summarize(Occurrence = n(), TotalEvents = sum(!!sym(value.col), na.rm = TRUE))
+  }
   
   return(df)
 }
+
 
 join.df <- function(df1, df2, x){
   df.join <- distinct(left_join(df1, df2, by = x))
