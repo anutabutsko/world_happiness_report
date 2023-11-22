@@ -23,16 +23,40 @@ summary(inter.region.continent.join)
 print(war.count.by.continent) 
 summary(war.count.by.continent)
 
+# most battles are fought in Europe, Middle East, and Asia
+
+# Asian front: The increase in battles on the Asian front could be a result of 
+# communist ideology spreading in Cambodia, China, and Vietnam. This 
+# time frame could be around the 1930-1970
+
+# Middle East: The wars fought in the Middle Eastern front could be
+# in relation of revolt and revolution. In my opinion it would be categorized
+# as wars for statehood. Later wars could relate to 'War on Terrorism`` imposed 
+# by the US
+
+# Europe: We have the WWI(1917) and WWII(1940) which was fought on many different fronts.
+# Europe seems to be dealing with battles among each other. 
+
+# America: Besides WW's, cold war, and 9/11, I would assume manifest destiny (1845) is playing a part in 
+# some of their earlier wars
+
+# Africa: was colonized by the Europeans and during this timefrme, these countries were
+# losing control of strict governance over country so their activities did not meet requirement
+# of war to show up in file.
+
+# INTERESTING: look at distribution based on date
+
 print(war.count.by.country.continent)
 summary(war.count.by.country.continent)
 
 summary(war.participation.by.country)
 
-top.25 <- as.data.frame(inter.state.war[inter.state.war$total > quantile(inter.state.war$total, prob=.75),])
+top.25 <- as.data.frame(war.participation.by.country[
+  war.participation.by.country$total > quantile(war.participation.by.country$total,
+                                   prob=.75),])
+print(top.25)
 # ANAYLSIS: Looking at countries, and counting number of interstate wars they have participated in
 # we can see that France is at the top with 21 appearances 
-
-# Analysis of Inter-state data set
 
 # CAVEAT: There may be some wars that are continued from another. this can be determined by looking at
 # Transto column. There are very few wars that meet this requirement so we count those that transition into
@@ -51,7 +75,6 @@ top.25 <- as.data.frame(inter.state.war[inter.state.war$total > quantile(inter.s
 # A Treemap may be a good option to look at region.contineent.join
 
 
-# Determine the duration of the war 
-# war.duration function contained in DataAnalysis
-
 table(interStateWar.clean$Outcome)
+
+table(total.distinct.wars$StartYear1)

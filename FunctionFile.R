@@ -126,3 +126,11 @@ continent.region.uni <- function(df){
     ))
   
 }
+
+distinct.war.type <- function(df){
+  freq.df<- df%>%
+  distinct(WarNum, .keep_all = TRUE) %>%
+    select(WarNum, WarName, StartYear1, EndYear1)
+  
+  return(freq.df)
+}

@@ -2,6 +2,13 @@ setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
 source("FunctionFile.R")
 source("whi.R")
 
+inter.outcome.category <- c(
+  `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
+  `4` = 'The war was transformed into another type of war',
+  `5` = 'The war is ongoing as of 12/31/2007', `6` = 'Stalemate',
+  `7` = 'Conflict continues at below war level', `8` = 'changed sides'
+)
+
 interStateWar.event <- read_csv('Datasets/Inter-StateWarData_v4.0.csv')
 interStateWar.clean <- StateWar.filter(interStateWar.event, 6:17)
 
@@ -11,7 +18,9 @@ interStateWar.table <- completeness(interStateWar.clean, 'Inter-state War')
 # !!! operator allows you to pass the contents of a list as individual arguments to a function
 interStateWar.clean <- interStateWar.clean %>%
   mutate(WhereFought = recode(as.character(WhereFought), 
-                              !!!wherefought.category))
+                              !!!wherefought.category))%>%
+  mutate(Outcome = recode(as.character(Outcome), 
+                          !!!inter.outcome.category))
 
 # changing United States of America to United States
 interStateWar.clean <- us.name(interStateWar.clean)
@@ -38,7 +47,7 @@ by.part <- c("Country Name" = "name")
 
 # updating dataframe to contain information of continent and 
 # sub-region of continent for country
-inter.region.continent.join <- distinct(join.df(inter.war.country.continent, 
+inter.region.continent.join <- distinct(join.df(war.count.by.country.continent, 
                                           country.region, by.part))
 
 # update dataframe to fix discrepancy between the possible continents and the region columns
@@ -64,20 +73,8 @@ inter.month.asday<- apply(inter.month, 2, function(x) x*30.4167)
 inter.war.duration <- ((inter.day + inter.month.asday)/365) + inter.year
 interStateWar.clean <- cbind(interStateWar.clean, inter.war.duration)
 
-# List used to convert the outcome from numerical to categorial
-inter.outcome.category <- c(
-  `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
-  `4` = 'The war was transformed into another type of war',
-  `5` = 'The war is ongoing as of 12/31/2007', `6` = 'Stalemate',
-  `7` = 'Conflict continues at below war level', `8` = 'changed sides'
-)
-
-# Change the numerical value of Where Fight Occurred to categorical variable
-# !!! operator allows you to pass the contents of a list as individual arguments to a function
-interStateWar.clean <- interStateWar.clean %>%
-  mutate(Outcome = recode(as.character(Outcome), 
-                              !!!inter.outcome.category))
-
 interStateWar.State.Outcomes <- interStateWar.clean%>%
   group_by(StateName, Outcome)%>%
   count()
+
+total.distinct.wars <- distinct.war.type(interStateWar.clean)
