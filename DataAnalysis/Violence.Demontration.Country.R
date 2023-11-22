@@ -1,4 +1,3 @@
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
 source("FunctionFile.R")
 source("whi.R")
 violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')

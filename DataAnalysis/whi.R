@@ -1,4 +1,3 @@
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
 source("FunctionFile.R")
 whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
 
