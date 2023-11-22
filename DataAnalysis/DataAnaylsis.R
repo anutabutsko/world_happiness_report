@@ -1,4 +1,4 @@
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
+# setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
 source("whi.R")
 source("InterState.R")
 source("IntraState.R")

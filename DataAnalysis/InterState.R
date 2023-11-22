@@ -1,4 +1,4 @@
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/')
+setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
 source("FunctionFile.R")
 source("whi.R")
 

@@ -12,7 +12,9 @@ library(treemap) # boxing based off proportion
 library(stringr) # for string detection
 library(d3Tree)
 
-country.region <- read_csv('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/Datasets/continents.csv')
+setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
+
+country.region <- read_csv('Datasets/continents.csv')
 country.region <- country.region %>%
   select('name', 'region', 'sub-region')
 
