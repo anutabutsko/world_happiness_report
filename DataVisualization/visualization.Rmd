@@ -10,6 +10,14 @@ library(ggridges)
 ```{r}
 df <- read.csv("HappyDataFrame.csv")
 View(df)
+df <- df %>%
+  filter(Continent != "Other")
+```
+
+```{r}
+theme_set(theme_minimal())
+
+mypalette <- c("royalblue", "forestgreen", "gold", "darkorange", "firebrick")
 ```
 
 ```{r}
@@ -20,9 +28,10 @@ by_continent <-
 
 df %>%
   ggplot(aes(x=Continent, y=Log.GDP.Per.Capita, color=Continent)) +
-  geom_point(alpha = 0.15, position="jitter") +
+  geom_point(alpha = 0.1, position="jitter") +
   geom_point(data=by_continent, size=4) +
   geom_text(data=by_continent, aes(label=paste0("n=", n), y=5, color=NULL)) +
+  scale_color_manual(values = mypalette) +
   labs("title" = "Distribution of GDP per Capita by Continent", y="GDP per Capita")
 ```
 
@@ -65,4 +74,25 @@ df %>%
   geom_density(alpha=0.3) +
   labs("title" = "Asia", x="GDP per Capita")
 ```
+```{r}
+df %>%
+  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government, color=Log.GDP.Per.Capita)) +
+  geom_point() + 
+  geom_smooth(lty=1, aes(col=Log.GDP.Per.Capita), span=0.005)
+```
 
+```{r}
+df %>%
+  ggplot(aes(Log.GDP.Per.Capita, fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")
+```
+
+```{r}
+ggplot(df, aes(Log.GDP.Per.Capita, 
+                      alpha=Log.GDP.Per.Capita, 
+                      y = as.factor(Regional.Indicator),
+                      fill=as.factor(Regional.Indicator))) +
+  geom_density_ridges(alpha=0.4, 
+               adjust=0.05, 
+               position="identity", show.legend=FALSE) +
+    scale_alpha_continuous()
+```
