@@ -85,8 +85,15 @@ summary(violent.event.per.year)
 head(arrange(violent.event.per.year,desc(TotalEvents)), n = 10)
 # Majority of violent events look to be focused on areas centered near the equator,
 # areas such as the middle east and northern Africa, Central and South America, as well as
-# some asian countries. 
+# some Asian countries. 
 
 summary(demonstration.event.per.year)
 head(arrange(demonstration.event.per.year,desc(TotalEvents)), n = 10)
+
+summary(demonstration.event.per.country)
+# we can try an compare the overall distribution of the whi index and cross analysis with the
+# occurrence of violent events in that country 
+
+
+
 

@@ -20,3 +20,20 @@ violent.event.per.year <- count.filter(violent.event.country.join,
                                        Country, Year)
 demonstration.event.per.year <- count.filter(demonstration.event.country.join, 
                                              Country, Year)
+
+violent.event.per.country <- count.filter(violent.event.country.join, 
+                                       Country)
+
+demonstration.event.per.country <- count.filter(demonstration.event.country.join, 
+                                          Country)
+
+demo.vio.join <- setNames(colnames(demonstration.event.per.country)[1], 
+                            colnames(violent.event.per.country)[1])
+
+violent.event.per.country <- violent.event.per.country%>%
+  rename(vio.occurrences = Occurrence, vio.TotalEvents = TotalEvents)
+
+demonstration.event.per.country <- demonstration.event.per.country%>%
+  rename(demo.occurrences = Occurrence, demo.TotalEvents = TotalEvents)
+
+demo.vio.merged.df <- join.df(violent.event.per.country, demonstration.event.per.country, demo.vio.join)
