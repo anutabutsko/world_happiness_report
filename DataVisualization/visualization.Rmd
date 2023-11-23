@@ -4,12 +4,15 @@ library(dplyr)
 library(ggplot2)
 library(viridis)
 library(ggridges)
+library(data.table)
+library(ggeasy)
 ```
 
 # Import the data frame
 ```{r}
 df <- read.csv("HappyDataFrame.csv")
 View(df)
+dim(df)
 df <- df %>%
   filter(Continent != "Other")
 ```
@@ -96,3 +99,40 @@ ggplot(df, aes(Log.GDP.Per.Capita,
                position="identity", show.legend=FALSE) +
     scale_alpha_continuous()
 ```
+
+```{r}
+world.map <- map_data(map = "world")
+
+setnames(world.map, "region", "Country.Name")
+
+unique_world_map <- unique(world.map$Country.Name)
+unique_df <- unique(df$Country.Name)
+
+# Names in df that do not match names in world.map
+names_not_in_world_map <- setdiff(unique_df, unique_world_map)
+print(names_not_in_world_map)
+
+# Change the names to match df
+world.map <- world.map %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name == "USA", "United States")) %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name %in% c("Democratic Republic of the Congo", "Republic of Congo"), "Congo (Brazzaville)")) %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name == "UK", "United Kingdom"))
+
+df <- df %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name %in% c("Hong Kong S.A.R. of China", "Taiwan Province of China"), "China"))
+
+world.map <- merge(world.map, df, by="Country.Name")
+
+world.map <- world.map[order(world.map$order),]
+
+ggplot(world.map, aes(long, lat, group=group)) +
+  geom_polygon(aes(fill=Life.Ladder)) +
+  coord_quickmap() +
+  theme_void() +
+  scale_fill_viridis(option="E", name="Index") +
+  theme(legend.position='bottom') +
+  labs(title="Happiness Index across the World") +
+  ggeasy::easy_center_title()
+View(world.map)
+```
+
