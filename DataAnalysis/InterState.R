@@ -9,8 +9,11 @@ inter.outcome.category <- c(
 )
 
 interStateWar.event <- read_csv('Datasets/Inter-StateWarData_v4.0.csv')
+
+# deals with special cases, can find more detail in FunctionFile.R
 interStateWar.clean <- StateWar.filter(interStateWar.event, 6:17)
 
+# creates a completeness table that is also a ggplot
 interStateWar.table <- completeness(interStateWar.clean, 'Inter-state War')
 
 # Change the numerical value of Where Fight Occurred to categorical variable
@@ -32,6 +35,8 @@ interStateWar.column.join <- setNames(colnames(country.region)[1],
 # sub-region of continent for country
 interStateWar.clean <- join.df(interStateWar.clean, country.region, 
                                interStateWar.column.join)
+
+# removing WarType since they all have a value of 1
 interStateWar.clean <- subset(interStateWar.clean, select = -c(WarType))
 
 # creating two different dataframes for analysis based on 
@@ -52,8 +57,13 @@ inter.region.continent.join <- distinct(join.df(war.count.by.country.continent,
 # update dataframe to fix discrepancy between the possible continents and the region columns
 inter.region.continent.join <- continent.region.uni(inter.region.continent.join)
 
+# standardizing some labeling of sub.region to match trend seen in whi.df.clean
+inter.region.continent.join <- for.interstatewar.region.Regional.Indicator.Match(inter.region.continent.join)
+
+# setting values in occurrence as nermical values  
 inter.region.continent.join$Occurrence <- as.numeric(inter.region.continent.join$Occurrence)
 
+# counting the number of thimes a country has participated in a war
 war.participation.by.country <- inter.region.continent.join%>%
   group_by(`Country Name`)%>%
   summarise(total = sum(Occurrence, na.rm = TRUE))
@@ -72,8 +82,11 @@ inter.month.asday<- apply(inter.month, 2, function(x) x*30.4167)
 inter.war.duration <- ((inter.day + inter.month.asday)/365) + inter.year
 interStateWar.clean <- cbind(interStateWar.clean, inter.war.duration)
 
+# find the total total number of each outcome a country has experienced
 interStateWar.State.Outcomes <- interStateWar.clean%>%
   group_by(StateName, Outcome)%>%
   count()
 
+# there are a lot of duplicates beause each side is a different entry
+# so we are looking at total numbers of unique wars 
 total.distinct.wars <- distinct.war.type(interStateWar.clean)

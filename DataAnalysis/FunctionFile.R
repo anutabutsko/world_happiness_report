@@ -11,13 +11,23 @@ library(gridExtra) # getting multiple tables in one window
 library(treemap) # boxing based off proportion
 library(stringr) # for string detection
 library(d3Tree)
+library(viridis)
+library(ggridges)
+library(maps)
+library(dplyr)
+library(data.table)
+library(ggeasy)
 
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
 
+# setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
+
+# file to get a more precies understanding of continent and subregions within continent  
 country.region <- read_csv('Datasets/continents.csv')
 country.region <- country.region %>%
-  select('name', 'region', 'sub-region')
+  select('name', 'region', 'sub-region')%>%
+  rename(sub.region = `sub-region`)
 
+# used in InterState.R
 wherefought.category <- c(
   `1` = 'W. Hemisphere', `2` = 'Europe', `4` = 'Africa', `6` = 'Middle East',
   `7` = 'Asia', `9` = 'Oceania', `11` = 'Europe & Middle East', `12` = 'Europe & Asia',
@@ -31,6 +41,35 @@ wherefought.category <- c(
 # list of continents 
 continents <- c('W. Hemisphere', 'Europe', 'Africa',
                 'Middle East','Asia', 'Oceania')
+
+# used in the whi.R
+# combining central and eastern Europe together (this represents 
+# countries who were part of the former Eastern bloc)
+region.Regional.Indicator.Match <- function(df){
+  df <- df%>%
+    mutate(sub.region = ifelse((sub.region == "Central Europe" | 
+                                  sub.region == 'Eastern Europe'), 
+                           "Central and Eastern Europe", sub.region))%>%
+    # changing this to the Caribbean for simplicity
+    mutate(sub.region = ifelse(sub.region == "Anglophone Caribbean", 
+                               "Caribbean", sub.region))
+  return(df)
+}
+
+# used in the InterState.R
+# combining central and eastern Europe together (this represents 
+# countries who were part of the former Eastern bloc)
+for.interstatewar.region.Regional.Indicator.Match <- function(df){
+  df <- df%>%
+    mutate(sub.region = ifelse((sub.region == "Central Europe" | 
+                                  sub.region == 'Eastern Europe'), 
+                               "Central and Eastern Europe", sub.region))%>%
+    # standardizing naming conventions
+    mutate(region.mirror = ifelse(region.mirror == 'W. Hemisphere', 
+                                  'Americas', region.mirror))
+  
+  return(df)
+}
 
 # completeness check of the data and turning it into
 # a ggplot table
@@ -70,6 +109,7 @@ join.df <- function(df1, df2, x){
   return(df.join)
 }
 
+# redefines special values for data anaylsis
 StateWar.filter <- function(df, col.range){
   df <- df%>%
     # changing the values that represent NA and unknown to NA values 
@@ -84,6 +124,8 @@ StateWar.filter <- function(df, col.range){
   return(df)
 }
 
+# determines number of wars per continent and twars per
+# continent by country
 war.continent.filter <- function(interStateWar.clean, continents){
   war.continent <-data.frame()
   war.country.continent <-data.frame()
@@ -115,15 +157,20 @@ war.continent.filter <- function(interStateWar.clean, continents){
   return(list(war.continent = war.continent, war.country.continent = war.country.continent))
 }
 
+# changes United States of America to United States
 us.name <- function(df){
   df%>%
     mutate_all(~ifelse(.== 'United States of America', 'United States', . ))
 }
 
+# used to calculate duration of war
 war.duration <- function(df, column1, column2, column3, column4) {
+  # when startyear2 is true than there are two timeframes that the 
+  # war occurred 
   ifelse(!is.na(df[,column3]), 
          duration <- abs((df[,column4] - df[,column3])
                          +(df[,column2] - df[,column1])),
+         # counts if there is not a year in startyear2
          duration  <- abs((df[,column2] - df[,column1])))
   return(duration)
 }
@@ -131,17 +178,17 @@ war.duration <- function(df, column1, column2, column3, column4) {
 continent.region.uni <- function(df){
   df <- df %>%
     mutate(region.mirror = case_when(
-      `sub-region` == 'Western Asia' ~ 'Middle East',
-      str_detect(`sub-region`, 'Europe') ~ 'Europe',
-      str_detect(`sub-region`, 'Africa') ~ 'Africa',
-      str_detect(`sub-region`, 'America') ~ 'W. Hemisphere',
-      str_detect(`sub-region`, 'Australia') ~ 'Oceania',
-      (is.na(`sub-region`))~ `Continent`, 
-      TRUE ~ `sub-region`  # Default case when none of the conditions are met
+      `sub.region` == 'Western Asia' ~ 'Middle East',
+      str_detect(sub.region, 'Europe') ~ 'Europe',
+      str_detect(sub.region, 'Africa') ~ 'Africa',
+      str_detect(sub.region, 'Australia') ~ 'Oceania',
+      (is.na(sub.region))~ Continent, 
+      TRUE ~ sub.region  # Default case when none of the conditions are met
     ))
   
 }
 
+# returning df that does not contain duplicate of the same war
 distinct.war.type <- function(df){
   freq.df<- df%>%
   distinct(WarNum, .keep_all = TRUE) %>%
