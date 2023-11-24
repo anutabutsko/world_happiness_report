@@ -1,6 +1,7 @@
 source("FunctionFile.R")
 whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
 
+# setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
   mutate(Regional.Indicator = case_when(
     (is.na(Regional.Indicator) | Regional.Indicator == "") & Country.Name == 'Angola' ~ "Southern Africa",
@@ -27,6 +28,7 @@ whi.df.clean <- whi.df %>%
     TRUE ~ Regional.Indicator
   ))
 
+# setting Continent  for countries that do not have one already attached 
 whi.df.clean <- whi.df.clean %>%
   mutate(Continent = case_when(
     Regional.Indicator %in% c("South Asia", "Commonwealth of Independent States", "Southeast Asia", 
@@ -39,30 +41,40 @@ whi.df.clean <- whi.df.clean %>%
     Regional.Indicator == "North America and ANZ" ~ "Oceania",
     TRUE ~ "Other" 
   ))
+
+# creating a completeness table of the dataframe
 whi.table <- completeness(whi.df.clean, 'World Happiness Index')
 
 # used for filtering in InterState.R
 location.country <- us.name(whi.df[1:2])
 
+# standardizing the name so it can be used in future data wrangling
 country.region <- country.region %>%
   mutate(name = ifelse(name == "Bosnia And Herzegovina", "Bosnia and Herzegovina", name))
 
-  
+# mering the two dataframes together 
 by.part <- c('Country.Name' = 'name')
 whi.df.clean <- join.df(whi.df.clean, country.region, by.part)
+
+# if region is NA, set it to the value of the Conitnent 
+# and same logic for the sub.region
 whi.df.clean<- whi.df.clean%>%
   mutate(region = coalesce(region, Continent))%>%
   mutate(sub.region = coalesce(sub.region, Regional.Indicator))
   
+# used for plot, further explanation in Plotting.R
 by_continent <- whi.df.clean %>%
   group_by(region) %>%
   summarise(n=n(), Log.GDP.Per.Capita=mean(Log.GDP.Per.Capita, na.rm=TRUE))
 
 
+# some further standardization of data, can find more info in FuntionFile.R
 whi.df.clean <- region.Regional.Indicator.Match(whi.df.clean)
-# STATS
-################################################################################
+
+
 df <- whi.df.clean
+
+# getting geographical info for all counties
 world.map <- map_data(map = "world")
 world.map <- world.map%>%
   rename(Country.Name = region)
@@ -76,7 +88,7 @@ world.map <- world.map %>%
   mutate(Country.Name = replace(Country.Name, Country.Name %in% c('Trinidad', 'Tobago'), "Trinidad and Tobago"))%>%
   mutate(Country.Name = replace(Country.Name, Country.Name == 'Swaziland', "Eswatini"))
   
-
+# change the names to match world.map
 df <- df %>%
   mutate(Country.Name = replace(Country.Name, Country.Name == "Hong Kong S.A.R. of China", "China"))%>%
   mutate(Country.Name = replace(Country.Name, Country.Name == "Taiwan Province of China", "Taiwan"))%>%
@@ -88,14 +100,8 @@ world.map <- merge(world.map, df, 'Country.Name')
 
 world.map <- world.map[order(world.map$order),]
 
-
-
-# If you want to set certain columns to NA, you can use mutate
-# For example, if you want to set columns 2 to the last column to NA:
-# filtered <- total.world.map %>%
-#   mutate(across(9:last_col(), ~ifelse(Year != 2021, NA, .)))
-
-
+# STATS
+################################################################################
 pandemic.years <- whi.df.clean%>%
   subset(Year >= 2020 |
            (Year > 2013 & Year < 2017) |

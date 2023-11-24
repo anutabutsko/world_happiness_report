@@ -1,6 +1,6 @@
 source("DataAnaylsis.R")
 source("whi.R")
-# source("InterState.R")
+source("InterState.R")
 
 # # Initial Completeness Table For Files
 # print(whi.table)
@@ -34,10 +34,7 @@ source("whi.R")
 # # We may be seeing a Simpsons paradox and would want to filter on location of country or
 # # some other factor
 
-# by_continent <- whi.df.clean %>%
-#   group_by(region) %>%
-#   summarise(n = n(), Log.GDP.Per.Capita = mean(Log.GDP.Per.Capita, na.rm = TRUE))
-  
+# copy
 data <- whi.df.clean
 
 violin.GDP.by.Continent <- data %>%
@@ -45,7 +42,8 @@ violin.GDP.by.Continent <- data %>%
   geom_violin(aes(fill = region), alpha = 0.5, color = NA, scale = "area") +
   geom_boxplot(aes(fill = NA), alpha = 0.3, width = 0.15, outlier.alpha = 1) +
   scale_fill_viridis(discrete = TRUE, name = "Continent") +
-  labs(title = "Distribution of GDP per Capita by Continent", x = "GDP per Capita", y = "Continent")
+  labs(title = "Distribution of GDP per Capita by Continent", 
+       x = "GDP per Capita", y = "Continent")
 
 scatter.plot.GDP.By.Continent <- data %>%
   ggplot(aes(x=region, y=Log.GDP.Per.Capita, color=region)) +
@@ -55,7 +53,8 @@ scatter.plot.GDP.By.Continent <- data %>%
   labs("title" = "Distribution of GDP per Capita by Continent", y="GDP per Capita")
 
 GDP.Confidence <- data %>%
-  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government, color=Log.GDP.Per.Capita)) +
+  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government, 
+             color=Log.GDP.Per.Capita)) +
   geom_point() + 
   geom_smooth(lty=1, aes(col=Log.GDP.Per.Capita), span=0.005)
 
