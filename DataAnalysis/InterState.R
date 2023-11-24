@@ -48,9 +48,10 @@ by.part <- c("Country Name" = "name")
 # sub-region of continent for country
 inter.region.continent.join <- distinct(join.df(war.count.by.country.continent, 
                                           country.region, by.part))
-
 # update dataframe to fix discrepancy between the possible continents and the region columns
 inter.region.continent.join <- continent.region.uni(inter.region.continent.join)
+
+inter.region.continent.join <- for.interstatewar.region.Regional.Indicator.Match(inter.region.continent.join)
 
 inter.region.continent.join$Occurrence <- as.numeric(inter.region.continent.join$Occurrence)
 

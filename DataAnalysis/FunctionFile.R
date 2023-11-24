@@ -11,12 +11,20 @@ library(gridExtra) # getting multiple tables in one window
 library(treemap) # boxing based off proportion
 library(stringr) # for string detection
 library(d3Tree)
+library(viridis)
+library(ggridges)
+library(maps)
+library(dplyr)
+library(data.table)
+library(ggeasy)
 
-setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
+
+# setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
 
 country.region <- read_csv('Datasets/continents.csv')
 country.region <- country.region %>%
-  select('name', 'region', 'sub-region')
+  select('name', 'region', 'sub-region')%>%
+  rename(sub.region = `sub-region`)
 
 wherefought.category <- c(
   `1` = 'W. Hemisphere', `2` = 'Europe', `4` = 'Africa', `6` = 'Middle East',
@@ -31,6 +39,24 @@ wherefought.category <- c(
 # list of continents 
 continents <- c('W. Hemisphere', 'Europe', 'Africa',
                 'Middle East','Asia', 'Oceania')
+
+region.Regional.Indicator.Match <- function(df){
+  df <- df%>%
+    mutate(sub.region = ifelse((sub.region == "Central Europe" | sub.region == 'Eastern Europe'), 
+                           "Central and Eastern Europe", sub.region))%>%
+    mutate(sub.region = ifelse(sub.region == "Anglophone Caribbean", 
+                               "Caribbean", sub.region))
+  return(df)
+}
+
+for.interstatewar.region.Regional.Indicator.Match <- function(df){
+  df <- df%>%
+    mutate(sub.region = ifelse((sub.region == "Central Europe" | sub.region == 'Eastern Europe'), 
+                               "Central and Eastern Europe", sub.region))%>%
+    mutate(region.mirror = ifelse(region.mirror == 'W. Hemisphere', 'Americas', region.mirror))
+  
+  return(df)
+}
 
 # completeness check of the data and turning it into
 # a ggplot table
@@ -131,13 +157,13 @@ war.duration <- function(df, column1, column2, column3, column4) {
 continent.region.uni <- function(df){
   df <- df %>%
     mutate(region.mirror = case_when(
-      `sub-region` == 'Western Asia' ~ 'Middle East',
-      str_detect(`sub-region`, 'Europe') ~ 'Europe',
-      str_detect(`sub-region`, 'Africa') ~ 'Africa',
-      str_detect(`sub-region`, 'America') ~ 'W. Hemisphere',
-      str_detect(`sub-region`, 'Australia') ~ 'Oceania',
-      (is.na(`sub-region`))~ `Continent`, 
-      TRUE ~ `sub-region`  # Default case when none of the conditions are met
+      `sub.region` == 'Western Asia' ~ 'Middle East',
+      str_detect(sub.region, 'Europe') ~ 'Europe',
+      str_detect(sub.region, 'Africa') ~ 'Africa',
+      str_detect(sub.region, 'America') ~ 'W. Hemisphere',
+      str_detect(sub.region, 'Australia') ~ 'Oceania',
+      (is.na(sub.region))~ Continent, 
+      TRUE ~ sub.region  # Default case when none of the conditions are met
     ))
   
 }
