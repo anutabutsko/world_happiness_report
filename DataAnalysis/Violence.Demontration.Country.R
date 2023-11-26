@@ -4,8 +4,6 @@ FunFile <- here("DataAnalysis", "FunctionFile.R")
 FunFile <- source(FunFile)
 Whi <- here("DataAnalysis", "whi.R")
 Whi <- source(Whi)
-source("whi.R")
-
 Vevent <- here("DataAnalysis", "Datasets", "political_violence_events_by_country.csv")
 violent.event <- read_csv(Vevent)
 Devent <- here("DataAnalysis", "Datasets", 'demonstration_by_country.csv')
