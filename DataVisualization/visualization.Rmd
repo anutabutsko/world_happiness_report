@@ -6,11 +6,18 @@ library(viridis)
 library(ggridges)
 library(data.table)
 library(ggeasy)
+library(here)
+```
+
+Set File Location, Get Top Directory
+```{r}
+here::i_am("DataVisualization/visualization.rmd")
 ```
 
 # Import the data frame
 ```{r}
-df <- read.csv("HappyDataFrame.csv")
+df <- here("Datasets", "HappyDataFrame.csv")
+df <- read.csv(df)
 View(df)
 dim(df)
 df <- df %>%
@@ -156,6 +163,10 @@ life.ladder.plot <- ggplot(world.map, aes(long, lat, group=group)) +
   ggeasy::easy_center_title()
 
 ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
+
+```
+
+```{r}
 
 ```
 

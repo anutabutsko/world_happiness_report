@@ -13,14 +13,23 @@ Libraries
 
 ```{r}
 library(dplyr)
+library(here)
+library(readr)
+library(ggplot2)
+library(tidyr)
+```
+
+Set Root
+```{r}
+here::i_am("Cleaning/DataCleaning.rmd")
 ```
 
 
 Read in Dataset
 
 ```{r}
-setwd("/Users/emmahorton/Documents/GitHub/world_happiness_report/DataAnalysis/Datasets")
-df <- read.csv("WorldHappinessReport.csv")
+df <- here("DataAnalysis", "Datasets", "WorldHappinessReport.csv")
+df <- read.csv(df)
 #View(df)
 
 ```
@@ -187,15 +196,55 @@ boxplot(Negative.Affect ~ Continent, data = cleaning,
         xlab = "Continent", ylab = "Negative Effect")
 ```
 
-
 Save DataFrame in a Pretty Name
 ```{r}
 cleaning -> happydf
 ```
 
+Read in Auxiliary Dataset, Population and Pre-Process
+```{r}
+df <- here("Datasets", "WorldBank_Population", "PopulationData.csv")
+here()
+population <- read_csv(df, skip = 4)
+population <- population[, c(1:2, 50:(ncol(population) - 1))]
+
+population <- population %>%
+  rename(Country.Name = `Country Name`,Country.Code = `Country Code`)
+
+
+#View(population)
+```
+
+Gather Population Data
+```{r}
+population <- population %>%
+  gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
+    mutate(Year = as.integer(Year))
+```
+
+
+Attach Continents to Population
+```{r}
+#get unique countries from happydf
+unique_countries <- happydf %>%
+  select(Country.Name, Continent, Regional.Indicator) %>%
+  distinct()
+
+```
+
+Join Population and Country Name Based on Year in New Set Happy Population
+
+```{r}
+happydf <- inner_join(happydf, population, by = c("Country.Name", "Year"))
+View(happydf)
+
+```
+
+
 Export Data to CSV
 ```{r}
-write.csv(happydf,"/Users/emmahorton/Documents/GitHub/world_happiness_report/Cleaning/HappyDataFrame.csv", row.names=FALSE)
+path <- here("Cleaning", "HappyDataFrame.csv")
+write.csv(happydf, path, row.names=FALSE)
 ```
 
 

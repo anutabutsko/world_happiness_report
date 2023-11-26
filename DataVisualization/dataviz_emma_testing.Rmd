@@ -65,12 +65,6 @@ unique_countries <- happydf %>%
   select(Country.Name, Continent, Regional.Indicator) %>%
   distinct()
 
-#decided to create new dataframe, ignore and delete later unless needed
-#join population on country name
-#population <- population %>%
-  #inner_join(unique_countries, by = c("Country.Name" = "Country.Name"))
-
-#View(population)
 ```
 
 Join Population and Country Name Based on Year in New Set Happy Population
