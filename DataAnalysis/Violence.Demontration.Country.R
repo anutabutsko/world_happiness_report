@@ -1,7 +1,15 @@
-source("FunctionFile.R")
+library(here)
+here::i_am("DataAnalysis/Violence.Demontration.Country.R")
+FunFile <- here("DataAnalysis", "FunctionFile.R")
+FunFile <- source(FunFile)
+Whi <- here("DataAnalysis", "whi.R")
+Whi <- source(Whi)
 source("whi.R")
-violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')
-demonstration.event <- read_csv('Datasets/demonstration_by_country.csv')
+
+Vevent <- here("DataAnalysis", "Datasets", "political_violence_events_by_country.csv")
+violent.event <- read_csv(Vevent)
+Devent <- here("DataAnalysis", "Datasets", 'demonstration_by_country.csv')
+demonstration.event <- read_csv(Devent)
 violent.event <- violent.event[,-1]
 demonstration.event <- demonstration.event[,-1]
 
@@ -37,3 +45,4 @@ demonstration.event.per.country <- demonstration.event.per.country%>%
   rename(demo.occurrences = Occurrence, demo.TotalEvents = TotalEvents)
 
 demo.vio.merged.df <- join.df(violent.event.per.country, demonstration.event.per.country, demo.vio.join)
+
