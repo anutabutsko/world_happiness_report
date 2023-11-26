@@ -1,5 +1,11 @@
-source("FunctionFile.R")
-whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
+library(here)
+here::i_am("DataAnalysis/whi.R")
+FunFile <- here("DataAnalysis", "FunctionFile.R")
+FunFile <- source(FunFile)
+
+df <- here("DataAnalysis", "Datasets", "WorldHappinessReport.csv")
+
+whi.df <- read.csv(df)
 
 # setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
