@@ -17,12 +17,15 @@ library(maps)
 library(dplyr)
 library(data.table)
 library(ggeasy)
+library(here)
+
+here::i_am("DataAnalysis/FunctionFile.R")
+
+# file to get a more precies understanding of continent and subregions within continent 
+country.region <- here("DataAnalysis", "Datasets", "continents.csv")
+country.region <- read_csv(country.region)
 
 
-# setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
-
-# file to get a more precies understanding of continent and subregions within continent  
-country.region <- read_csv('Datasets/continents.csv')
 country.region <- country.region %>%
   select('name', 'region', 'sub-region')%>%
   rename(sub.region = `sub-region`)
