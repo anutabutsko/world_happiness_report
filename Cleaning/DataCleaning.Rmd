@@ -243,7 +243,7 @@ View(happydf)
 
 Export Data to CSV
 ```{r}
-path <- here("Cleaning", "HappyDataFrame.csv")
+path <- here("Datasets", "HappyDataFrame.csv")
 write.csv(happydf, path, row.names=FALSE)
 ```
 
