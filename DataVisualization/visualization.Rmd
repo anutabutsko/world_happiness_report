@@ -166,7 +166,17 @@ ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
 
 ```
 
-```{r}
 
+# Emma's First Draft of a Bubble Plot, Will Switch to Plotly
+Goals:
+Timeline, moving bubbles that are scaled with relative population size and follow the life.ladder trajectory
+```{r}
+# Calculate scale
+scaling_factor <- 0.0001 
+df$RelativeSize <- df$Population * scaling_factor
+
+ggplot(df, aes(x = Year, y = Life.Ladder, color = Continent, size = RelativeSize)) +
+  geom_jitter(alpha = 0.2) +
+  geom_smooth()
 ```
 
