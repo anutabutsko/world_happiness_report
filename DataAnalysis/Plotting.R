@@ -37,6 +37,10 @@ source("InterState.R")
 # copy
 data <- whi.df.clean
 
+histo.GDP.by.Sub.Region <- data %>%
+  ggplot(aes(Log.GDP.Per.Capita, 
+             fill=as.factor(sub.region))) + geom_histogram(col="white")
+
 violin.GDP.by.Continent <- data %>%
   ggplot(aes(y = region, x = Log.GDP.Per.Capita)) +
   geom_violin(aes(fill = region), alpha = 0.5, color = NA, scale = "area") +

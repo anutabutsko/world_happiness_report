@@ -45,7 +45,7 @@ ui <- dashboardPage(
                 # this is looking at GDP per capita based off Sub-Region
                 box(title = "Log GDP Per Capita by Sub-Region", 
                     status = "primary", solidHeader = TRUE,
-                    width = 7, plotOutput('densitySubRegion')),
+                    width = 7, plotOutput('GDPBySubRegion')),
                 # this is the chlophleth map of the most updated 
                 # life.ladder index that a country has submitted
                 box(title = "Happiness Index across the World", 
@@ -105,6 +105,7 @@ ui <- dashboardPage(
                     tabsetPanel(
                       tabPanel("graph 1", plotOutput('GDPContinentScatter')),
                       tabPanel("graph 2", plotOutput('GDPContinentViolin')),
+                      tabPanel("graph 3", plotOutput('densitySubRegion'))
                     ) # tabsetPanel
                 ), # box
                 # This one looks at density plots based off sub.region of the country
@@ -217,6 +218,9 @@ server <- function(input, output) {
     GDP.Confidence
   })
   
+  output$GDPBySubRegion <- renderPlot({
+  histo.GDP.by.Sub.Region
+})
   # Look at Plotting.R for description
   output$densitySubRegion<- renderPlot({
     density.of.GDP.By.SubRegion
@@ -234,7 +238,7 @@ server <- function(input, output) {
     ggplotly(corrality) %>%
       layout(xaxis = list(title = ""), yaxis = list(title = ""))
   })
-  
+
 }
 
 # Run the Shiny app
