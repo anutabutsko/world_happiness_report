@@ -14,7 +14,9 @@ ui <- dashboardPage(
       # this tab look further into the WHR
       menuItem("Happiness", tabName = "Happiness", icon = icon("globe")),
       # this tab has a focus on log GDP per Capita within the WHR
-      menuItem("GDP", tabName = "GDP", icon = icon("globe"))
+      menuItem("GDP", tabName = "GDP", icon = icon("globe")),
+      # this tab has a focus on preception of Corruption within the WHR
+      menuItem("Corruption", tabName = "Corruption", icon = icon("globe"))
     )
   ),
   dashboardBody(
@@ -125,7 +127,34 @@ ui <- dashboardPage(
                                               'Asia' ,'Europe', 'Oceania'))     
                     ) # box
               ) # fluidrow
-      ) # tabItem3
+      ), # tabItem3
+      # what you will see when you are in the Happiness tab
+      tabItem(tabName = "Corruption",
+              fluidRow(
+                # looking at the many graphs of GDP
+                # this initial box contains two overarching view of GDP 
+                # by Continent
+                box(title = "Corruption Regression by Country", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 5, plotOutput('CorruptHappyReg')), # box
+                # This one looks at density plots based off sub.region of the country
+                # looking one step below continent
+                box(title = "Corruption Regression by Continent", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 7, plotlyOutput('CorruptRegByCountry')),
+                box(width = 7,
+                    # select button used when you want to select multiple things
+                    radioButtons("Corruption_check", "Select Continent",
+                                 # names of the valid choices
+                                 choiceNames =
+                                   list('Africa', 'Americas', '
+                                        Asia' ,'Europe', 'Oceania'),
+                                 choiceValues =
+                                   list('Africa', 'Americas', 
+                                        'Asia' ,'Europe', 'Oceania'))
+                ) # box
+              ) # fluidrow
+      ) # tabItem4
     ) # tabItems
   ) # dashboard body
 )
@@ -237,6 +266,15 @@ server <- function(input, output) {
   output$corrality<- renderPlotly({
     ggplotly(corrality) %>%
       layout(xaxis = list(title = ""), yaxis = list(title = ""))
+  })
+  
+  output$CorruptHappyReg <- renderPlot({
+    world_perception
+  })
+  
+  output$CorruptRegByCountry <- renderPlotly({
+    plot <- corruption_regression(data, input$Corruption_check)
+    ggplotly(plot)
   })
 
 }

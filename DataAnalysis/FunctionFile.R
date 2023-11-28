@@ -17,7 +17,8 @@ library(maps)
 library(dplyr)
 library(data.table)
 library(ggeasy)
-
+library(tidyr)
+library(ggeasy)
 
 # setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
 

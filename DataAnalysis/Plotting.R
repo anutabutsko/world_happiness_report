@@ -1,6 +1,8 @@
 source("DataAnaylsis.R")
+source("FunctionFile.R")
 source("whi.R")
-source("InterState.R")
+# source("InterState.R")
+
 
 # # Initial Completeness Table For Files
 # print(whi.table)
@@ -37,8 +39,21 @@ source("InterState.R")
 # copy
 data <- whi.df.clean
 
+world_perception <- data %>%
+  group_by(Country.Name) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE),
+            Confidence.In.National.Government = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
+  ggplot(aes(Life.Ladder, Confidence.In.National.Government, color=Life.Ladder)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  labs(title="Relationship between Confidence in National Government\nand Happiness Index",
+       x="Happiness", y="Confidence") +
+  scale_color_continuous(name="Happiness\nIndex") +
+  ggeasy::easy_center_title()
+
+
 histo.GDP.by.Sub.Region <- data %>%
-  ggplot(aes(Log.GDP.Per.Capita, 
+  ggplot(aes(Log.GDP.Per.Capita,
              fill=as.factor(sub.region))) + geom_histogram(col="white")
 
 violin.GDP.by.Continent <- data %>%
@@ -46,7 +61,7 @@ violin.GDP.by.Continent <- data %>%
   geom_violin(aes(fill = region), alpha = 0.5, color = NA, scale = "area") +
   geom_boxplot(aes(fill = NA), alpha = 0.3, width = 0.15, outlier.alpha = 1) +
   scale_fill_viridis(discrete = TRUE, name = "Continent") +
-  labs(title = "Distribution of GDP per Capita by Continent", 
+  labs(title = "Distribution of GDP per Capita by Continent",
        x = "GDP per Capita", y = "Continent")
 
 scatter.plot.GDP.By.Continent <- data %>%
@@ -57,25 +72,25 @@ scatter.plot.GDP.By.Continent <- data %>%
   labs("title" = "Distribution of GDP per Capita by Continent", y="GDP per Capita")
 
 GDP.Confidence <- data %>%
-  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government, 
+  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government,
              color=Log.GDP.Per.Capita)) +
-  geom_point() + 
+  geom_point() +
   geom_smooth(lty=1, aes(col=Log.GDP.Per.Capita), span=0.005)
 
 
 density.of.GDP.By.SubRegion <- data %>%
-  ggplot(aes(Log.GDP.Per.Capita, 
-               alpha=Log.GDP.Per.Capita, 
+  ggplot(aes(Log.GDP.Per.Capita,
+               alpha=Log.GDP.Per.Capita,
                y = as.factor(sub.region),
                fill=as.factor(sub.region))) +
-  geom_density_ridges(alpha=0.4, 
-                      adjust=0.05, 
+  geom_density_ridges(alpha=0.4,
+                      adjust=0.05,
                       position="identity", show.legend=FALSE) +
   scale_alpha_continuous()
 
 
 histogram.of.GDP.By.SubRegion<- data %>%
-  ggplot(aes(Log.GDP.Per.Capita, 
+  ggplot(aes(Log.GDP.Per.Capita,
              fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")
 
 
@@ -93,8 +108,35 @@ corrality <- ggpairs(data[,4:13],
         method = c("everything", "pearson"))+
   theme(axis.text.y = element_blank(),  # removing x or y axis labels
         axis.title.y = element_blank(),
-        axis.text.x = element_blank(), 
+        axis.text.x = element_blank(),
         axis.title.x = element_blank())
-  
 
-correlation.matrix <- ggcorr(data[,4:13]) 
+
+correlation.matrix <- ggcorr(data[,4:13])
+
+top_happiness <- data %>%
+  group_by(Country.Name) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), confidence = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
+  arrange(desc(Life.Ladder)) %>%
+  head(15)
+
+top_perception <- top_happiness %>%
+  ggplot(aes(Life.Ladder, confidence, color=Life.Ladder)) +
+  geom_point(show.legend = FALSE) + 
+  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  labs(title="Relationship between Confidence in\nNational Government and Happiness Index", subtitle="Top 15 Happiest Countries", x="Happiness", y="Confidence") +
+  geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3)
+
+corruption_regression <- function(data, continent){
+  corruption <- df %>%
+    filter(region==continent) %>%
+    group_by(Country.Name) %>%
+    summarise(Life.Ladder = mean(Life.Ladder),
+              Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
+    ggplot(aes(Life.Ladder, Perceptions.Of.Corruption)) +
+    geom_point(alpha=0.5, color="blue") +
+    geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+    labs(title=continent, x="Happiness", y="Corruption") +
+    ggeasy::easy_center_title()
+  return(corruption)
+}

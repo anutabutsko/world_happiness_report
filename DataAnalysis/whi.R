@@ -1,6 +1,16 @@
 source("FunctionFile.R")
 whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
 
+population <- read_csv('Datasets/PopulationData.csv', skip = 4)
+population <- population[, c(1:2, 50:(ncol(population) - 1))]
+
+population <- population %>%
+  rename(Country.Name = `Country Name`, Country.Code = `Country Code`)
+
+population <- population %>%
+  gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
+  mutate(Year = as.integer(Year))
+
 # setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
   mutate(Regional.Indicator = case_when(
@@ -70,6 +80,8 @@ by_continent <- whi.df.clean %>%
 
 # some further standardization of data, can find more info in FuntionFile.R
 whi.df.clean <- region.Regional.Indicator.Match(whi.df.clean)
+
+whi.df.clean <- inner_join(whi.df.clean, population, by = c("Country.Name", "Year"))
 
 
 df <- whi.df.clean
