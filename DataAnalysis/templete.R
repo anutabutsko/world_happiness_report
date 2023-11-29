@@ -89,7 +89,16 @@ ui <- dashboardPage(
               tabsetPanel(
                 tabPanel('graph 1', box(width = 12,
                                         plotOutput('TreeMapConflicts'))),
-                tabPanel('graph 2', box(width = 12)),
+                tabPanel('graph 2', box(width = 12, title = 'War Outcome of Countries', 
+                                        status = "primary", solidHeader = TRUE,
+                                        # select button used when you want to select multiple things
+                                        selectInput("Outcome_check", "Select Continent",
+                                                    # names of the valid choices
+                                                    choices =
+                                                      list('Overview', 'Africa', 'Americas', 
+                                                           'Asia' ,'Europe', 'Oceania'), selected = 'Overview'),
+                                        plotlyOutput('WarOutcomes')
+                                        )),
                 tabPanel('graph 3', box(width = 12))
               ) # tabsetPanel
       ), # tabItem3
@@ -179,6 +188,11 @@ server <- function(input, output) {
                                 type = 'index')
   })
   
+  output$WarOutcomes <- renderPlotly({
+    plot <- stackedbarbyRegion(interStateWar.State.Outcomes, input$Outcome_check)
+    ggplotly(plot)
+  })
+
 }
 
 # Run the Shiny app

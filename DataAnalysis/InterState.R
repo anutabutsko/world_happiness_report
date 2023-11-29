@@ -89,6 +89,8 @@ interStateWar.State.Outcomes <- interStateWar.clean%>%
   group_by(StateName, Outcome)%>%
   count()
 
+interStateWar.State.Outcomes <- left_join(interStateWar.State.Outcomes, country.region, by = c('StateName'='name'))
+
 # there are a lot of duplicates beause each side is a different entry
 # so we are looking at total numbers of unique wars 
 total.distinct.wars <- distinct.war.type(interStateWar.clean)

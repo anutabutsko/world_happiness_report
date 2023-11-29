@@ -51,10 +51,24 @@ world_perception <- data %>%
   scale_color_continuous(name="Happiness\nIndex") +
   ggeasy::easy_center_title()
 
-
-histo.GDP.by.Sub.Region <- data %>%
-  ggplot(aes(Log.GDP.Per.Capita,
-             fill=as.factor(sub.region))) + geom_histogram(col="white")
+stackedbarbyRegion <- function(data, Continent){
+  if (Continent=='Overview'){
+    stacked.bar<- data%>%
+      ggplot(aes(fill=Outcome, y=n, x=region)) + 
+      geom_bar(position="fill", stat="identity")+
+      theme(legend.position = 'bottom', axis.text.x = element_blank(),
+            axis.title.x = element_blank())
+  }
+  else {
+  stacked.bar <- data%>%
+    filter(region == Continent) %>%
+    ggplot(aes(fill=Outcome, y=n, x=StateName)) + 
+    geom_bar(position="stack", stat="identity")+
+    theme(legend.position = 'bottom', axis.text.x = element_blank(),
+          axis.title.x = element_blank())
+  }
+  return(stacked.bar)
+}
 
 violin.GDP.by.Continent <- data %>%
   ggplot(aes(y = region, x = Log.GDP.Per.Capita)) +
@@ -116,7 +130,8 @@ correlation.matrix <- ggcorr(data[,4:13])
 
 top_happiness <- data %>%
   group_by(Country.Name) %>%
-  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), confidence = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), 
+            confidence = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
   arrange(desc(Life.Ladder)) %>%
   head(15)
 
