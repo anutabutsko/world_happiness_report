@@ -49,4 +49,4 @@ life.ladder.plot <- ggplot(world.map, aes(long, lat, group=group)) +
   labs(title="Happiness Index across the World") +
   ggeasy::easy_center_title()
 
-ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
+# ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
