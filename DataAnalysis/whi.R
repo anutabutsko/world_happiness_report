@@ -11,6 +11,10 @@ population <- population %>%
   gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
   mutate(Year = as.integer(Year))
 
+population <- population %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name == "Russian Federation", "Russia"))
+
+
 # setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
   mutate(Regional.Indicator = case_when(
@@ -81,7 +85,7 @@ by_continent <- whi.df.clean %>%
 # some further standardization of data, can find more info in FuntionFile.R
 whi.df.clean <- region.Regional.Indicator.Match(whi.df.clean)
 
-whi.df.clean <- inner_join(whi.df.clean, population, by = c("Country.Name", "Year"))
+whi.df.clean <- left_join(whi.df.clean, population, by = c("Country.Name", "Year"))
 
 
 df <- whi.df.clean

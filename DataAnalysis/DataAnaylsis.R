@@ -71,7 +71,7 @@ source("whi.R")
 # # and control that Western Europe had on each continent. It may also suggests who is the world power in war right
 # # now. For instance Western Europe has a lot of political power, but the USA has the largest military might.
 # 
-# # A Treemap may be a good option to look at region.contineent.join
+# # A Treemap may be a good option to look at region.continent.join
 # 
 # 
 # table(interStateWar.clean$Outcome)

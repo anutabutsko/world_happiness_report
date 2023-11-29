@@ -1,6 +1,7 @@
 # install.packages(GGally')
 # install.packages('gt')
 # install.packages('treemap')
+# install.packages("geomtextpath")
 library(readr)
 library(GGally) # ggcorr
 library(plotly) # interactive map
@@ -14,11 +15,11 @@ library(d3Tree)
 library(viridis)
 library(ggridges)
 library(maps)
-library(dplyr)
 library(data.table)
 library(ggeasy)
 library(tidyr)
-library(ggeasy)
+library(geomtextpath)
+library(hrbrthemes)
 
 # setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
 

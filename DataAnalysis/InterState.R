@@ -63,6 +63,8 @@ inter.region.continent.join <- for.interstatewar.region.Regional.Indicator.Match
 # setting values in occurrence as nermical values  
 inter.region.continent.join$Occurrence <- as.numeric(inter.region.continent.join$Occurrence)
 
+inter.region.continent.join$region <- coalesce(inter.region.continent.join$region, 
+                                        inter.region.continent.join$region.mirror)
 # counting the number of thimes a country has participated in a war
 war.participation.by.country <- inter.region.continent.join%>%
   group_by(`Country Name`)%>%

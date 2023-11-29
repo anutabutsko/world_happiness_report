@@ -1,7 +1,7 @@
 source("DataAnaylsis.R")
 source("FunctionFile.R")
 source("whi.R")
-# source("InterState.R")
+source("InterState.R")
 
 
 # # Initial Completeness Table For Files
@@ -127,16 +127,67 @@ top_perception <- top_happiness %>%
   labs(title="Relationship between Confidence in\nNational Government and Happiness Index", subtitle="Top 15 Happiest Countries", x="Happiness", y="Confidence") +
   geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3)
 
-corruption_regression <- function(data, continent){
-  corruption <- df %>%
+regression_lines_of_indicators <- function(data, continent, indicator){
+  corruption <- data %>%
     filter(region==continent) %>%
-    group_by(Country.Name) %>%
-    summarise(Life.Ladder = mean(Life.Ladder),
-              Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
-    ggplot(aes(Life.Ladder, Perceptions.Of.Corruption)) +
-    geom_point(alpha=0.5, color="blue") +
+    #group_by(Country.Name) %>%
+    #summarise(Life.Ladder = mean(Life.Ladder),
+              #Perceptions.Of.Corruption = mean(indicator)) %>%
+    ggplot(aes(Life.Ladder, !!sym(indicator))) +
+    geom_point(alpha=0.5) +
     geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-    labs(title=continent, x="Happiness", y="Corruption") +
+    labs(title=continent, x="Happiness", y=indicator) +
     ggeasy::easy_center_title()
   return(corruption)
 }
+
+
+time.series.happiness <- function(data, subRegion){
+  sub.region.trend.by.Country <- data %>%
+    filter(sub.region == subRegion) %>%
+    ggplot(aes(x = Year, y = Life.Ladder, color = Country.Name)) +
+    geom_line(show.legend = FALSE) +
+    xlab("") +
+    facet_wrap(~Country.Name, scales = "free_y", ncol = 3) +
+    guides(color = FALSE) +  # Turn off the color legend
+    theme_minimal()
+  return(sub.region.trend.by.Country)
+}
+
+happiness.trend <- data %>%
+  group_by(Year, region) %>%
+  summarise(avg = mean(Life.Ladder, na.rm = TRUE)) %>%
+  ggplot(aes(x = Year, y = avg, color = region)) +
+  geom_line(linetype='dashed') +
+  scale_color_viridis(discrete=TRUE) +
+  geom_point(size=3, alpha=0.5) +
+  labs("title" = "Happiness Level Across Years by Continent", y="Happiness Level") +
+  ggeasy::easy_center_title()
+
+
+# treemap.conflict <- treemap(inter.region.continent.join,
+#         index = c('Continent', 'region.mirror'),
+#         vSize = 'Occurrence',
+#         type = 'index')
+
+
+# corruption_gen <- data %>%
+#   ggplot(aes(x = Life.Ladder, y = Perceptions.Of.Corruption, 
+#              color = region)) + geom_point() +
+#   geom_smooth(fill = "transparent",
+#               method = "lm", formula = y ~ x,
+#               size = 3, linewidth = 1, boxlinewidth = 0.4) +
+#   theme_modern_rc() + guides(color = 'none')
+# ggplotly(corruption_gen)
+# 
+# corruption <- data %>%
+#   group_by(sub.region, Year) %>%
+#   summarise(Life.Ladder = mean(Life.Ladder),
+#             Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
+# ggplot(aes(x = Life.Ladder, y = Perceptions.Of.Corruption, 
+#                  color = sub.region)) + geom_point() +
+#   geom_smooth(fill = "transparent",
+#                    method = "lm", formula = y ~ x,
+#                    size = 3, linewidth = 1, boxlinewidth = 0.4) +
+#   theme_modern_rc() + guides(color = 'none')
+# ggplotly(corruption)
