@@ -2,7 +2,7 @@ source("DataAnaylsis.R")
 source("FunctionFile.R")
 source("whi.R")
 source("InterState.R")
-
+source("Violence.Demontration.Country.R")
 
 # # Initial Completeness Table For Files
 # print(whi.table)
@@ -45,6 +45,7 @@ world_perception <- data %>%
             Confidence.In.National.Government = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
   ggplot(aes(Life.Ladder, Confidence.In.National.Government, color=Life.Ladder)) +
   geom_point() +
+  theme_minimal() +
   geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
   labs(title="Relationship between Confidence in National Government\nand Happiness Index",
        x="Happiness", y="Confidence") +
@@ -57,13 +58,15 @@ stackedbarbyRegion <- function(data, Continent){
       ggplot(aes(fill=Outcome, y=n, x=region)) + 
       geom_bar(position="fill", stat="identity")+
       theme(legend.position = 'bottom', axis.text.x = element_blank(),
-            axis.title.x = element_blank())
+            axis.title.x = element_blank())+
+      theme_minimal() 
   }
   else {
   stacked.bar <- data%>%
     filter(region == Continent) %>%
     ggplot(aes(fill=Outcome, y=n, x=StateName)) + 
     geom_bar(position="stack", stat="identity")+
+    theme_minimal() +
     theme(legend.position = 'bottom', axis.text.x = element_blank(),
           axis.title.x = element_blank())
   }
@@ -75,6 +78,7 @@ violin.GDP.by.Continent <- data %>%
   geom_violin(aes(fill = region), alpha = 0.5, color = NA, scale = "area") +
   geom_boxplot(aes(fill = NA), alpha = 0.3, width = 0.15, outlier.alpha = 1) +
   scale_fill_viridis(discrete = TRUE, name = "Continent") +
+  theme_minimal() +
   labs(title = "Distribution of GDP per Capita by Continent",
        x = "GDP per Capita", y = "Continent")
 
@@ -82,6 +86,7 @@ scatter.plot.GDP.By.Continent <- data %>%
   ggplot(aes(x=region, y=Log.GDP.Per.Capita, color=region)) +
   geom_point(alpha = 0.15, position="jitter") +
   geom_point(data=by_continent, size=4) +
+  theme_minimal() +
   geom_text(data=by_continent, aes(label=paste0("n=", n), y=5, color=NULL)) +
   labs("title" = "Distribution of GDP per Capita by Continent", y="GDP per Capita")
 
@@ -89,6 +94,7 @@ GDP.Confidence <- data %>%
   ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government,
              color=Log.GDP.Per.Capita)) +
   geom_point() +
+  theme_minimal() +
   geom_smooth(lty=1, aes(col=Log.GDP.Per.Capita), span=0.005)
 
 
@@ -97,6 +103,7 @@ density.of.GDP.By.SubRegion <- data %>%
                alpha=Log.GDP.Per.Capita,
                y = as.factor(sub.region),
                fill=as.factor(sub.region))) +
+  theme_minimal() +
   geom_density_ridges(alpha=0.4,
                       adjust=0.05,
                       position="identity", show.legend=FALSE) +
@@ -105,25 +112,18 @@ density.of.GDP.By.SubRegion <- data %>%
 
 histogram.of.GDP.By.SubRegion<- data %>%
   ggplot(aes(Log.GDP.Per.Capita,
-             fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")
+             fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")+
+  theme_void() 
 
-
+coul <- brewer.pal(n = 200, name = "YlOrRd") 
 life.ladder.plot <- ggplot(world.map, aes(long, lat, group=group)) +
-  geom_polygon(aes(fill=Life.Ladder, text = Country.Name),
+  geom_polygon(aes(fill=Life.Ladder, text = Country),
                color = "black",size = 0.2) +
   coord_quickmap() +
-  theme_void() +
-  scale_fill_viridis(option='magma', name="Index") +
+  theme_minimal() +
+  scale_fill_gradientn(colors = coul, name = "Life.Ladder")+
   theme(legend.position='bottom') +
   ggeasy::easy_center_title()
-
-
-corrality <- ggpairs(data[,4:13],
-        method = c("everything", "pearson"))+
-  theme(axis.text.y = element_blank(),  # removing x or y axis labels
-        axis.title.y = element_blank(),
-        axis.text.x = element_blank(),
-        axis.title.x = element_blank())
 
 
 correlation.matrix <- ggcorr(data[,4:13])
@@ -139,6 +139,7 @@ top_perception <- top_happiness %>%
   ggplot(aes(Life.Ladder, confidence, color=Life.Ladder)) +
   geom_point(show.legend = FALSE) + 
   geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  theme_minimal() +
   labs(title="Relationship between Confidence in\nNational Government and Happiness Index", subtitle="Top 15 Happiest Countries", x="Happiness", y="Confidence") +
   geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3)
 
@@ -150,6 +151,7 @@ regression_lines_of_indicators <- function(data, continent, indicator){
               #Perceptions.Of.Corruption = mean(indicator)) %>%
     ggplot(aes(Life.Ladder, !!sym(indicator))) +
     geom_point(alpha=0.5) +
+    theme_void() +
     geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
     labs(title=continent, x="Happiness", y=indicator) +
     ggeasy::easy_center_title()
@@ -163,9 +165,9 @@ time.series.happiness <- function(data, subRegion){
     ggplot(aes(x = Year, y = Life.Ladder, color = Country.Name)) +
     geom_line(show.legend = FALSE) +
     xlab("") +
+    theme_void() +
     facet_wrap(~Country.Name, scales = "free_y", ncol = 3) +
     guides(color = FALSE) +  # Turn off the color legend
-    theme_minimal()
   return(sub.region.trend.by.Country)
 }
 
@@ -174,6 +176,7 @@ happiness.trend <- data %>%
   summarise(avg = mean(Life.Ladder, na.rm = TRUE)) %>%
   ggplot(aes(x = Year, y = avg, color = region)) +
   geom_line(linetype='dashed') +
+  theme_minimal() +
   scale_color_viridis(discrete=TRUE) +
   geom_point(size=3, alpha=0.5) +
   labs("title" = "Happiness Level Across Years by Continent", y="Happiness Level") +
@@ -182,6 +185,7 @@ happiness.trend <- data %>%
 top_trend <- data %>%
   filter(Country.Name == "Denmark") %>%
   ggplot(aes(Year, Life.Ladder)) +
+  theme_minimal() +
   geom_line(linetype='dashed', color = "forestgreen") +
   geom_point(size=3, alpha=0.5, color = "forestgreen") +
   geom_smooth(method='lm', colour = "black", se = FALSE, size=0.3) +
@@ -191,6 +195,7 @@ top_trend <- data %>%
 low_trend <- data %>%
   filter(Country.Name == "Afghanistan") %>%
   ggplot(aes(Year, Life.Ladder)) +
+  theme_minimal() +
   geom_line(linetype='dashed', color = "darkorange") +
   geom_point(size=3, alpha=0.5, color = "darkorange") +
   geom_smooth(method='lm', colour = "black", se = FALSE, size=0.3) +
@@ -203,25 +208,17 @@ final_plot <- annotate_figure(combined_plot,
                               top = text_grob("Happiness Trend Across Years", 
                                               face = "bold", size = 16))
 
+stacked.violence <- violent.event.per.year%>%
+  filter(!is.na(region))%>%
+  ggplot(aes(fill=region, y=TotalEvents, x=Year)) + 
+  geom_bar(position = "fill", stat = "identity",color = 'grey30', size = 0.2) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "YlOrRd", name = "Region", type = "qual")
 
+stacked.demonstrations <- demonstration.event.per.year%>%
+  filter(!is.na(region))%>%
+  ggplot(aes(fill=region, y=TotalEvents, x=Year)) + 
+  geom_bar(position = "fill", stat = "identity", color = "grey30", size = 0.2) +
+  theme_minimal() +
+  scale_fill_brewer(palette = "YlOrRd", name = "Region", type = "qual")
 
-# corruption_gen <- data %>%
-#   ggplot(aes(x = Life.Ladder, y = Perceptions.Of.Corruption, 
-#              color = region)) + geom_point() +
-#   geom_smooth(fill = "transparent",
-#               method = "lm", formula = y ~ x,
-#               size = 3, linewidth = 1, boxlinewidth = 0.4) +
-#   theme_modern_rc() + guides(color = 'none')
-# ggplotly(corruption_gen)
-# 
-# corruption <- data %>%
-#   group_by(sub.region, Year) %>%
-#   summarise(Life.Ladder = mean(Life.Ladder),
-#             Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
-# ggplot(aes(x = Life.Ladder, y = Perceptions.Of.Corruption, 
-#                  color = sub.region)) + geom_point() +
-#   geom_smooth(fill = "transparent",
-#                    method = "lm", formula = y ~ x,
-#                    size = 3, linewidth = 1, boxlinewidth = 0.4) +
-#   theme_modern_rc() + guides(color = 'none')
-# ggplotly(corruption)

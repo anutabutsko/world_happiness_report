@@ -3,6 +3,7 @@
 # install.packages('treemap')
 # install.packages("geomtextpath")
 # install.packages("ggpubr")
+library(RColorBrewer)
 library(readr)
 library(GGally) # ggcorr
 library(plotly) # interactive map
@@ -20,7 +21,7 @@ library(data.table)
 library(ggeasy)
 library(tidyr)
 library(geomtextpath)
-library(hrbrthemes)
+# library(hrbrthemes)
 library(ggpubr)
 
 # setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
@@ -200,3 +201,40 @@ distinct.war.type <- function(df){
   
   return(freq.df)
 }
+
+world.map.function <- function(df){
+  world.map <- map_data("world")
+  world.map <- world.map%>%
+    rename(Country = region)
+  # unique_world_map <- unique(world.map$Country)
+  # 
+  # unique_df <- unique(df$Country)
+  # 
+  # # Names in df that do not match names in world.map
+  # names_not_in_world_map <- setdiff(unique_df, unique_world_map)
+  # names_not_in_world_map2 <- setdiff(unique_world_map, unique_df)
+  
+  # Change the names to match df
+  world.map <- world.map %>%
+    mutate(Country = replace(Country, Country == "USA", "United States")) %>%
+    mutate(Country = replace(Country, Country %in% c("Democratic Republic of the Congo", "Republic of Congo"), "Congo (Brazzaville)")) %>%
+    mutate(Country = replace(Country, Country == "UK", "United Kingdom"))%>%
+    mutate(Country = replace(Country, Country == "Czech Republic", "Czechia"))%>%
+    mutate(Country = replace(Country, Country %in% c('Trinidad', 'Tobago'), "Trinidad and Tobago"))%>%
+    mutate(Country = replace(Country, Country == 'Swaziland', "Eswatini"))
+  
+  df <- df %>%
+    mutate(Country = replace(Country, Country == "Hong Kong S.A.R. of China", "China"))%>%
+    mutate(Country = replace(Country, Country == "Taiwan Province of China", "Taiwan"))%>%
+    mutate(Country = replace(Country, Country == "State of Palestine", "Palestine"))%>%
+    mutate(Country = replace(Country, Country == "Turkiye", "Turkey"))%>%
+    mutate(Country = replace(Country, Country == "Somaliland region", "Somalia"))
+  
+  # Join with filtered data
+  by.part <- c("Country" = "Country")
+  world.map <- left_join(world.map, df, by.part)
+  world.map <- world.map[order(world.map$order),]
+  return(world.map)
+}
+
+  

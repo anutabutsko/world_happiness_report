@@ -9,74 +9,9 @@ ui <- dashboardPage(
   dashboardHeader(title = "World Happiness Index"),
   dashboardSidebar(
     sidebarMenu(
-      # this tab look further into the WHR
-      menuItem("Happiness", tabName = "Happiness", icon = icon("globe"))
-    )
-  ),
-  dashboardBody(
-      tabItem(tabName = "Happiness",
-              fluidRow(
-                box(title = "Happiness Index Trend",
-                    status = "primary", solidHeader = TRUE,
-                    width = 12,
-                    tabsetPanel(
-                      tabPanel("graph 1", 
-                               box(title = "Happiness Index by Country", 
-                                   status = "primary", solidHeader = TRUE,
-                                   width = 12, plotlyOutput('choroplethMap'),
-                                   sliderInput("year_slider", "Select Year",
-                                              min = min(world.map$Year),
-                                              max = max(world.map$Year),
-                                              value = min(world.map$Year), step = 1))),
-                      tabPanel("graph 2", 
-                               box(title = "Happiness Index of Country by Sub.Region", 
-                                   status = "primary", solidHeader = TRUE,
-                                   width = 12, selectInput("subregion_check", "Select Sub.Region", choices = list(
-                                     "Southern Asia", "Northern Africa", "Latin America and the Caribbean", 
-                                     "Australia and New Zealand", "Central and Eastern Europe", "Northern America", 
-                                     "Western Asia", "Central Africa", "East Asia", "Sub-Saharan Africa", 
-                                     "South-eastern Asia", "East Africa", "Southern Europe", "Eastern Asia", 
-                                     "Northern Europe", "Central Asia", "West Asia"
-                                   ), selected = NULL),
-                                   plotlyOutput('timeSeriesGraph'))
-                      ) # end tabpane2
-                    ) # end tabset panel
-              ) # outside box
-      ), # fluidrow 
-      ), # Tabitem happiness
-  ) # dashboard body
-)
-
-# Define server logic
-server <- function(input, output) {
-  
-  output$timeSeriesGraph <- renderPlotly({
-    plot <- time.series.happiness(data, input$subregion_check)
-    ggplotly(plot)
-  })
-  
-}
-
-# Run the Shiny app
-shinyApp(ui = ui, server = server)
-
-
-
-library(shiny)
-library(shinydashboard)
-
-# source("/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis/DataAnaylsis.R")
-source("/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis/Plotting.R")
-
-# Define UI
-ui <- dashboardPage(
-  dashboardHeader(title = "World Happiness Index"),
-  dashboardSidebar(
-    sidebarMenu(
       menuItem("Exploratory Page", tabName = "exploratory", icon = icon("dashboard")),
       menuItem("Influencers of Happiness", tabName = "Happiness", icon = icon("globe")),
-      menuItem("Happiness and Conflicts", tabName = "warandpeace", icon = icon("globe")),
-      menuItem('Plotting Exploration', tabName = 'plotting', icon = icon('globe'))
+      menuItem("Happiness and Conflicts", tabName = "warandpeace", icon = icon("globe"))
     )
   ),
   dashboardBody(
@@ -89,9 +24,22 @@ ui <- dashboardPage(
                 box(title = "Corr. Matrix of Happiness Indicators", 
                     status = "primary", solidHeader = TRUE,
                     width = 5, plotlyOutput('correlationMatrix')),
+                # This is the graph comparing GDP and Confidence of Government
+                box(title = "GDP and Confidence in Government", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 7, plotOutput('GDPConfidence'))
+              ), # fluidrow
+              # underneath you will have two more graphs side by side
+              fluidRow(
+                # this is looking at GDP per capita based off Sub-Region
+                box(title = "Log GDP Per Capita by Sub-Region", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 7, plotOutput('GDPBySubRegion')),
+                # this is the chlophleth map of the most updated 
+                # life.ladder index that a country has submitted
                 box(title = "Happiness Index across the World", 
                     status = "primary", solidHeader = TRUE,
-                    width = 7, plotOutput('choroplethMapStag'))
+                    width = 5, plotOutput('choroplethMapStag'))
               ) # fluidrow
       ), # tabitem1
       # what you will see when you are in the Happiness tab
@@ -136,6 +84,37 @@ ui <- dashboardPage(
       # what you will see when you are in the Happiness tab
       tabItem(tabName = "Happiness",
               fluidRow(
+                # looking at the many graphs of GDP
+                # this initial box contains two overarching view of GDP 
+                # by Continent
+                box(title = "GDP Index by Continent", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 5,
+                    # alloing multiple graphs to be showin on the same window
+                    tabsetPanel(
+                      tabPanel("graph 1", plotOutput('GDPContinentScatter')),
+                      tabPanel("graph 2", plotOutput('GDPContinentViolin')),
+                      tabPanel("graph 3", plotOutput('densitySubRegion'))
+                    ) # tabsetPanel
+                ), # box
+                # This one looks at density plots based off sub.region of the country
+                # looking one step below continent
+                box(title = "GDP Index By Continent", 
+                    status = "primary", solidHeader = TRUE,
+                    width = 7, plotlyOutput('GDPperContinent')),
+                box(width = 7,
+                    # radioButton used when you only want one thing selected
+                    radioButtons("Continent_check", "Select Continent",
+                                 # names of the valid choices
+                                 choiceNames =
+                                   list('Africa', 'Americas', '
+                                        Asia' ,'Europe', 'Oceania'),
+                                 choiceValues =
+                                   list('Africa', 'Americas', 
+                                        'Asia' ,'Europe', 'Oceania'))     
+                ) # box
+              ), # fluidrow
+              fluidRow(
                 # This one looks at density plots based off sub.region of the country
                 # looking one step below continent
                 box(title = "Happiness Indicators and Happiness by Continent", 
@@ -159,40 +138,7 @@ ui <- dashboardPage(
                                 selected = 'Log.GDP.Per.Capita'),
                     plotlyOutput('WHIandHappinessByCountinent')) # box
               ) # fluidrow
-      ), # tabItem3
-      # what you will see when you are in the Happiness tab
-      tabItem(tabName = "plotting",
-              fluidRow(
-                # looking at the many graphs of GDP
-                # this initial box contains two overarching view of GDP 
-                # by Continent
-                box(title = "GDP Index by Continent", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 12,
-                    # alloing multiple graphs to be showin on the same window
-                    tabsetPanel(
-                      tabPanel("graph 1", plotOutput('GDPContinentScatter')),
-                      tabPanel("graph 2", plotOutput('GDPContinentViolin')),
-                      tabPanel("graph 3", plotOutput('densitySubRegion'))
-                    ) # tabsetPanel
-                ) # end box
-              ), # fluidrow
-              # underneath you will have two more graphs side by side
-              fluidRow(
-                box(title = "GDP and Confidence in Government", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 4, plotOutput('GDPConfidence')),
-                # this is looking at GDP per capita based off Sub-Region
-                box(title = "Log GDP Per Capita by Sub-Region", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 4, plotOutput('GDPBySubRegion')),
-                # this is the chlophleth map of the most updated 
-                # life.ladder index that a country has submitted
-                box(title = "Happiness Index across the World", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 4, plotOutput('choroplethMapStag')) # end box
-              ) # fluidrow
-      ) # tabItem4
+      ) # tabItem3
     ) # tabItems
   ) # dashboard body
 )
@@ -309,4 +255,3 @@ server <- function(input, output) {
 
 # Run the Shiny app
 shinyApp(ui = ui, server = server)
-

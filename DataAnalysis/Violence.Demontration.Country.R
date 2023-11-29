@@ -37,3 +37,13 @@ demonstration.event.per.country <- demonstration.event.per.country%>%
   rename(demo.occurrences = Occurrence, demo.TotalEvents = TotalEvents)
 
 demo.vio.merged.df <- join.df(violent.event.per.country, demonstration.event.per.country, demo.vio.join)
+
+violent.event.per.year <- left_join(violent.event.per.year, country.region, by = c("Country"= "name"))
+demonstration.event.per.year <- left_join(demonstration.event.per.year, country.region, by = c("Country"= "name"))
+
+world.demonstrations<- world.map.function(demonstration.event.country.join)%>%
+  select(-'subregion')
+
+world.violence <- world.map.function(violent.event.country.join)%>%
+  select(-'subregion')
+

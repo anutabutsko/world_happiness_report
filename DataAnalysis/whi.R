@@ -88,33 +88,11 @@ whi.df.clean <- region.Regional.Indicator.Match(whi.df.clean)
 whi.df.clean <- left_join(whi.df.clean, population, by = c("Country.Name", "Year"))
 
 
-df <- whi.df.clean
+df <- whi.df.clean%>%
+  rename(Country = Country.Name)
 
-# getting geographical info for all counties
-world.map <- map_data(map = "world")
-world.map <- world.map%>%
-  rename(Country.Name = region)
-
-# change the names to match df
-world.map <- world.map %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "USA", "United States")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c("Democratic Republic of the Congo", "Republic of Congo"), "Congo (Brazzaville)")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "UK", "United Kingdom"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Czech Republic", "Czechia"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c('Trinidad', 'Tobago'), "Trinidad and Tobago"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == 'Swaziland', "Eswatini"))
-  
-# change the names to match world.map
-df <- df %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Hong Kong S.A.R. of China", "China"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Taiwan Province of China", "Taiwan"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "State of Palestine", "Palestine"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Turkiye", "Turkey"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Somaliland region", "Somalia"))
-
-world.map <- merge(world.map, df, 'Country.Name')
-
-world.map <- world.map[order(world.map$order),]
+world.map <- world.map.function(df)%>%
+  select(-'subregion')
 
 # STATS
 ################################################################################
