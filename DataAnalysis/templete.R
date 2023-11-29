@@ -80,7 +80,9 @@ ui <- dashboardPage(
                                                                          value = min(world.map$Year), step = 1),
                                                  plotlyOutput('choroplethMap'))
                                              )),
-                tabPanel('graph 3', box(width = 12))
+                tabPanel('graph 3', box(width = 12,title = "Country Comparison of the Happiest and least Happiest", 
+                                        status = "primary", solidHeader = TRUE, 
+                                        plotOutput('lowestHighestCountryComparsion')))
               ) # tabsetPanel
       ), # tabItem2
       tabItem(tabName = "warandpeace",
@@ -163,6 +165,10 @@ server <- function(input, output) {
     
     # tooltip will show life.ladder and country.name when you hover over country
     ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
+  })
+  
+  output$lowestHighestCountryComparsion <- renderPlot({
+    final_plot
   })
   
   # warandpeace

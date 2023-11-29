@@ -164,11 +164,30 @@ happiness.trend <- data %>%
   labs("title" = "Happiness Level Across Years by Continent", y="Happiness Level") +
   ggeasy::easy_center_title()
 
+top_trend <- data %>%
+  filter(Country.Name == "Denmark") %>%
+  ggplot(aes(Year, Life.Ladder)) +
+  geom_line(linetype='dashed', color = "forestgreen") +
+  geom_point(size=3, alpha=0.5, color = "forestgreen") +
+  geom_smooth(method='lm', colour = "black", se = FALSE, size=0.3) +
+  labs(title="Top Country: Denmark", y="Happiness Score")
 
-# treemap.conflict <- treemap(inter.region.continent.join,
-#         index = c('Continent', 'region.mirror'),
-#         vSize = 'Occurrence',
-#         type = 'index')
+
+low_trend <- data %>%
+  filter(Country.Name == "Afghanistan") %>%
+  ggplot(aes(Year, Life.Ladder)) +
+  geom_line(linetype='dashed', color = "darkorange") +
+  geom_point(size=3, alpha=0.5, color = "darkorange") +
+  geom_smooth(method='lm', colour = "black", se = FALSE, size=0.3) +
+  labs(title="Worst Country: Afghanistan", y="Happiness Score")
+
+
+combined_plot <- ggarrange(top_trend, low_trend, ncol = 1, nrow =2)
+
+final_plot <- annotate_figure(combined_plot, 
+                              top = text_grob("Happiness Trend Across Years", 
+                                              face = "bold", size = 16))
+
 
 
 # corruption_gen <- data %>%
