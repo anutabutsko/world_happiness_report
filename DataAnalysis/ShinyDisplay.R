@@ -21,31 +21,45 @@ ui <- dashboardPage(
       tabItem(tabName = "exploratory",
               fluidRow(
                 tabsetPanel(
+                  tabPanel('Background',box(width = 12,
+                                            p("General Discription for the panels within the exploratory page."))),
                   tabPanel('graph 1', box(title = "Happiness Lvl Over The Years By Continent", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotlyOutput('happinessTrend'))),
+                                          width = 12, plotlyOutput('happinessTrend')),
+                           box(width = 12, 
+                               p("This is a textbox to discribe the happiness trend by Continent"))),
                   tabPanel('graph 2', box(title = "Happiness Trend Over Time by Country",
-                                          width = 12, plotOutput('dumbellWHITrend'),
-                                          selectInput("dumbell_check", "Select Continent",
-                                                      # names of the valid choices
-                                                      choices =
-                                                        list('Africa', 'Americas', 
-                                                             'Asia' ,'Europe', 'Oceania'),
-                                                      selected = 'Africa'))),
+                                          width = 12, selectInput("dumbell_check", "Select Continent",
+                                                                  # names of the valid choices
+                                                                  choices =
+                                                                    list('Africa', 'Americas', 
+                                                                         'Asia' ,'Europe', 'Oceania'),
+                                                                  selected = 'Africa'),
+                                          plotOutput('dumbellWHITrend')),
+                           box(width = 12, 
+                               p("This is a textbox to discribe the Happiness Trend Over Time by Country"))),
                   tabPanel('graph 3', box(width = 12, title = "Top and bottom 15 Countries",
                                           status = "primary", solidHeader = TRUE,
-                                          plotlyOutput('TopBottom15'))), # tabPanel3
-                  tabPanel('graph 4', box(width = 12,title = "Country Comparison of the Happiest and least Happiest", 
+                                          plotlyOutput('TopBottom15')),
+                           box(width = 12,
+                               p("This is a textbox to discribe the Top and bottom 15 Countries"))),
+                  tabPanel('graph 4', box(width = 12, title = "Country Comparison of the Happiest and least Happiest", 
                                           status = "primary", solidHeader = TRUE, 
-                                          plotOutput('lowestHighestCountryComparsion')))
+                                          plotOutput('lowestHighestCountryComparsion')),                           
+                           box(width = 12, 
+                               p("This is a textbox to discribe the Country Comparison of the Happiest and least Happiest")))
                 ) # tabsetPanel 
               )), # tabItem1
       tabItem(tabName = "Happiness",
               fluidRow(
                 tabsetPanel(
+                  tabPanel('Background', box(width = 12, 
+                                             p("General Discription for the panels within the happiness page."))),
                   tabPanel('graph 1', box(title = "Corr. Matrix of Happiness Indicators", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotlyOutput('correlationMatrix'))),
+                                          width = 12, plotlyOutput('correlationMatrix')),
+                           box(width = 12, 
+                               p("Textbox to discribe corr. matrix of Happiness Indicators"))),
                   tabPanel('graph 2', box(width = 12, 
                                           title = "Happiness Indicators and Happiness by Continent", 
                                           status = "primary", solidHeader = TRUE,
@@ -66,7 +80,9 @@ ui <- dashboardPage(
                                                              'Social.Support', 'Freedom.To.Make.Life.Choices',
                                                              'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                       selected = 'Log.GDP.Per.Capita'), 
-                                          plotlyOutput('WHIandHappinessByCountinent'))),
+                                          plotlyOutput('WHIandHappinessByCountinent')),
+                           box(width = 12, 
+                               p("Textbox to discribe happiness Indicators and Happiness by Continent "))),
                   tabPanel('graph 3', box(title = "Happiness Indicator Distribution", 
                                           status = "primary", solidHeader = TRUE,
                                           width = 12, plotOutput('HappinessIndicator'),
@@ -84,13 +100,19 @@ ui <- dashboardPage(
                                                               'Positive.Affect', 'Confidence.In.National.Government',
                                                               'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
                                                               'Negative.Affect', 'Social.Support')) # radio button
-                  )) # tabPanel
+                  ),
+                  box(width = 12, 
+                      p("Textbox to discribe Happiness Indicator Distribution"))
+                  ) # tabPanel
                 ))), # tabItem2
       tabItem(tabName = "warandpeace",
               fluidRow(
                 tabsetPanel(
+                  tabPanel('Background', width = 12, 
+                           box(p("General Discription for the panels within the war&peace page."))),
                   tabPanel('graph 1', box(width = 12,
-                                          plotOutput('TreeMapConflicts'))),
+                                          plotOutput('TreeMapConflicts')),
+                           box(width = 12, p("Textbox to discribe the tree map conflict"))),
                   tabPanel('graph 2', box(width = 12, title = 'War Outcome of Countries', 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
@@ -101,7 +123,9 @@ ui <- dashboardPage(
                                                              'Asia' ,'Europe', 'Oceania'),
                                                       selected = 'Overview'),
                                           plotlyOutput('WarOutcomes')
-                  )),
+                  ),
+                  box(width = 12, 
+                      p("Textbox to discribe the War Outcome of Countries"))),
                   tabPanel('graph 3', fluidRow(box(title = "Happiness and Conflict Across the World", 
                                                    status = "primary", solidHeader = TRUE,
                                                    width = 12, sliderInput("year_slider", "Select Year",
@@ -120,12 +144,15 @@ ui <- dashboardPage(
                                                    width = 6, plotlyOutput("stackedDemonstrations")),
                                                box(title = "Violence by Continent",
                                                    status = "primary", solidHeader = TRUE,
-                                                   width = 6, plotlyOutput("stackedViolence"))
+                                                   width = 6, plotlyOutput("stackedViolence")),
+                                               box(width = 12, 
+                                               p("Textbox discription for Happiness and Conflict Across 
+                                                                 the World"))
                   )) #tabPanel
                 )) # fluidrow
       ), # tabItem3
       tabItem(tabName = "plotting",
-              fluidRow()
+              fluidRow(p("hello"))
       ) # tabItem4
     ) # tabItems 
   ) # dashboard body
