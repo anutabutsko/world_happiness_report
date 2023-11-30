@@ -94,6 +94,28 @@ df <- whi.df.clean%>%
 world.map <- world.map.function(df)%>%
   select(-'subregion')
 
+life.Ladder.Difference <- whi.df.clean %>%
+  group_by(Country.Name) %>%
+  slice(which.min(Year), which.max(Year)) %>%
+  summarise(Start.Life.Ladder = Life.Ladder[which.min(Year)],
+            End.Life.Ladder = Life.Ladder[which.max(Year)],
+            Life.Ladder.Difference = diff(Life.Ladder),
+            region = region,
+            sub.region = sub.region)
+
+head.tail <- data %>%
+  group_by(Country.Name) %>% 
+  summarise(Life.Ladder = mean(Life.Ladder)) %>%
+  left_join(country.region, by = c('Country.Name'='name')) %>%
+  arrange(Life.Ladder) %>%
+  mutate(Country.Name = factor(Country.Name, levels = Country.Name))
+
+# Select top and bottom 15
+head.plot <- head(head.tail, 15)%>%
+  mutate(color = 'darkorange')
+tail.plot <- tail(head.tail, 15)%>%
+  mutate(color = 'darkblue')
+top.bottom <- rbind(head.plot, tail.plot)
 # STATS
 ################################################################################
 pandemic.years <- whi.df.clean%>%

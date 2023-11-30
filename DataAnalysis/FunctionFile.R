@@ -3,6 +3,7 @@
 # install.packages('treemap')
 # install.packages("geomtextpath")
 # install.packages("ggpubr")
+# install.packages("ggalt")
 library(RColorBrewer)
 library(readr)
 library(GGally) # ggcorr
@@ -21,7 +22,7 @@ library(data.table)
 library(ggeasy)
 library(tidyr)
 library(geomtextpath)
-# library(hrbrthemes)
+library(ggalt)
 library(ggpubr)
 
 # setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')

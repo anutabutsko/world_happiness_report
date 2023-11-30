@@ -73,15 +73,6 @@ stackedbarbyRegion <- function(data, Continent){
   return(stacked.bar)
 }
 
-violin.GDP.by.Continent <- data %>%
-  ggplot(aes(y = region, x = Log.GDP.Per.Capita)) +
-  geom_violin(aes(fill = region), alpha = 0.5, color = NA, scale = "area") +
-  geom_boxplot(aes(fill = NA), alpha = 0.3, width = 0.15, outlier.alpha = 1) +
-  scale_fill_viridis(discrete = TRUE, name = "Continent") +
-  theme_minimal() +
-  labs(title = "Distribution of GDP per Capita by Continent",
-       x = "GDP per Capita", y = "Continent")
-
 scatter.plot.GDP.By.Continent <- data %>%
   ggplot(aes(x=region, y=Log.GDP.Per.Capita, color=region)) +
   geom_point(alpha = 0.15, position="jitter") +
@@ -179,15 +170,15 @@ happiness.trend <- data %>%
   theme_minimal() +
   scale_color_viridis(discrete=TRUE) +
   geom_point(size=3, alpha=0.5) +
-  labs("title" = "Happiness Level Across Years by Continent", y="Happiness Level") +
+  labs(y="Happiness Level") +
   ggeasy::easy_center_title()
 
 top_trend <- data %>%
   filter(Country.Name == "Denmark") %>%
   ggplot(aes(Year, Life.Ladder)) +
   theme_minimal() +
-  geom_line(linetype='dashed', color = "forestgreen") +
-  geom_point(size=3, alpha=0.5, color = "forestgreen") +
+  geom_line(linetype='dashed', color = "darkblue") +
+  geom_point(size=3, alpha=0.5, color = "darkblue") +
   geom_smooth(method='lm', colour = "black", se = FALSE, size=0.3) +
   labs(title="Top Country: Denmark", y="Happiness Score")
 
@@ -222,3 +213,35 @@ stacked.demonstrations <- demonstration.event.per.year%>%
   theme_minimal() +
   scale_fill_brewer(palette = "YlOrRd", name = "Region", type = "qual")
 
+life.Ladder.Difference.by.country <- function(df, regionselected){
+  plot <- df%>%
+    filter(region == regionselected)%>%
+    ggplot(aes(y = Country.Name, x = Start.Life.Ladder, 
+                                  xend = Start.Life.Ladder + Life.Ladder.Difference)) +
+    geom_dumbbell(
+      aes(color = ifelse(Life.Ladder.Difference < 0, 'grey10', 'seagreen3')),  # Color of the line
+      size = 0.5,            # Line width
+      dot_guide = FALSE,   # Whether to add a guide from origin to X or not
+      size_x = 1,          # Size of the X point
+      size_xend = 1,       # Size of the X end point
+      colour_x = "red",    # Color of the X point
+      colour_xend = "blue"  # Color of the X end point
+    ) + theme_minimal() +
+    scale_color_identity()+  # To ensure color mapping works as expected
+    xlab('Happiness Index Trend')+
+    ylab("Countries")
+  return(plot)
+}
+
+# Convert to factor with custom levels
+top.bottom.plot<- top.bottom%>%
+  arrange(Life.Ladder) %>%  # Arrange in descending order
+  mutate(Country.Name = factor(Country.Name, levels = Country.Name))%>%
+ggplot(aes(x=Life.Ladder, y=Country.Name, color = color)) +
+  geom_point() + 
+  geom_segment( aes(x=0, xend=Life.Ladder, y=Country.Name, yend=Country.Name), size = 1)+
+  theme_minimal()+
+  scale_color_identity()+
+  guides(color = FALSE) 
+
+ggplotly(test, tooltip = "Life.Ladder")

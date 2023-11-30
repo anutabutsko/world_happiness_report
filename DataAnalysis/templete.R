@@ -20,39 +20,33 @@ ui <- dashboardPage(
       # what you will see when you are in the dashboard tab
       tabItem(tabName = "exploratory",
               fluidRow(
-                box(title = "Happiness Lvl Over The Years By Continent", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 6, plotlyOutput('happinessTrend')),
-                box(title = "Happiness Index across the World", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 6, plotlyOutput('choroplethMapStag'))
-              ), # fluidRow
-              fluidRow(
-                box(title = "Happiness Index Data Check", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 7, radioButtons("Happiness_check", "Select Happiness Indicator",
-                                            # names of the valid choices
-                                            choiceNames =
-                                              list('Life.Ladder', 'Log.GDP.Per.Capita', 
-                                                   'Healthy.Life.Expectancy.At.Birth' ,'Generosity', 
-                                                   'Positive.Affect', 'Confidence.In.National.Government',
-                                                   'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
-                                                   'Negative.Affect', 'Social.Support'),
-                                            choiceValues =
-                                              list('Life.Ladder', 'Log.GDP.Per.Capita', 
-                                                   'Healthy.Life.Expectancy.At.Birth' ,'Generosity', 
-                                                   'Positive.Affect', 'Confidence.In.National.Government',
-                                                   'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
-                                                   'Negative.Affect', 'Social.Support')), # radio button
-                    plotlyOutput('HappinessIndicator')),
-                box(title = "Corr. Matrix of Happiness Indicators", 
-                    status = "primary", solidHeader = TRUE,
-                    width = 5, plotlyOutput('correlationMatrix'))
-              ) # fluidrow 
-      ), # tabitem1
+                tabsetPanel(
+                  tabPanel('graph 1', box(title = "Happiness Lvl Over The Years By Continent", 
+                                          status = "primary", solidHeader = TRUE,
+                                          width = 12, plotlyOutput('happinessTrend'))),
+                  tabPanel('graph 2', box(title = "Happiness Trend Over Time by Country",
+                                          width = 12, plotOutput('dumbellWHITrend'),
+                                          selectInput("dumbell_check", "Select Continent",
+                                                      # names of the valid choices
+                                                      choices =
+                                                        list('Africa', 'Americas', 
+                                                             'Asia' ,'Europe', 'Oceania'),
+                                                      selected = 'Africa'))),
+                  tabPanel('graph 3', box(width = 12, title = "Top and bottom 15 Countries",
+                                          status = "primary", solidHeader = TRUE,
+                                          plotlyOutput('TopBottom15'))), # tabPanel3
+                  tabPanel('graph 4', box(width = 12,title = "Country Comparison of the Happiest and least Happiest", 
+                                          status = "primary", solidHeader = TRUE, 
+                                          plotOutput('lowestHighestCountryComparsion')))
+              ) # tabsetPanel 
+      )), # tabItem1
       tabItem(tabName = "Happiness",
+              fluidRow(
               tabsetPanel(
-                tabPanel('graph 1', box(width = 12, 
+                tabPanel('graph 1', box(title = "Corr. Matrix of Happiness Indicators", 
+                                        status = "primary", solidHeader = TRUE,
+                                        width = 12, plotlyOutput('correlationMatrix'))),
+                tabPanel('graph 2', box(width = 12, 
                                         title = "Happiness Indicators and Happiness by Continent", 
                                         status = "primary", solidHeader = TRUE,
                                         # select button used when you want to select multiple things
@@ -60,7 +54,8 @@ ui <- dashboardPage(
                                                     # names of the valid choices
                                                     choices =
                                                       list('Africa', 'Americas', 
-                                                           'Asia' ,'Europe', 'Oceania'), selected = 'Africa'),
+                                                           'Asia' ,'Europe', 'Oceania'), 
+                                                    selected = 'Africa'),
                                         selectInput("WHI_check", "Select Indicator",
                                                     # names of the valid choices
                                                     choices = 
@@ -72,12 +67,27 @@ ui <- dashboardPage(
                                                            'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                     selected = 'Log.GDP.Per.Capita'), 
                                         plotlyOutput('WHIandHappinessByCountinent'))),
-                tabPanel('graph 2', box(width = 12,title = "Country Comparison of the Happiest and least Happiest", 
-                                        status = "primary", solidHeader = TRUE, 
-                                        plotOutput('lowestHighestCountryComparsion')))
-              ) # tabsetPanel
-      ), # tabItem2
+                tabPanel('graph 3', box(title = "Happiness Indicator Distribution", 
+                                        status = "primary", solidHeader = TRUE,
+                                        width = 12, plotOutput('HappinessIndicator'),
+                                        radioButtons("Happiness_check", "Select Happiness Indicator",
+                                                     # names of the valid choices
+                                                     choiceNames =
+                                                       list('Life.Ladder', 'Log.GDP.Per.Capita', 
+                                                            'Healthy.Life.Expectancy.At.Birth' ,'Generosity', 
+                                                            'Positive.Affect', 'Confidence.In.National.Government',
+                                                            'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
+                                                            'Negative.Affect', 'Social.Support'),
+                                                     choiceValues =
+                                                       list('Life.Ladder', 'Log.GDP.Per.Capita', 
+                                                            'Healthy.Life.Expectancy.At.Birth' ,'Generosity', 
+                                                            'Positive.Affect', 'Confidence.In.National.Government',
+                                                            'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
+                                                            'Negative.Affect', 'Social.Support')) # radio button
+                )) # tabPanel
+      ))), # tabItem2
       tabItem(tabName = "warandpeace",
+              fluidRow(
               tabsetPanel(
                 tabPanel('graph 1', box(width = 12,
                                         plotOutput('TreeMapConflicts'))),
@@ -88,7 +98,8 @@ ui <- dashboardPage(
                                                     # names of the valid choices
                                                     choices =
                                                       list('Overview', 'Africa', 'Americas', 
-                                                           'Asia' ,'Europe', 'Oceania'), selected = 'Overview'),
+                                                           'Asia' ,'Europe', 'Oceania'),
+                                                    selected = 'Overview'),
                                         plotlyOutput('WarOutcomes')
                                         )),
                 tabPanel('graph 3', fluidRow(box(title = "Happiness and Conflict Across the World", 
@@ -103,25 +114,20 @@ ui <- dashboardPage(
                                                               width = 12, plotlyOutput('WDchloroplethMap')),
                                                           box(status = 'primary', solidHeader = TRUE,
                                                               width = 12, plotlyOutput('WVchloroplethMap'))
-                                                 ) # inner fluidRow
-                                                 ), # outer box
+                                                 )), # outer box
                                              box(title = "Demonstrations by Continent",
                                                  status = "primary", solidHeader = TRUE,
                                                  width = 6, plotlyOutput("stackedDemonstrations")),
                                              box(title = "Violence by Continent",
                                                  status = "primary", solidHeader = TRUE,
-                                                 width = 6, plotlyOutput("stackedViolence")),
-                )), #outer fluidRow & tabPanel
-              ) # tabsetPanel
-      ), # tabItem3
-      tabItem(tabName = "plotting",
-              tabsetPanel(
-                tabPanel('graph 1', box(width = 12)),
-                tabPanel('graph 2', box(width = 12)),
-                tabPanel('graph 3', box(width = 12))
-              ) # tabsetPanel
-      ) # tabItem4
-    ) # tabItems
+                                                 width = 6, plotlyOutput("stackedViolence"))
+                )) #tabPanel
+      )) # fluidrow
+    ), # tabItem3
+    tabItem(tabName = "plotting",
+            fluidRow()
+            ) # tabItem4
+    ) # tabItems 
   ) # dashboard body
 )
 
@@ -157,9 +163,6 @@ server <- function(input, output) {
     return(happy)
   })
   # dashboard 
-  
-  # gives a general overview of correlation
-  # between all the Happiness index
   output$correlationMatrix <- renderPlotly({
     ggplotly(correlation.matrix)
   })
@@ -168,20 +171,26 @@ server <- function(input, output) {
     ggplotly(life.ladder.plot)
   })
   
-  output$HappinessIndicator <- renderPlotly({
-    happiness.boxplot <- ggplot(whi.df.clean, 
-                                aes(x = region, 
-                                    y = .data[[input$Happiness_check]], 
-                                    fill = region)) +
-      geom_boxplot(notch = TRUE) +
-      # set ylabel to the colname that we are looking at
-      labs(y = input$Happiness_check)
-    
-    ggplotly(happiness.boxplot)
+  output$HappinessIndicator <- renderPlot({
+    data %>%
+      ggplot(aes(y=region, x=.data[[input$Happiness_check]])) +
+      geom_violin(aes(fill=region), alpha=0.5, color=NA, scale="area", show.legend=FALSE) +
+      geom_boxplot(aes(fill=NA), alpha=0.3, width=0.15, outlier.alpha=1, show.legend=FALSE) +
+      scale_fill_viridis(discrete=TRUE) +
+      labs("title" = paste("Distribution of", input$Happiness_check, "by Continent"), x= input$Happiness_check)
+  })
+  
+  output$TopBottom15 <- renderPlotly({
+    ggplotly(top.bottom.plot)
   })
   
   output$happinessTrend<- renderPlotly({
     ggplotly(happiness.trend)
+  })
+  
+  output$dumbellWHITrend <- renderPlot({
+    plot<- life.Ladder.Difference.by.country(life.Ladder.Difference, input$dumbell_check)
+    plot
   })
   # Happiness
   output$WHIandHappinessByCountinent <- renderPlotly({
@@ -205,7 +214,6 @@ server <- function(input, output) {
     plot <- stackedbarbyRegion(interStateWar.State.Outcomes, input$Outcome_check)
     ggplotly(plot)
   })
-
   
   output$stackedDemonstrations <- renderPlotly({
     ggplotly(stacked.demonstrations)
@@ -214,6 +222,7 @@ server <- function(input, output) {
   output$stackedViolence <- renderPlotly({
     ggplotly(stacked.violence)
   })
+  
   output$WHchoroplethMap <- renderPlotly({
     coul <- brewer.pal(n = 200, name = "YlOrRd") 
     # use data from filter.data to create display
