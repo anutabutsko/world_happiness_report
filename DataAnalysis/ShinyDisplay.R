@@ -12,7 +12,7 @@ ui <- dashboardPage(
       menuItem("Exploratory Page", tabName = "exploratory", icon = icon("dashboard")),
       menuItem("Influencers of Happiness", tabName = "Happiness", icon = icon("globe")),
       menuItem("Happiness and Conflicts", tabName = "warandpeace", icon = icon("globe")),
-      menuItem("Exploratory Plots", tabName = 'plotting', icon = icon("globe"))
+      menuItem("Works Cited", tabName = 'works', icon = icon("globe"))
     )
   ),
   dashboardBody(
@@ -109,7 +109,52 @@ ui <- dashboardPage(
               fluidRow(
                 tabsetPanel(
                   tabPanel('Background', width = 12, 
-                           box(p("General Discription for the panels within the war&peace page."))),
+                           box(width = 12, h3("Happiness and Conflict"), 
+                               p("This section delves into the correlation between war and conflict and a country's Happiness Score. 
+                               The project draws upon one dataset from the Correlates of War Project and two datasets from the ACLED curated data catalog. 
+                               The correlation between war and conflict and a country's happiness level is explored, recognizing that ongoing conflicts can lead to a 
+                               decline in the maintenance of social infrastructure. This page examines potential trends between global conflicts and the Happiness 
+                               Scores of countries, shedding light on the complex interplay between geopolitical factors and well-being.") ,p(),
+                               strong("The Correlate of War Project:"), p("The", span("Inter-State War", style = "color:blue"),"dataset 
+                               contains wars between the years 1823-2003. The data helps to gain a better understanding about the possible state of countries during the years before 
+                               the initial scores were taken."),p(),strong("ACLED Cured Data:"),
+                               p("The", span("Number of demonstration events by country-year", style = "color:blue"), "and the", span("Number of political violence events by country-month-year", 
+                                 style = "color:blue"), "span between the years 1997-2023. This dataset helps to gain a better understanding about the 
+                                 possible state of countries during the same timeframe as the scores gained from the World Happiness Report.")),
+                               tabsetPanel(
+                                 tabPanel("About Correlate of War Project", 
+                                          box(width = 12, strong("The Correlates of War (COW) project facilitates the collection, dissemination, and use of 
+                                          free resource, quantitative data in international relations."), p(), p("The wars identifed in this dataset meet certain requirements:"),
+                                              p("I. Wars that take place between or among states (members of theinterstate system)"), p("II. Sustained combat, involving organized armed forces, 
+                                             resulting in a minimum of 1,000 battle-related combatant fatalities within a 12 month period"),
+                                              p("III. A conflict is categorized as a war when both sides have armed forces capable of “effective resistance”"), p(),
+                                              strong("Variables in dataset:"), p("WarNum - the number assigned to the war"), p("WarName - the name given to the war"),
+                                              p("WarType - 1 = Inter-state war"), p("Ccode – the System Membership number (or Country Code) for the state participant"),
+                                              p("State Name - the name of the System Member"), p("StartMonth1 - the month in which sustained combat began"),
+                                              p("StartDay1 - the day on which sustained combat began"), p("StartYear1 - the year in which sustained combat began"),
+                                              p("EndMonth1 - the month in which sustained combat ended, or the month of the last major engagement after which fatalities declined below the war fatality threshold"),
+                                              p("EndDay1- the day on which sustained combat ended, or the day after the last major engagement after which fatalities declined below the war fatality threshold"),
+                                              p("EndYear1 - the year in which sustained combat ended, or the year of the last major engagement after which fatalities declined below the war fatality threshold"),
+                                              p("StartMonth2 - after a break in the fighting, the month in which sustained combat resumes"), p("StartDay2- after a break in the fighting, the day on which sustained combat resumes"),
+                                              p("StartYear2 - after a break in the fighting, the year in which sustained combat resumes"), p("EndMonth2 - after fighting resumes, the month in which sustained combat ended, or the
+                                            month of the last major engagement after which fatalities declined below the war fatality threshold"), p("EndDay2- after fighting resumes, the day on which sustained combat ended, or the day",
+                                                  "after the last major engagement after which fatalities declined below the war fatality threshold:"), p("EndYear2 - after fighting resumes, the year in which sustained combat ended, or the year
+                                          of the last major engagement after which fatalities declined below the war fatality threshold"), p("TransFrom - the War"),p("WhereFought - Region(s) where combat involving the state occurred. Values are:"),
+                                                em("1 = W. Hemisphere"),p(), em("2 = Europe"), p(),em("4 = Africa"),p(),em("6 = Middle East"), p(),em("7 = Asia"),p(),em("9 = Oceania"),p(),
+                                                em("11 = Europe & Middle East"), p(),em("12 = Europe & Asia"), p(),em("13 = W. Hemisphere & Asia"),p(),em("14 = Europe, Africa & Middle East"),p(),
+                                                em("15 = Europe, Africa, Middle East, & Asia"), em("16 = Africa, Middle East, Asia & Oceania"), p(), em("17 = Asia & Oceania"), em("18 = Africa & Middle East"),p(),
+                                                em("19 = Europe, Africa, Middle East, Asia & Oceania"),p(), p("Initiator - whether the state initiated the war"),em("1 = Yes"), p(),em("2 = No"),p(),p("TransTo - the WarNum of the war that this war transformed into"),p("Outcome code"), 
+                                                em("1 = Winner"), p(),em("2 = Loser"),p(),em("3 = Compromise/Tied"),p(),em("4 = The war was transformed into another type of war"),p(),em("5 = The war is ongoing as of 12/31/2007"),p(),em("6 = Stalemate"),p(),em("7 = Conflict continues at below war level"),p(), em("8 = changed sides"),p(),
+                                                p("BatDeaths - the battle-related combatant fatalities suffered by the state"), p(strong("Important: "), "-9 = unknown , -7 = war ongoing as of 12/31/2007, -8 =  Not applicable")
+                                              )),
+                                tabPanel("About ACLED Cured Data", 
+                                         box(width = 12,
+                                             strong("The ACLED is an event-based data project designed 
+                                             for disaggregated conflict analysis and crisis mapping."),
+                                             p(), p("Demonstrations: All protest and violent demonstration events (may overlap with political violence files as they both include Excessive force against protesters)"),
+                                             p("Political Violence: All battle, explosions/remote violence, and violence against civilians events"), p(),
+                                             strong("Variables in dataset:"), p("Country - Country it occurred "), p("Month - month it occured"), p("Year - year it occured"), p("Events - Occurrence of Instances"))
+                                 ))),
                   tabPanel('graph 1', box(width = 12,
                                           plotOutput('TreeMapConflicts')),
                            box(width = 12, p("Textbox to discribe the tree map conflict"))),
@@ -151,8 +196,13 @@ ui <- dashboardPage(
                   )) #tabPanel
                 )) # fluidrow
       ), # tabItem3
-      tabItem(tabName = "plotting",
-              fluidRow(p("hello"))
+      tabItem(tabName = "works",
+              fluidRow(box(width = 12, title = "Works Cited", p(em("COW War Data, 1816 – 2007 (v4.0) – Correlates of War"), ". (2020). Correlatesofwar.org. https://correlatesofwar.org/data-sets/cow-war/"),
+                           p(em("Curated Data - ACLED"), ". (2023, August 15). ACLED. https://acleddata.com/curated-data-files/#peacekeepers"),
+                               p(em("Facebook logo"), ". (2023). R-Charts.com. https://r-charts.com/distribution/dumbbell-plot-ggplot2/"),
+                                 p("Holtz, Y. (2023)." , em("The R Graph Gallery – Help and inspiration for R charts"), ". The R Graph Gallery. https://r-graph-gallery.com/"),
+                                    p(em("Shiny - Build a user interface"), ". (2023). Posit.co. https://shiny.posit.co/r/getstarted/shiny-basics/lesson2/"),
+                                    p("to, I. (2023, January 12).", em("Introduction to Data Visualization with ggplot2"),". Datacamp.com; DataCamp. https://www.datacamp.com/courses/introduction-to-data-visualization-with-ggplot2")))
       ) # tabItem4
     ) # tabItems 
   ) # dashboard body

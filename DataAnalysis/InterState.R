@@ -1,5 +1,5 @@
 source("FunctionFile.R")
-source("whi.R")
+
 
 inter.outcome.category <- c(
   `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
@@ -94,3 +94,25 @@ interStateWar.State.Outcomes <- left_join(interStateWar.State.Outcomes, country.
 # there are a lot of duplicates beause each side is a different entry
 # so we are looking at total numbers of unique wars 
 total.distinct.wars <- distinct.war.type(interStateWar.clean)
+
+# test <- interStateWar.clean%>%
+#   select(WarNum, war.duration)%>%
+#   right_join(total.distinct.wars, by = "WarNum")%>%
+#   distinct(WarNum, .keep_all = TRUE) 
+# 
+# plot <- interStateWar.clean%>%
+#   filter(StateName == "France")%>%
+#   ggplot(aes(x = EndYear1, 
+#              xend = StartYear1 + war.duration)) +
+#   geom_dumbbell(
+#     aes(color='grey10'),  # Color of the line
+#     size = 0.5,            # Line width
+#     dot_guide = FALSE,   # Whether to add a guide from origin to X or not
+#     size_x = 1,          # Size of the X point
+#     size_xend = 1,       # Size of the X end point
+#     colour_x = "red",    # Color of the X point
+#     colour_xend = "blue"  # Color of the X end point
+#   ) + theme_minimal() +
+#   scale_color_identity()+  # To ensure color mapping works as expected
+#   xlab('Happiness Index Trend')+
+#   ylab("Countries")

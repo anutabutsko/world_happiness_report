@@ -233,6 +233,20 @@ life.Ladder.Difference.by.country <- function(df, regionselected){
   return(plot)
 }
 
+head.tail <- data %>%
+  group_by(Country.Name) %>% 
+  summarise(Life.Ladder = mean(Life.Ladder)) %>%
+  left_join(country.region, by = c('Country.Name'='name')) %>%
+  arrange(Life.Ladder) %>%
+  mutate(Country.Name = factor(Country.Name, levels = Country.Name))
+
+# Select top and bottom 15
+head.plot <- head(head.tail, 15)%>%
+  mutate(color = 'darkorange')
+tail.plot <- tail(head.tail, 15)%>%
+  mutate(color = 'darkblue')
+top.bottom <- rbind(head.plot, tail.plot)
+
 # Convert to factor with custom levels
 top.bottom.plot<- top.bottom%>%
   arrange(Life.Ladder) %>%  # Arrange in descending order
@@ -243,5 +257,3 @@ ggplot(aes(x=Life.Ladder, y=Country.Name, color = color)) +
   theme_minimal()+
   scale_color_identity()+
   guides(color = FALSE) 
-
-ggplotly(test, tooltip = "Life.Ladder")
