@@ -7,6 +7,20 @@ df <- here("DataAnalysis", "Datasets", "WorldHappinessReport.csv")
 
 whi.df <- read.csv(df)
 
+population <- read_csv('Datasets/PopulationData.csv', skip = 4)
+population <- population[, c(1:2, 50:(ncol(population) - 1))]
+
+population <- population %>%
+  rename(Country.Name = `Country Name`, Country.Code = `Country Code`)
+
+population <- population %>%
+  gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
+  mutate(Year = as.integer(Year))
+
+population <- population %>%
+  mutate(Country.Name = replace(Country.Name, Country.Name == "Russian Federation", "Russia"))
+
+
 # setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
   mutate(Regional.Indicator = case_when(
@@ -77,53 +91,43 @@ by_continent <- whi.df.clean %>%
 # some further standardization of data, can find more info in FuntionFile.R
 whi.df.clean <- region.Regional.Indicator.Match(whi.df.clean)
 
+whi.df.clean <- left_join(whi.df.clean, population, by = c("Country.Name", "Year"))
 
-df <- whi.df.clean
 
-# getting geographical info for all counties
-world.map <- map_data(map = "world")
-world.map <- world.map%>%
-  rename(Country.Name = region)
+df <- whi.df.clean%>%
+  rename(Country = Country.Name)
 
-# change the names to match df
-world.map <- world.map %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "USA", "United States")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c("Democratic Republic of the Congo", "Republic of Congo"), "Congo (Brazzaville)")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "UK", "United Kingdom"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Czech Republic", "Czechia"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c('Trinidad', 'Tobago'), "Trinidad and Tobago"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == 'Swaziland', "Eswatini"))
-  
-# change the names to match world.map
-df <- df %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Hong Kong S.A.R. of China", "China"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Taiwan Province of China", "Taiwan"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "State of Palestine", "Palestine"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Turkiye", "Turkey"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Somaliland region", "Somalia"))
+world.map <- world.map.function(df)%>%
+  select(-'subregion')
 
-world.map <- merge(world.map, df, 'Country.Name')
+life.Ladder.Difference <- whi.df.clean %>%
+  group_by(Country.Name) %>%
+  slice(which.min(Year), which.max(Year)) %>%
+  summarise(Start.Life.Ladder = Life.Ladder[which.min(Year)],
+            End.Life.Ladder = Life.Ladder[which.max(Year)],
+            Life.Ladder.Difference = diff(Life.Ladder),
+            region = region,
+            sub.region = sub.region)
 
-world.map <- world.map[order(world.map$order),]
 
 # STATS
 ################################################################################
-pandemic.years <- whi.df.clean%>%
-  subset(Year >= 2020 |
-           (Year > 2013 & Year < 2017) |
-           (Year >= 2009 & Year < 2011))
-
-non.pandemic.years <- whi.df.clean%>%
-  subset((Year < 2020 & Year >2016) |
-           (Year >= 2011 & Year < 2014) |
-           Year <= 2008)
-
-swine.flu <- pandemic.years%>%
-  subset(Year >= 2009 & Year < 2011)
-
-ebola.outbreak <- pandemic.years%>%
-  subset(Year >= 2014 & Year < 2017)
-
-sar.outbreak <- pandemic.years%>%
-  subset(Year >= 2020)
+# pandemic.years <- whi.df.clean%>%
+#   subset(Year >= 2020 |
+#            (Year > 2013 & Year < 2017) |
+#            (Year >= 2009 & Year < 2011))
+# 
+# non.pandemic.years <- whi.df.clean%>%
+#   subset((Year < 2020 & Year >2016) |
+#            (Year >= 2011 & Year < 2014) |
+#            Year <= 2008)
+# 
+# swine.flu <- pandemic.years%>%
+#   subset(Year >= 2009 & Year < 2011)
+# 
+# ebola.outbreak <- pandemic.years%>%
+#   subset(Year >= 2014 & Year < 2017)
+# 
+# sar.outbreak <- pandemic.years%>%
+#   subset(Year >= 2020)
 

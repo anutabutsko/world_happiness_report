@@ -1,9 +1,6 @@
-library(here)
-here::i_am("DataAnalysis/InterState.R")
-FunFile <- here("DataAnalysis", "FunctionFile.R")
-FunFile <- source(FunFile)
-Whi <- here("DataAnalysis", "whi.R")
-Whi <- source(Whi)
+
+source("FunctionFile.R")
+
 
 inter.outcome.category <- c(
   `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
@@ -12,7 +9,6 @@ inter.outcome.category <- c(
   `7` = 'Conflict continues at below war level', `8` = 'changed sides'
 )
 
-interStateWar.event <- here("DataAnalysis", "Datasets", "Inter-StateWarData_v4.0.csv")
 interStateWar.event <- read_csv("interStateWar.event")
 
 # deals with special cases, can find more detail in FunctionFile.R
@@ -68,6 +64,8 @@ inter.region.continent.join <- for.interstatewar.region.Regional.Indicator.Match
 # setting values in occurrence as nermical values  
 inter.region.continent.join$Occurrence <- as.numeric(inter.region.continent.join$Occurrence)
 
+inter.region.continent.join$region <- coalesce(inter.region.continent.join$region, 
+                                        inter.region.continent.join$region.mirror)
 # counting the number of thimes a country has participated in a war
 war.participation.by.country <- inter.region.continent.join%>%
   group_by(`Country Name`)%>%
@@ -91,6 +89,8 @@ interStateWar.clean <- cbind(interStateWar.clean, inter.war.duration)
 interStateWar.State.Outcomes <- interStateWar.clean%>%
   group_by(StateName, Outcome)%>%
   count()
+
+interStateWar.State.Outcomes <- left_join(interStateWar.State.Outcomes, country.region, by = c('StateName'='name'))
 
 # there are a lot of duplicates beause each side is a different entry
 # so we are looking at total numbers of unique wars 
