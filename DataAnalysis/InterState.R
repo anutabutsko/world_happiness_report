@@ -1,3 +1,4 @@
+
 source("FunctionFile.R")
 
 
@@ -8,7 +9,7 @@ inter.outcome.category <- c(
   `7` = 'Conflict continues at below war level', `8` = 'changed sides'
 )
 
-interStateWar.event <- read_csv('Datasets/Inter-StateWarData_v4.0.csv')
+interStateWar.event <- read_csv("interStateWar.event")
 
 # deals with special cases, can find more detail in FunctionFile.R
 interStateWar.clean <- StateWar.filter(interStateWar.event, 6:17)
@@ -94,25 +95,3 @@ interStateWar.State.Outcomes <- left_join(interStateWar.State.Outcomes, country.
 # there are a lot of duplicates beause each side is a different entry
 # so we are looking at total numbers of unique wars 
 total.distinct.wars <- distinct.war.type(interStateWar.clean)
-
-# test <- interStateWar.clean%>%
-#   select(WarNum, war.duration)%>%
-#   right_join(total.distinct.wars, by = "WarNum")%>%
-#   distinct(WarNum, .keep_all = TRUE) 
-# 
-# plot <- interStateWar.clean%>%
-#   filter(StateName == "France")%>%
-#   ggplot(aes(x = EndYear1, 
-#              xend = StartYear1 + war.duration)) +
-#   geom_dumbbell(
-#     aes(color='grey10'),  # Color of the line
-#     size = 0.5,            # Line width
-#     dot_guide = FALSE,   # Whether to add a guide from origin to X or not
-#     size_x = 1,          # Size of the X point
-#     size_xend = 1,       # Size of the X end point
-#     colour_x = "red",    # Color of the X point
-#     colour_xend = "blue"  # Color of the X end point
-#   ) + theme_minimal() +
-#   scale_color_identity()+  # To ensure color mapping works as expected
-#   xlab('Happiness Index Trend')+
-#   ylab("Countries")

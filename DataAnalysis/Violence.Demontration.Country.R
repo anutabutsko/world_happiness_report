@@ -1,7 +1,9 @@
+
 source("FunctionFile.R")
 
 violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')
 demonstration.event <- read_csv('Datasets/demonstration_by_country.csv')
+
 violent.event <- violent.event[,-1]
 demonstration.event <- demonstration.event[,-1]
 
@@ -46,4 +48,3 @@ world.demonstrations<- world.map.function(demonstration.event.country.join)%>%
 
 world.violence <- world.map.function(violent.event.country.join)%>%
   select(-'subregion')
-

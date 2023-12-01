@@ -24,11 +24,13 @@ library(tidyr)
 library(geomtextpath)
 library(ggalt)
 library(ggpubr)
+)
 
-# setwd('/Users/yuhanburgess/Documents/GitHub/world_happiness_report/DataAnalysis')
+here::i_am("DataAnalysis/FunctionFile.R")
 
-# file to get a more precies understanding of continent and subregions within continent  
+# file to get a more precies understanding of continent and subregions within continent 
 country.region <- read_csv('Datasets/continents.csv')
+
 country.region <- country.region %>%
   select('name', 'region', 'sub-region')%>%
   rename(sub.region = `sub-region`)
