@@ -1,0 +1,36 @@
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggeasy)
+```
+
+```{r}
+df <- read.csv("../DataAnalysis/Datasets/WorldHappinessReport.csv")
+
+df <- df %>% filter(!is.na(Regional.Indicator) & Regional.Indicator != "")
+
+df2 <- df %>%
+  group_by(Year, Regional.Indicator) %>%
+  summarise(avg = mean(Life.Ladder, na.rm = TRUE))
+df2
+colnames(df2)[2] <- "Region"
+
+trend <- df %>%
+  group_by(Year, Regional.Indicator) %>%
+  summarise(avg = mean(Life.Ladder, na.rm = TRUE)) %>%
+  ggplot(aes(x = Year, y = avg)) +
+  geom_line(data=df2, aes(group=Region), color='gray90') +
+  geom_line(aes(color = Regional.Indicator)) +
+  facet_wrap(vars(Regional.Indicator), nrow=2) +
+  scale_color_viridis_d(option="turbo") +
+  theme(legend.position = "none",
+        strip.background=element_rect(fill="gray50", color=NA),
+        strip.text = element_text(size=4.6, color="white")) +
+  labs("title" = "Happiness Level by Region", x="\nYear", y="Happiness Level") +
+  ggeasy::easy_center_title() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
+
+
+trend
+```
+
