@@ -1,5 +1,17 @@
 # # # backup
 # 
+# # emmas boxplot
+# output$HappinessIndicator <- renderPlotly({
+#   happiness.boxplot <- ggplot(whi.df.clean, 
+#                               aes(x = region, 
+#                                   y = .data[[input$Happiness_check]], 
+#                                   fill = region)) +
+#     geom_boxplot(notch = TRUE) +
+#     # set ylabel to the colname that we are looking at
+#     labs(y = input$Happiness_check)
+#   
+#   ggplotly(happiness.boxplot)
+# })
 # library(shiny)
 # library(shinydashboard)
 # library(cowplot)

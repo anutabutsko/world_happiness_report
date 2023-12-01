@@ -1,5 +1,5 @@
 source("FunctionFile.R")
-source("whi.R")
+
 violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')
 demonstration.event <- read_csv('Datasets/demonstration_by_country.csv')
 violent.event <- violent.event[,-1]

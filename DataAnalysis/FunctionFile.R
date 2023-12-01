@@ -14,7 +14,7 @@ library(gt) # table
 library(gridExtra) # getting multiple tables in one window
 library(treemap) # boxing based off proportion
 library(stringr) # for string detection
-library(d3Tree)
+# library(d3Tree)
 library(viridis)
 library(ggridges)
 library(maps)

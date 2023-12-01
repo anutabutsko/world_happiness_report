@@ -103,37 +103,25 @@ life.Ladder.Difference <- whi.df.clean %>%
             region = region,
             sub.region = sub.region)
 
-head.tail <- data %>%
-  group_by(Country.Name) %>% 
-  summarise(Life.Ladder = mean(Life.Ladder)) %>%
-  left_join(country.region, by = c('Country.Name'='name')) %>%
-  arrange(Life.Ladder) %>%
-  mutate(Country.Name = factor(Country.Name, levels = Country.Name))
 
-# Select top and bottom 15
-head.plot <- head(head.tail, 15)%>%
-  mutate(color = 'darkorange')
-tail.plot <- tail(head.tail, 15)%>%
-  mutate(color = 'darkblue')
-top.bottom <- rbind(head.plot, tail.plot)
 # STATS
 ################################################################################
-pandemic.years <- whi.df.clean%>%
-  subset(Year >= 2020 |
-           (Year > 2013 & Year < 2017) |
-           (Year >= 2009 & Year < 2011))
-
-non.pandemic.years <- whi.df.clean%>%
-  subset((Year < 2020 & Year >2016) |
-           (Year >= 2011 & Year < 2014) |
-           Year <= 2008)
-
-swine.flu <- pandemic.years%>%
-  subset(Year >= 2009 & Year < 2011)
-
-ebola.outbreak <- pandemic.years%>%
-  subset(Year >= 2014 & Year < 2017)
-
-sar.outbreak <- pandemic.years%>%
-  subset(Year >= 2020)
+# pandemic.years <- whi.df.clean%>%
+#   subset(Year >= 2020 |
+#            (Year > 2013 & Year < 2017) |
+#            (Year >= 2009 & Year < 2011))
+# 
+# non.pandemic.years <- whi.df.clean%>%
+#   subset((Year < 2020 & Year >2016) |
+#            (Year >= 2011 & Year < 2014) |
+#            Year <= 2008)
+# 
+# swine.flu <- pandemic.years%>%
+#   subset(Year >= 2009 & Year < 2011)
+# 
+# ebola.outbreak <- pandemic.years%>%
+#   subset(Year >= 2014 & Year < 2017)
+# 
+# sar.outbreak <- pandemic.years%>%
+#   subset(Year >= 2020)
 
