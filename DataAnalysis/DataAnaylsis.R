@@ -1,4 +1,4 @@
-# source("whi.R")
+source("whi.R")
 # source("InterState.R")
 # source("IntraState.R")
 # source("Violence.Demontration.Country.R")
@@ -71,7 +71,7 @@
 # # and control that Western Europe had on each continent. It may also suggests who is the world power in war right
 # # now. For instance Western Europe has a lot of political power, but the USA has the largest military might.
 # 
-# # A Treemap may be a good option to look at region.contineent.join
+# # A Treemap may be a good option to look at region.continent.join
 # 
 # 
 # table(interStateWar.clean$Outcome)
@@ -91,9 +91,14 @@
 # head(arrange(demonstration.event.per.year,desc(TotalEvents)), n = 10)
 # 
 # summary(demonstration.event.per.country)
-# # we can try an compare the overall distribution of the whi index and cross analysis with the
-# # occurrence of violent events in that country
-# 
+# we can try an compare the overall distribution of the whi index and cross analysis with the
+# occurrence of violent events in that country
+
+# top_happiness <- whi.df.clean %>%
+#   group_by(Country.Name) %>%
+#   summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), confidence = mean(Confidence.In.National.Government, na.rm = TRUE)) %>%
+#   arrange(desc(Life.Ladder)) %>%
+#   head(15)
 # 
 # # Stats
 # ###################################################################################################
