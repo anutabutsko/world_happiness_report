@@ -25,11 +25,13 @@ trend <- df %>%
   scale_color_viridis_d(option="turbo") +
   theme(legend.position = "none",
         strip.background=element_rect(fill="gray50", color=NA),
-        strip.text = element_text(size=4.6, color="white")) +
+        strip.text = element_text(size=4.8, color="white")) +
   labs("title" = "Happiness Level by Region", x="\nYear", y="Happiness Level") +
   ggeasy::easy_center_title() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
-
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(face="bold", size=14))
 
 trend
 ```
