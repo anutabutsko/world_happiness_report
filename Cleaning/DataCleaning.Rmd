@@ -13,15 +13,23 @@ Libraries
 
 ```{r}
 library(dplyr)
+library(here)
+library(readr)
+library(ggplot2)
+library(tidyr)
+```
+
+Set Root
+```{r}
+here::i_am("Cleaning/DataCleaning.rmd")
 ```
 
 
 Read in Dataset
 
 ```{r}
-getwd()
-setwd("/Users/emmahorton/Documents/GitHub/world_happiness_report/Datasets/")
-df <- read.csv("WorldHappinessReport.csv")
+df <- here("DataAnalysis", "Datasets", "WorldHappinessReport.csv")
+df <- read.csv(df)
 #View(df)
 
 ```
@@ -77,7 +85,7 @@ Verify Region does not contain empty values
 cleaning[cleaning$Regional.Indicator == "", ]
 ```
 ```{r}
-View(cleaning)
+cleaning[cleaning$Regional.Indicator == "NA", ]
 ```
 
 
@@ -92,12 +100,15 @@ cleaning <- cleaning %>%
 
 summary(cleaning)
 ```
+
+
 ```{r}
 unique(cleaning$Regional.Indicator)
 ```
+
 Attach Continents
 ```{r}
-cleaning <- df %>%
+cleaning <- cleaning %>%
   mutate(Continent = case_when(
     Regional.Indicator %in% c("South Asia", "Commonwealth of Independent States", "Southeast Asia", 
                   "East Asia", "Middle East", "West Asia") ~ "Asia",
@@ -190,9 +201,50 @@ Save DataFrame in a Pretty Name
 cleaning -> happydf
 ```
 
+Read in Auxiliary Dataset, Population and Pre-Process
+```{r}
+df <- here("Datasets", "WorldBank_Population", "PopulationData.csv")
+here()
+population <- read_csv(df, skip = 4)
+population <- population[, c(1:2, 50:(ncol(population) - 1))]
+
+population <- population %>%
+  rename(Country.Name = `Country Name`,Country.Code = `Country Code`)
+
+
+#View(population)
+```
+
+Gather Population Data
+```{r}
+population <- population %>%
+  gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
+    mutate(Year = as.integer(Year))
+```
+
+
+Attach Continents to Population
+```{r}
+#get unique countries from happydf
+unique_countries <- happydf %>%
+  select(Country.Name, Continent, Regional.Indicator) %>%
+  distinct()
+
+```
+
+Join Population and Country Name Based on Year in New Set Happy Population
+
+```{r}
+happydf <- inner_join(happydf, population, by = c("Country.Name", "Year"))
+View(happydf)
+
+```
+
+
 Export Data to CSV
 ```{r}
-write.csv(happydf,"/Users/emmahorton/Documents/GitHub/world_happiness_report/Cleaning/HappyDataFrame", row.names=FALSE)
+path <- here("Datasets", "HappyDataFrame.csv")
+write.csv(happydf, path, row.names=FALSE)
 ```
 
 
