@@ -4,39 +4,6 @@ source("whi.R")
 source("InterState.R")
 source("Violence.Demontration.Country.R")
 
-# # Initial Completeness Table For Files
-# print(whi.table)
-# print(interStateWar.table)
-# print(intraStateWar.table)
-# print(demonstration.table)
-# 
-# 
-# # Stats
-# ###################################################################################################
-# 
-# # correlation matrix within the whi.df
-# ggpairs(data[,4:13], title="correlogram of years not in pandemic",
-#         method = c("everything", "pearson"))
-# corality.non <- ggcorr(non.pandemic.years[,4:13]) 
-# ggplotly(corality.non)
-# 
-# 
-# ggpairs(pandemic.years[,4:13], title="correlogram of pandemic years", 
-#         method = c("everything", "pearson")) 
-# corality.pan <- ggcorr(pandemic.years[,4:13]) 
-# ggplotly(corality.pan)
-# 
-# # The major difference/ change in signage although very samll since the correlation
-# # was already very week was related to generosity and healthly life expectancy at birth
-# # and generosity and log.GDP.Per.Capita.
-# # Something we want to be aware of is which countries are reporting during these time frmaes
-# 
-# # Analysis: There is very little correlation between generosity and GDP per
-# # capita at 0.7%. Overall, there does not seem to be a correlation between the two.
-# # We may be seeing a Simpsons paradox and would want to filter on location of country or
-# # some other factor
-
-# copy
 data <- whi.df.clean
 
 world_perception <- data %>%
@@ -257,3 +224,23 @@ ggplot(aes(x=Life.Ladder, y=Country.Name, color = color)) +
   theme_minimal()+
   scale_color_identity()+
   guides(color = FALSE) 
+
+
+trend <- sub.region.trend %>%
+  group_by(Year, sub.region) %>%
+  summarise(avg = mean(Life.Ladder, na.rm = TRUE)) %>%
+  ggplot(aes(x = Year, y = avg)) +
+  geom_line(data=sub.region.trend.plot, aes(group=subRegion), color='gray90') +
+  geom_line(aes(color = sub.region)) +
+  facet_wrap(vars(sub.region), nrow=2) +
+  theme_minimal()+
+  theme(legend.position = "none",
+        strip.background=element_rect(fill="gray50", color=NA),
+        strip.text = element_text(size=4.8, color="white")) +
+  labs(x="\nYear", y="Happiness Level") +
+  ggeasy::easy_center_title() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_text(face="bold", size=14),
+        panel.grid.major.x = element_line(size=0.25))

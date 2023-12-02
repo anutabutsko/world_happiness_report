@@ -4,6 +4,7 @@
 # install.packages("geomtextpath")
 # install.packages("ggpubr")
 # install.packages("ggalt")
+# install.packages("wesanderson")
 library(RColorBrewer)
 library(readr)
 library(GGally) # ggcorr
@@ -14,7 +15,7 @@ library(gt) # table
 library(gridExtra) # getting multiple tables in one window
 library(treemap) # boxing based off proportion
 library(stringr) # for string detection
-# library(d3Tree)
+library(forcats)
 library(viridis)
 library(ggridges)
 library(maps)
