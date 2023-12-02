@@ -23,9 +23,14 @@ ui <- dashboardPage(
                 tabsetPanel(
                   tabPanel('Background',box(width = 12,
                                             p("General Discription for the panels within the exploratory page."))),
-                  tabPanel('graph 1', box(title = "Happiness Lvl Over The Years By Continent", 
+                  tabPanel('graph 1', tabsetPanel(
+                    tabPanel("Happiness Trend By Continent",
+                             box(title = "Happiness Lvl Over The Years By Continent", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotlyOutput('happinessTrend')),
+                                          width = 12, plotlyOutput('happinessTrend'))),
+                    tabPanel("Happiness Trend by Sub-region", 
+                             box(status = "primary", solidHeader = TRUE,
+                                 width = 12, plotlyOutput('happinessSubregionTrend')))),
                            box(width = 12, 
                                p("This is a textbox to discribe the happiness trend by Continent"))),
                   tabPanel('graph 2', box(title = "Happiness Trend Over Time by Country",
@@ -243,9 +248,13 @@ server <- function(input, output) {
   output$correlationMatrix <- renderPlotly({
     ggplotly(correlation.matrix)
   })
+
+  # output$choroplethMapStag <- renderPlotly({
+  #   ggplotly(life.ladder.plot)
+  # })
   
-  output$choroplethMapStag <- renderPlotly({
-    ggplotly(life.ladder.plot)
+  output$happinessSubregionTrend <- renderPlotly({
+    ggplotly(trend)
   })
   
   output$HappinessIndicator <- renderPlot({
@@ -266,7 +275,7 @@ server <- function(input, output) {
   })
   
   output$dumbellWHITrend <- renderPlot({
-    plot<- life.Ladder.Difference.by.country(life.Ladder.Difference, input$dumbell_check)
+    plot <- life.Ladder.Difference.by.country(life.Ladder.Difference, input$dumbell_check)
     plot
   })
   # Happiness
