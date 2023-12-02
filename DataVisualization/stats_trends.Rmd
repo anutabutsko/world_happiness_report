@@ -2,12 +2,14 @@
 library(dplyr)
 library(ggplot2)
 library(ggeasy)
+library(forcats)
 ```
 
 ```{r}
 df <- read.csv("../DataAnalysis/Datasets/WorldHappinessReport.csv")
 
 df <- df %>% filter(!is.na(Regional.Indicator) & Regional.Indicator != "")
+df$Regional.Indicator <- fct_reorder(df$Regional.Indicator, df$Life.Ladder, .desc=T)
 
 df2 <- df %>%
   group_by(Year, Regional.Indicator) %>%
