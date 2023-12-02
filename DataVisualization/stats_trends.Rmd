@@ -31,7 +31,8 @@ trend <- df %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0),
         panel.grid.minor=element_blank(),
         panel.grid.major.y = element_blank(),
-        plot.title = element_text(face="bold", size=14))
+        plot.title = element_text(face="bold", size=14),
+        panel.grid.major.x = element_line(size=0.25))
 
 trend
 ```
