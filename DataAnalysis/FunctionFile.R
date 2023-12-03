@@ -25,7 +25,6 @@ library(tidyr)
 library(geomtextpath)
 library(ggalt)
 library(ggpubr)
-)
 
 here::i_am("DataAnalysis/FunctionFile.R")
 

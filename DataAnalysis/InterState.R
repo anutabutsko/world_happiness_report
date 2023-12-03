@@ -1,6 +1,6 @@
-
 source("FunctionFile.R")
 
+here::i_am("DataAnalysis/InterState.R")
 
 inter.outcome.category <- c(
   `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
@@ -9,7 +9,7 @@ inter.outcome.category <- c(
   `7` = 'Conflict continues at below war level', `8` = 'changed sides'
 )
 
-interStateWar.event <- read_csv("interStateWar.event")
+interStateWar.event <- read_csv("Datasets/Inter-StateWarData_v4.0.csv")
 
 # deals with special cases, can find more detail in FunctionFile.R
 interStateWar.clean <- StateWar.filter(interStateWar.event, 6:17)
