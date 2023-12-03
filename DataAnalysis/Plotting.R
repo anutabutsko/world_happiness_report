@@ -228,7 +228,7 @@ trend <- sub.region.trend %>%
   ggplot(aes(x = Year, y = avg)) +
   geom_line(data=sub.region.trend.plot, aes(group=subRegion), color='gray90') +
   geom_line(aes(color = sub.region)) +
-  facet_wrap(vars(sub.region), nrow=2) +
+  facet_wrap(vars(sub.region), nrow=3) +
   theme_minimal()+
   theme(legend.position = "none",
         strip.background=element_rect(fill="gray50", color=NA),

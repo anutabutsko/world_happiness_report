@@ -27,12 +27,13 @@ ui <- dashboardPage(
                     tabPanel("Happiness Trend By Continent",
                              box(title = "Happiness Lvl Over The Years By Continent", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotlyOutput('happinessTrend'))),
+                                          width = 6, plotlyOutput('happinessTrend')),
+                             box(width = 6, p("This is a textbox to discribe the happiness trend by Continent"))),
                     tabPanel("Happiness Trend by Sub-region", 
                              box(status = "primary", solidHeader = TRUE,
-                                 width = 12, plotlyOutput('happinessSubregionTrend')))),
-                           box(width = 12, 
-                               p("This is a textbox to discribe the happiness trend by Continent"))),
+                                 width = 8, plotlyOutput('happinessSubregionTrend')),
+                             box(width = 4, 
+                                 p("This is a textbox to discribe the happiness trend by Continent"))))),
                   tabPanel('graph 2', box(title = "Happiness Trend Over Time by Country",
                                           width = 12, selectInput("dumbell_check", "Select Continent",
                                                                   # names of the valid choices
@@ -263,6 +264,7 @@ server <- function(input, output) {
       geom_violin(aes(fill=region), alpha=0.5, color=NA, scale="area", show.legend=FALSE) +
       geom_boxplot(aes(fill=NA), alpha=0.3, width=0.15, outlier.alpha=1, show.legend=FALSE) +
       scale_fill_viridis(discrete=TRUE) +
+      theme_minimal()+
       labs("title" = paste("Distribution of", input$Happiness_check, "by Continent"), x= input$Happiness_check)
   })
   
@@ -315,7 +317,7 @@ server <- function(input, output) {
     life.ladder.plot <- ggplot(filtered.WH.data(), aes(long, lat, group = group)) +
       geom_polygon(aes(fill = Life.Ladder, text = Country), color = "black", size = 0.2) +
       coord_quickmap() +
-      theme_void() +
+      theme_minimal() +
       scale_fill_gradientn(colors = coul, name = "Life.Ladder")+
       theme(legend.position = 'bottom') +
       labs(title = paste("Happiness Index across the World - Year", input$year_slider)) +
@@ -331,7 +333,7 @@ server <- function(input, output) {
     demonstrations.plot <- ggplot(filtered.WD.data(), aes(long, lat, group = group)) +
       geom_polygon(aes(fill = Events, text = Country), color = 'black', size = 0.2) +
       coord_quickmap() +
-      theme_void() +
+      theme_minimal() +
       scale_fill_gradientn(colors = coul, name = "Events")+
       theme(legend.position = 'bottom') +
       labs(title = "Demonstrations Across the World") +
@@ -346,7 +348,7 @@ server <- function(input, output) {
     violence.plot <- ggplot(filtered.WV.data(), aes(long, lat, group = group)) +
       geom_polygon(aes(fill = Events, text = Country), color = 'black', size = 0.2) +
       coord_quickmap() +
-      theme_void() +
+      theme_minimal() +
       scale_fill_gradientn(colors = coul, name = "Events")+
       theme(legend.position = 'bottom') +
       labs(title = "Violence Across the World") +
