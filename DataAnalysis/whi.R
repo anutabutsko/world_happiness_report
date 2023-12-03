@@ -110,6 +110,16 @@ life.Ladder.Difference <- whi.df.clean %>%
             sub.region = sub.region)
 
 
+sub.region.trend <- whi.df.clean %>% 
+  filter(!is.na(sub.region) & sub.region != "")
+sub.region.trend$sub.region <- fct_reorder(sub.region.trend$sub.region, 
+                                           sub.region.trend$Life.Ladder, .desc=T)
+
+sub.region.trend.plot <- sub.region.trend %>%
+  group_by(Year, sub.region) %>%
+  summarise(avg = mean(Life.Ladder, na.rm = TRUE))
+sub.region.trend.plot
+colnames(sub.region.trend.plot)[2] <- "subRegion"
 # STATS
 ################################################################################
 # pandemic.years <- whi.df.clean%>%
