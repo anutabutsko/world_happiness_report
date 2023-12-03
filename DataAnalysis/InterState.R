@@ -1,7 +1,5 @@
 source("FunctionFile.R")
 
-here::i_am("DataAnalysis/InterState.R")
-
 inter.outcome.category <- c(
   `1` = 'Winner', `2` = 'Loser', `3` = 'Compromise/Tied', 
   `4` = 'The war was transformed into another type of war',

@@ -1,4 +1,3 @@
-
 source("FunctionFile.R")
 
 violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')

@@ -1,4 +1,4 @@
-source("DataAnaylsis.R")
+source("Anaylsis.R")
 source("FunctionFile.R")
 source("whi.R")
 source("InterState.R")

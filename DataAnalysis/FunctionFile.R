@@ -25,9 +25,6 @@ library(tidyr)
 library(geomtextpath)
 library(ggalt)
 library(ggpubr)
-
-here::i_am("DataAnalysis/FunctionFile.R")
-
 # file to get a more precies understanding of continent and subregions within continent 
 country.region <- read_csv('Datasets/continents.csv')
 

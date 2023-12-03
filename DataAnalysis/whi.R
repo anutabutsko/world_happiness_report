@@ -1,11 +1,6 @@
-library(here)
-here::i_am("DataAnalysis/whi.R")
-FunFile <- here("DataAnalysis", "FunctionFile.R")
-FunFile <- source(FunFile)
+source('FunctionFile.R')
 
-df <- here("DataAnalysis", "Datasets", "WorldHappinessReport.csv")
-
-whi.df <- read.csv(df)
+whi.df <- read.csv('Datasets/WorldHappinessReport.csv')
 
 population <- read_csv('Datasets/PopulationData.csv', skip = 4)
 population <- population[, c(1:2, 50:(ncol(population) - 1))]
@@ -19,7 +14,6 @@ population <- population %>%
 
 population <- population %>%
   mutate(Country.Name = replace(Country.Name, Country.Name == "Russian Federation", "Russia"))
-
 
 # setting regional.indicators for countries that do not have one already attached 
 whi.df.clean <- whi.df %>%
