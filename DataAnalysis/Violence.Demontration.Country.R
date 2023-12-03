@@ -1,13 +1,9 @@
-library(here)
-here::i_am("DataAnalysis/Violence.Demontration.Country.R")
-FunFile <- here("DataAnalysis", "FunctionFile.R")
-FunFile <- source(FunFile)
-Whi <- here("DataAnalysis", "whi.R")
-Whi <- source(Whi)
-Vevent <- here("DataAnalysis", "Datasets", "political_violence_events_by_country.csv")
-violent.event <- read_csv(Vevent)
-Devent <- here("DataAnalysis", "Datasets", 'demonstration_by_country.csv')
-demonstration.event <- read_csv(Devent)
+
+source("FunctionFile.R")
+
+violent.event <- read_csv('Datasets/political_violence_events_by_country.csv')
+demonstration.event <- read_csv('Datasets/demonstration_by_country.csv')
+
 violent.event <- violent.event[,-1]
 demonstration.event <- demonstration.event[,-1]
 
@@ -44,3 +40,11 @@ demonstration.event.per.country <- demonstration.event.per.country%>%
 
 demo.vio.merged.df <- join.df(violent.event.per.country, demonstration.event.per.country, demo.vio.join)
 
+violent.event.per.year <- left_join(violent.event.per.year, country.region, by = c("Country"= "name"))
+demonstration.event.per.year <- left_join(demonstration.event.per.year, country.region, by = c("Country"= "name"))
+
+world.demonstrations<- world.map.function(demonstration.event.country.join)%>%
+  select(-'subregion')
+
+world.violence <- world.map.function(violent.event.country.join)%>%
+  select(-'subregion')
