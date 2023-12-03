@@ -5,13 +5,16 @@ library(ggplot2)
 library(viridis)
 library(ggridges)
 library(data.table)
-library(ggeasy)
 library(here)
+library(plotly)
+library(maps)
+library(ggeasy)
+library(gapminder)
 ```
 
 Set File Location, Get Top Directory
 ```{r}
-here::i_am("DataVisualization/visualization.rmd")
+here::i_am("DataVisualization/E_visualization.rmd")
 ```
 
 # Import the data frame
@@ -30,139 +33,24 @@ theme_set(theme_minimal())
 mypalette <- c("royalblue", "forestgreen", "gold", "darkorange", "firebrick")
 ```
 
-```{r}
-by_continent <-
-  df %>%
-  group_by(Continent) %>%
-  summarise(n=n(), Log.GDP.Per.Capita=mean(Log.GDP.Per.Capita, na.rm=TRUE))
 
-df %>%
-  ggplot(aes(x=Continent, y=Log.GDP.Per.Capita, color=Continent)) +
-  geom_point(alpha = 0.1, position="jitter") +
-  geom_point(data=by_continent, size=4) +
-  geom_text(data=by_continent, aes(label=paste0("n=", n), y=5, color=NULL)) +
-  scale_color_manual(values = mypalette) +
-  labs("title" = "Distribution of GDP per Capita by Continent", y="GDP per Capita")
+Bars on Violence
+```{r}
+
+
 ```
 
+
+Bars on Demonstration
 ```{r}
-df %>%
-  ggplot(aes(y=Continent, x=Log.GDP.Per.Capita)) +
-  geom_violin(aes(fill=Continent), alpha=0.5, color=NA, scale="area", show.legend=FALSE) + 
-  geom_boxplot(aes(fill=NA), alpha=0.3, width=0.15, outlier.alpha=1, show.legend=FALSE) +
-  scale_fill_viridis(discrete=TRUE) +
-  labs("title" = "Distribution of GDP per Capita by Continent", x="GDP per Capita")
-```
-```{r}
-df %>%
-  filter(Continent=="Europe") %>%
-  ggplot(aes(Log.GDP.Per.Capita, color=Regional.Indicator, fill=Regional.Indicator)) +
-  geom_density(alpha=0.3) +
-  labs("title" = "Europe", x="GDP per Capita")
+
+
 ```
 
-```{r}
-df %>%
-  filter(Continent=="Americas") %>%
-  ggplot(aes(Log.GDP.Per.Capita, color=Regional.Indicator, fill=Regional.Indicator)) +
-  geom_density(alpha=0.3) +
-  labs("title" = "Americas", x="GDP per Capita")
-```
 
-```{r}
-df %>%
-  filter(Continent=="Africa") %>%
-  ggplot(aes(Log.GDP.Per.Capita, color=Regional.Indicator, fill=Regional.Indicator)) +
-  geom_density(alpha=0.3) +
-  labs("title" = "Africa", x="GDP per Capita")
-```
-
-```{r}
-df %>%
-  filter(Continent=="Asia") %>%
-  ggplot(aes(Log.GDP.Per.Capita, color=Regional.Indicator, fill=Regional.Indicator)) +
-  geom_density(alpha=0.3) +
-  labs("title" = "Asia", x="GDP per Capita")
-```
-```{r}
-df %>%
-  ggplot(aes(Log.GDP.Per.Capita, Confidence.In.National.Government, color=Log.GDP.Per.Capita)) +
-  geom_point() + 
-  geom_smooth(lty=1, aes(col=Log.GDP.Per.Capita), span=0.005)
-```
-
-```{r}
-df %>%
-  ggplot(aes(Log.GDP.Per.Capita, fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")
-```
-
-```{r}
-ggplot(df, aes(Log.GDP.Per.Capita, 
-                      alpha=Log.GDP.Per.Capita, 
-                      y = as.factor(Regional.Indicator),
-                      fill=as.factor(Regional.Indicator))) +
-  geom_density_ridges(alpha=0.4, 
-               adjust=0.05, 
-               position="identity", show.legend=FALSE) +
-    scale_alpha_continuous()
-```
-
+Table 
 ```{r}
 
-library(maps)
-library(dplyr)
-library(ggplot2)
-library(plotly)
-library(viridis)
-library(ggridges)
-library(data.table)
-library(ggeasy)
-
-world.map <- map_data(map = "world")
-world.map <- world.map%>%
-  rename(Country.Name = region)
-
-unique_world_map <- unique(world.map$Country.Name)
-
-unique_df <- unique(df$Country.Name)
-
-# Names in df that do not match names in world.map
-names_not_in_world_map <- setdiff(unique_df, unique_world_map)
-names_not_in_world_map2 <- setdiff(unique_world_map, unique_df)
-#
-print(names_not_in_world_map2)
-
-# change the names to match df
-world.map <- world.map %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "USA", "United States")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c("Democratic Republic of the Congo", "Republic of Congo"), "Congo (Brazzaville)")) %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "UK", "United Kingdom"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Czech Republic", "Czechia"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name %in% c('Trinidad', 'Tobago'), "Trinidad and Tobago"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == 'Swaziland', "Eswatini"))
-
-df <- df %>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Hong Kong S.A.R. of China", "China"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Taiwan Province of China", "Taiwan"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "State of Palestine", "Palestine"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Turkiye", "Turkey"))%>%
-  mutate(Country.Name = replace(Country.Name, Country.Name == "Somaliland region", "Somalia"))
-
-by.part <- c("Country.Name" = "Country.Name")
-world.map <- left_join(world.map, df, by.part)
-
-world.map <- world.map[order(world.map$order),]
-
-life.ladder.plot <- ggplot(world.map, aes(long, lat, group=group)) +
-  geom_polygon(aes(fill=Life.Ladder, text = Country.Name), color = "black",size = 0.2) +
-  coord_quickmap() +
-  theme_void() +
-  scale_fill_viridis(option='magma', name="Index") +
-  theme(legend.position='bottom') +
-  labs(title="Happiness Index across the World") +
-  ggeasy::easy_center_title()
-
-ggplotly(life.ladder.plot, tooltip = c("text", "Life.Ladder"))
 
 ```
 
@@ -186,6 +74,167 @@ ggplot(df, aes(x = Year,
       dodge.width =0.3),
     shape = 16) +
   geom_smooth()
+```
+
+
+```{r}
+#slow down animation
+# continent bubble, if you click on the them then you can click on, regions are then displayed
+# facet wrap, ~continent 
+#traces / trails for the continent bubbles over time
+# Correlation matrix of happiness - remove label
+# Visualization Top Low R
+
+# Calculate scale
+scaling_factor <- 0.0001 
+df$RelativeSize <- df$Population * scaling_factor
+
+
+fig <- df %>%
+  plot_ly(
+    x = ~Life.Ladder, 
+    y = ~Social.Support,  
+    size = ~Population, 
+    color = ~Continent, 
+    frame = ~Year, 
+    text = ~Country.Name, 
+    hoverinfo = "text",
+    type = 'scatter',
+    mode = 'markers'
+  )
+
+fig <- fig %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red")),
+  )
+fig <- fig %>% animation_opts(
+    1000, easing = "elastic", redraw = FALSE
+  )
+fig <- fig %>% animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  )
+
+fig
+```
+
+
+
+```{r}
+my_bar <- df %>%
+  ggplot(aes(x = Continent, y = Life.Ladder, fill = Continent)) + 
+  geom_bar(stat = "identity")
+my_bar
+```
+
+
+```{r}
+my_bar + coord_flip()
+
+```
+
+```{r}
+my_bar + coord_polar()
+```
+
+```{r}
+ggplot(data=df, aes(x=Life.Ladder, fill=Continent)) +
+    geom_density(alpha=0.3)
+```
+
+
+```{r}
+#countries with the largest Happiness of variability over time.
+df %>%
+    group_by(Country.Name) %>%
+    summarise(sd=sd(Life.Ladder), IQR=IQR(Life.Ladder)) %>% 
+    top_n(8) %>%
+    arrange(desc(sd))
+```
+
+
+```{r}
+df %>%
+    group_by(Continent, Year) %>%
+    summarise(Life.Ladder=median(Life.Ladder)) %>%
+    ggplot(aes(x=Year, y=Life.Ladder, color=Continent)) +
+     geom_line(size=1) + 
+     geom_point(size=1.5)
+```
+
+
+
+```{r}
+df %>%
+    group_by(Continent, Year) %>%
+    summarise(Life.Ladder=median(Life.Ladder)) -> sumyear
+
+
+```
+
+```{r}
+ggplot(sumyear, aes(x=Year, y=Life.Ladder, color=Continent)) +
+    geom_point(size=1.5) +
+    geom_smooth(aes(fill=Continent), method="lm")
+```
+
+```{r}
+plt <- ggplot(data=df,
+              aes(x=Perceptions.Of.Corruption, y=Life.Ladder))
+plt + geom_point(aes(color=Continent)) +
+      geom_smooth(method="loess") +
+      scale_x_log10()
+
+```
+
+```{r}
+p <- ggplot(df, aes(Year, Life.Ladder)) 
+p <- p + scale_x_log10()
+p <- p + aes(col=Continent) + geom_point() + geom_smooth(lwd=2, se=FALSE)
+
+p <- p + ggtitle("Happiness vs Perception of Corruption by Continent")
+p <- p + xlab("Year") + ylab("Happiness")
+p + theme_bw()
+
+```
+
+
+
+
+
+
+```{r}
+fig <- df %>%
+  plot_ly(
+    x = ~Year, 
+    y = ~Life.Ladder,  
+    size = ~Population, 
+    color = ~Continent, 
+    frame = ~Year, 
+    text = ~Country.Name, 
+    hoverinfo = "text",
+    type = 'scatter',
+    mode = 'markers'
+  ) %>%
+  group_by(Continent) %>%
+  add_lines(
+    x = ~Year, 
+    y = ~Life.Ladder,
+    color = ~Continent,
+    showlegend = FALSE,
+    line = list(shape = "spline", smoothing = 20)  # smooth parameter
+  ) %>%
+  ungroup() %>%
+  animation_slider(
+    currentvalue = list(prefix = "YEAR ", font = list(color="red")),
+  ) %>%
+  animation_opts(
+    1000, easing = "elastic", redraw = FALSE
+  ) %>%
+  animation_button(
+    x = 1, xanchor = "right", y = 0, yanchor = "bottom"
+  )
+
+fig
 
 ```
 
