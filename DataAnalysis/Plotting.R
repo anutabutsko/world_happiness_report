@@ -24,18 +24,17 @@ stackedbarbyRegion <- function(data, Continent){
     stacked.bar<- data%>%
       ggplot(aes(fill=Outcome, y=n, x=region)) + 
       geom_bar(position="fill", stat="identity")+
-      theme(legend.position = 'bottom', axis.text.x = element_blank(),
-            axis.title.x = element_blank())+
+      theme(legend.position = 'bottom')+
       theme_minimal() 
   }
   else {
-  stacked.bar <- data%>%
+  stacked.bar <- data %>%
     filter(region == Continent) %>%
     ggplot(aes(fill=Outcome, y=n, x=StateName)) + 
     geom_bar(position="stack", stat="identity")+
     theme_minimal() +
-    theme(legend.position = 'bottom', axis.text.x = element_blank(),
-          axis.title.x = element_blank())
+    theme(axis.text.x = element_blank(), axis.title.x = element_blank())
+    theme(legend.position = 'bottom')
   }
   return(stacked.bar)
 }
@@ -71,7 +70,7 @@ density.of.GDP.By.SubRegion <- data %>%
 histogram.of.GDP.By.SubRegion<- data %>%
   ggplot(aes(Log.GDP.Per.Capita,
              fill=as.factor(Regional.Indicator))) + geom_histogram(col="white")+
-  theme_void() 
+  theme_minimal() 
 
 coul <- brewer.pal(n = 200, name = "YlOrRd") 
 life.ladder.plot <- ggplot(world.map, aes(long, lat, group=group)) +
@@ -104,12 +103,9 @@ top_perception <- top_happiness %>%
 regression_lines_of_indicators <- function(data, continent, indicator){
   corruption <- data %>%
     filter(region==continent) %>%
-    #group_by(Country.Name) %>%
-    #summarise(Life.Ladder = mean(Life.Ladder),
-              #Perceptions.Of.Corruption = mean(indicator)) %>%
     ggplot(aes(Life.Ladder, !!sym(indicator))) +
     geom_point(alpha=0.5) +
-    theme_void() +
+    theme_minimal() +
     geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
     labs(title=continent, x="Happiness", y=indicator) +
     ggeasy::easy_center_title()
@@ -123,7 +119,7 @@ time.series.happiness <- function(data, subRegion){
     ggplot(aes(x = Year, y = Life.Ladder, color = Country.Name)) +
     geom_line(show.legend = FALSE) +
     xlab("") +
-    theme_void() +
+    theme_minimal() +
     facet_wrap(~Country.Name, scales = "free_y", ncol = 3) +
     guides(color = FALSE) +  # Turn off the color legend
   return(sub.region.trend.by.Country)
