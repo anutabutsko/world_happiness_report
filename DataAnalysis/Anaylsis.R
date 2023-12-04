@@ -81,7 +81,7 @@ WHR.content <- tagList(
 )
 
 correlationMaxtrixText.content<- tagList(
-  tags$h3("Correlation Analysis", style = "text-align: center;"),
+  tags$h3("Analysis", style = "text-align: center;"),
   
   tags$p(
     tags$strong("Strong Positive Correlation:"),
@@ -155,39 +155,94 @@ trendBackground.content <- tagList(
 )
 
 happinessByContinentText.content <- tagList(
-  tags$h3("Global Happiness Trends and Analysis by Continent", style = "text-align: center;"),
-  tags$strong("1. Country Distribution by Continent"),
-  tags$p(tags$em("Africa: 43 countries")),
-  tags$p(tags$em("Europe: 38 countries (including Western, Northern, South, Central and Eastern Europe)")),
-  tags$p(tags$em('Asia: 37 countries (including countries in the Middle East')),
-  tags$p(tags$em("Americas: 26 countries")),
-  tags$p(tags$em("Oceania: 2 countries")),
-  tags$p(),
-  tags$strong("2. General Observations"),
-  tags$p("Approximately 25% of the global population rates their happiness at the mid-point (5 out of 11)."),
-  tags$p("Significant disparities in average life evaluations exist among regions, notably between Africa and other continents and Oceania and the other continents."),
-  tags$p(),
-  tags$strong("3. Trends in Positive and Negative Affects"),
-  tags$p("Positive Affect: Higher on average but varies greatly between regions."),
-  tags$p("Negative Affect: Showed an increasing trend from 2010-2018, rising globally from 22% to 28%. This trend differs among regions."),
-  tags$p(),
-  tags$strong("4. Regional Variations and Economic Impacts"),
-  tags$p("Post-2007-2008 financial crisis, all regions experienced a drop in happiness, with Europe (Western, CIS, Central, and Eastern) showing varied recovery patterns."),
-  tags$p("Happiness convergence is observed in parts of Europe, but disparities remain, particularly between Central and Eastern Europe and the CIS."),
-  tags$p("Economic factors play a role, but other factors like trust and social relationships also significantly impact happiness levels."),
-  tags$p(),
-  tags$strong("5. Country-Level Happiness Averages"),
-  tags$p("Wide inter-country variations in happiness, with Northern Europe scoring highest (average 7.6) and sub-Saharan Africa lowest (average 3.4)."),
-  tags$p("Key factors contributing to these differences include income, healthy life expectancy, social support, perceived freedom, and corruption levels."),
-  tags$p(),
-  tags$strong('6. Inequality of Happiness'),
-  tags$p("Within-country happiness inequality varies significantly."),
-  tags$p("High-scoring countries exhibit varying levels of happiness equality. For example, Denmark and the Netherlands show more equality, whereas countries like Costa Rica and the U.S. display greater dispersion."),
-  tags$p("Income inequality trends in OECD countries do not necessarily correlate with happiness inequality."),
-  tags$p(),
-  tags$strong("Conclusion"),
-  tags$p("This analysis underscores that happiness is influenced by a complex interplay of economic, social, and institutional factors. The global happiness trend reveals significant regional disparities, influenced by both material and non-material aspects of life.")
+  tags$h3("Analysis", style = "text-align: center;"),
+  tagList(
+    tags$p(
+      "When partitioned based on region, we can see that all of them had a decrease in happiness score from when it was initially taken to when it was last taken."
+    ),
+    tags$p(
+      "All regions except Oceania saw a steep decline from 2005-2007 suggesting there was a global issue that affected a majority of the countries."
+    ),
+    tags$p(
+      "Countries in Africa have a lower happiness score average in comparison to other regions. This could suggest inner turmoil within the country and conflicts with neighboring countries. It could also be a result of their colonial past and exploitation by other countries."
+    )
+  )
+  
 )
+
+happinessTrendLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    "This graph looks at the trend of mean happiness scores of countries based on the continent where they are located between the years 2005-2022."
+  )
+)
+
+happinessTrendbysubRegionLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    "This graph looks at the trend of mean happiness scores of countries based on sub-region where they are located between the years 2005-2022."
+  )
+)
+
+TrendbyCountryLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    " This graph looks at the difference between the happiness score of a country when they initially recorded their score and the last record of their happiness score. This graph is used to help determine overall change in happiness that a country has experienced between 2005-2022."
+  ),
+  tags$p(
+    tags$span("Red:", style = "color:red;"),
+    " Initial happiness score recorded"
+  ),
+  tags$p(
+    tags$span("Blue:", style = "color:blue;"),
+    " Last happiness score recorded"
+  ),
+  tags$p(
+    tags$span("Green:", style = "color:green;"),
+    " Indicates increase in happiness score"
+  ),
+  tags$p(
+    tags$span("Black:", style = "color:black;"),
+    " Indicates decrease in happiness score"
+  )
+)
+
+TrendbyCountry.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(tags$strong("Regional Analysis")),
+  tags$p(tags$strong("North America:"), "13/27 increases, mixed results"),
+  tags$p(tags$strong("Oceania:"), "Two significant declines, no gains"),
+  tags$p(tags$strong("Europe:"),"23/41, increases, mixed results"),
+  tags$p(tags$strong("Sub-Saharan Africa:"),"26/49 gains, mixed results"),
+  tags$p(tags$strong("South and Southeast Asia:"), "23/47 Balanced mix of gains and losses."),
+  tags$h4("Top Gainers:", style = "text-align: center;"),
+  tags$p(tags$strong("Africa:"), "Chad, Congo Brazzaville"),
+  tags$p(tags$strong("Americas:"), "Nicaragua and Paraguay"),
+  tags$p(tags$strong("Asia:"), "Georgia and China"),
+  tags$p(tags$strong("Europe:"),"Bulgaria and Latvia"),
+  tags$h4("Top Losers:", style = "text-align: center;"),
+  tags$p(tags$strong("Africa:"), "Angola and Zambia"),
+  tags$p(tags$strong("Americas:"), "Venezuela"),
+  tags$p(tags$strong("Asia:"), "Lebanon and Afghanistan"),
+  tags$p(tags$strong("Europe:"), "Spain and Italy")
+)
+
+top.bottom.15.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  
+  tags$p("The top countries are those in the sub region of Northern Europe, Oceania, and North America"),
+  tags$p("The bottom countries are mostly populated by countries in Africa, as well as Haiti and Afghanistan."),
+  tags$p("Afghanistan could be very low because of the military presence between the years 2001-2021."),
+  tags$p("This analysis is in line with the graph from the first page where we saw that countries in Africa reported lower happiness scores than those in Europe and Oceania.")
+)
+
+top.bottom.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  
+  tags$p("This compares the happiness score over time of the happiest country and the least happy country."),
+  tags$p("We can see from this graph that both still see a decrease in happiness over time.")
+)
+
 
 warandpeace.background.content <- tagList(
   tags$h3("Happiness and Conflict", style = "text-align: center;"),
@@ -266,7 +321,7 @@ about.ACLED.content <- tagList(
 )
 
 works.cited.content <- tagList(
-  tags$h3("References"),
+  tags$h3("References", style = "text-align: center;"),
   tags$p(
   tags$em("COW War Data, 1816 – 2007 (v4.0) – Correlates of War"),
   ". (2020). Correlatesofwar.org. ",

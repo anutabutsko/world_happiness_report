@@ -38,8 +38,7 @@ ui <- dashboardPage(
                                           selectInput("Corruption_check", "Select Continent",
                                                       # names of the valid choices
                                                       choices =
-                                                        list('Africa', 'Americas', 
-                                                             'Asia' ,'Europe', 'Oceania'), 
+                                                        list('Africa', 'Americas', 'Asia' ,'Europe', 'Oceania'), 
                                                       selected = 'Africa'),
                                           selectInput("WHI_check", "Select Indicator",
                                                       # names of the valid choices
@@ -81,38 +80,39 @@ ui <- dashboardPage(
                 tabsetPanel(
                   tabPanel('Background',box(width = 12,
                                             htmlOutput('trendBackground'))),
-                  tabPanel('graph 1', tabsetPanel(
+                  tabPanel('graph 1', 
+                           tabsetPanel(
                     tabPanel("Happiness Trend By Continent",
                              box(title = "Happiness Lvl Over The Years By Continent", 
                                  status = "primary", solidHeader = TRUE,
-                                 width = 6, plotlyOutput('happinessTrend')),
-                             box(width = 6, htmlOutput('happinessByContinentText', style = "height: 440px; overflow-y: auto;"))
+                                 width = 8, plotlyOutput('happinessTrend')),
+                             box(width = 4, htmlOutput('happinessByContinentText', style = "height: 440px; overflow-y: auto;")),
+                             box(width = 8, htmlOutput('happinessTrendLegend'))
                     ),
                     tabPanel("Happiness Trend by Sub-region", 
                              box(status = "primary", solidHeader = TRUE,
-                                 width = 8, plotlyOutput('happinessSubregionTrend')),
-                             box(width = 4, 
-                                 p("This is a textbox to discribe the happiness trend by Continent"))))),
+                                 width = 12, plotlyOutput('happinessSubregionTrend')),
+                             box(width = 12, htmlOutput('happinessTrendbysubRegionLegend')
+                                 )))),
                   tabPanel('graph 2', box(title = "Happiness Trend Over Time by Country",
-                                          width = 12, selectInput("dumbell_check", "Select Continent",
+                                          width = 8, selectInput("dumbell_check", "Select Continent",
                                                                   # names of the valid choices
                                                                   choices =
-                                                                    list('Africa', 'Americas', 
-                                                                         'Asia' ,'Europe', 'Oceania'),
+                                                                    list('Africa', 'Americas', 'Asia' ,'Europe', 'Oceania'),
                                                                   selected = 'Africa'),
                                           plotOutput('dumbellWHITrend')),
-                           box(width = 12, 
-                               p("This is a textbox to discribe the Happiness Trend Over Time by Country"))),
-                  tabPanel('graph 3', box(width = 12, title = "Top and bottom 15 Countries",
+                           box(width = 4, htmlOutput('TrendbyCountry', style = "height: 520px; overflow-y: auto;")),
+                           box(width = 8,  htmlOutput('TrendbyCountryLegend')
+                               )),
+                  tabPanel('graph 3', box(width = 8, title = "Top and bottom 15 Countries",
                                           status = "primary", solidHeader = TRUE,
                                           plotlyOutput('TopBottom15')),
-                           box(width = 12,
-                               p("This is a textbox to discribe the Top and bottom 15 Countries"))),
-                  tabPanel('graph 4', box(width = 12, title = "Country Comparison of the Happiest and least Happiest", 
+                           box(width = 4, htmlOutput('top.bottom.15')
+                               )),
+                  tabPanel('graph 4', box(width = 8, title = "Country Comparison of the Happiest and least Happiest", 
                                           status = "primary", solidHeader = TRUE, 
                                           plotOutput('lowestHighestCountryComparsion')),                           
-                           box(width = 12, 
-                               p("This is a textbox to discribe the Country Comparison of the Happiest and least Happiest")))
+                           box(width = 4, htmlOutput('top.bottom')))
                 ) # tabsetPanel 
               )),
       tabItem(tabName = "warandpeace",
@@ -136,8 +136,7 @@ ui <- dashboardPage(
                                           selectInput("Outcome_check", "Select Continent",
                                                       # names of the valid choices
                                                       choices =
-                                                        list('Overview', 'Africa', 'Americas', 
-                                                             'Asia' ,'Europe', 'Oceania'),
+                                                        list('Overview', 'Africa', 'Americas', 'Asia' ,'Europe', 'Oceania'),
                                                       selected = 'Overview'),
                                           plotlyOutput('WarOutcomes')
                   ),
@@ -238,6 +237,30 @@ server <- function(input, output) {
   
   output$happinessByContinentText <- renderUI({
     tagList(happinessByContinentText.content)
+  })
+  
+  output$happinessTrendLegend <- renderUI({
+    tagList(happinessTrendLegend.content)
+  })
+  
+  output$happinessTrendbysubRegionLegend <- renderUI({
+    tagList(happinessTrendbysubRegionLegend.content)
+  })
+  
+  output$TrendbyCountryLegend <- renderUI({
+    tagList(TrendbyCountryLegend.content)
+  })
+  
+  output$TrendbyCountry <- renderUI({
+    tagList(TrendbyCountry.content)
+  })
+  
+  output$top.bottom.15 <- renderUI({
+    tagList(top.bottom.15.content)
+  })
+  
+  output$top.bottom <- renderUI({
+    tagList(top.bottom.content)
   })
   
   output$warandpeace.background.content <- renderUI({
