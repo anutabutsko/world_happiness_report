@@ -1,5 +1,119 @@
+projectIntroduction.content <- tagList(
+  tags$h3("World Happiness Report Analysis", style = "text-align: center;"),
+  tags$h5("by Emma Horton, Hanna Butsko, Jin YuHan Burgess", style = "text-align: center;"),
+  tags$p(),
+  tags$p(
+    "The primary aim of this project is to undertake a comprehensive analysis of the extensive World Happiness Report dataset spanning from 2005 to the present,",
+    "which is available on Kaggle. Supplementary datasets will be incorporated to provide a robust foundation for statistical analysis and exploration of",
+    "the intricate relationships within the data."),
+  tags$p(),
+  tags$p("Several key questions will be addressed through this analysis:"),
+  tags$p(),
+  tags$strong("Influences of Happiness", style = "text-align: center;"),
+  tags$p(),
+  tags$p(tags$strong("1."), "Is there a statistically significant relationship between key happiness indicators (GDP per capita, perception of corruption, generosity) ",
+           "and the happiness scores of individual countries?"),
+  tags$p(tags$strong("2."), "How does each happiness indicator correlate with happiness scores, and is this correlation consistent across different regions?"),
+  tags$p(),
+  tags$strong("Happiness Trend"),
+  tags$p(),
+  tags$p(tags$strong("1."), "Can significant trends in global happiness be identified over the years, and how do these trends vary when analyzed in conjunction with different variables?"),
+  tags$p(tags$strong("2."), "How has overall happiness changed globally from 2005 to the present?"),
+  tags$p(tags$strong("3."), "Are there specific time periods where happiness has notably increased or decreased?"),
+  tags$p(),
+  tags$strong("Happiness and Conflict"),
+  tags$p(),
+  tags$p(tags$strong("1."), "What is the exploratory relationship between the happiness scores of countries and their involvement in or exposure to war and conflict?"),
+  tags$p(tags$strong("2."), "Are there discernible patterns in happiness scores during and after periods of conflict?")
+)
+
+influenceofHappiness.background.content <- tagList(
+  tags$h3("Influencers of Happiness", style = "text-align: center;"),
+  tags$p("The World Happiness Report is a publication of the Sustainable Development Solutions Network, powered by the Gallup World Poll data. The World Happiness Report reflects a worldwide demand for more attention to happiness and well-being as criteria for government policy. It reviews the state of happiness in the world today and shows how the science of happiness explains personal and national variations in happiness. We conduct an exploratory analysis on the strength of correlation between the variables within the World Happiness Report dataset."),
+  tags$p(),
+  tags$strong("World Happiness Report:"),
+  tags$p("The", tags$span("World Happiness Report, 2005-Present", style = "color:blue"), "dataset contains data from years 2005 to 2022. The dataset looks at six factors that affect a country’s happiness score, in addition to other factors:", tags$em('Positive Affect'), "and", tags$em('Negative Affect'), ".")
+)
+
+WHR.content <- tagList(
+  tags$h3("The World Happiness Report, 2005-Present", style = "text-align: center;"),
+  tags$p("Life evaluations from the Gallup World Poll provide the basis for the annual happiness rankings. They are based on answers to the main life evaluation question."),
+  tags$p(
+    tags$strong("1. Log GDP per capita:"),
+    "This is in terms of Purchasing Power Parity (PPP) adjusted to a constant 2017 international dollars, taken from the World Development Indicators (WDI) by the World Bank. GDP data for 2022 are pulled from the 2021 to 2022 set using country-specific forecasts of real GDP growth from the OECD Economic Outlook in November 2022 or, if missing, from the World Bank’s Global Economic Prospects, after adjustment for population growth. The equation uses the natural log of GDP per capita."
+  ),
+  tags$p(
+    tags$strong("2. Healthy life expectancy at birth:"),
+    "Constructed based on data from the World Health Organization (WHO) Global Health Observatory data repository, with data available for 2005, 2010, 2015, 2016, and 2019. To match this report’s sample period (2005-2022), interpolation and extrapolation are used."
+  ),
+  tags$p(
+    tags$strong("3. Social support (0-1):"),
+    "The national average of the binary responses (0=no, 1=yes) to the Gallup World Poll (GWP) question 'If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?'"
+  ),
+  tags$p(
+    tags$strong("4. Freedom to make life choices (0-1):"),
+    "The national average of binary responses to the GWP question 'Are you satisfied or dissatisfied with your freedom to choose what you do with your life?'"
+  ),
+  tags$p(
+    tags$strong("5. Generosity:"),
+    "The residual of regressing the national average of GWP responses to the donation question 'Have you donated money to a charity in the past month?' on log GDP per capita."
+  ),
+  tags$p(
+    tags$strong("6. Perceptions of corruption (0-1):"),
+    "The average of binary answers to two GWP questions: 'Is corruption widespread throughout the government or not?' and 'Is corruption widespread within businesses or not?' Where data for government corruption are missing, the perception of business corruption is used as the overall corruption perception measure."
+  ),
+  tags$p(
+    tags$strong("7. Positive affect:"),
+    "Defined as the average of previous-day effects measures for laughter, enjoyment, and interest. The inclusion of interest (first added for World Happiness Report 2022). The general form for the affect questions is: 'Did you experience the following feelings during a lot of the day yesterday?'"
+  ),
+  tags$p(
+    tags$strong("8. Negative affect:"),
+    "Defined as the average of previous-day effects measures for worry, sadness, and anger."
+  )
+)
+
+correlationMatrix.content<- tagList(
+  tags$h3("Correlation Analysis: Happiness and Key Factors", style = "text-align: center;"),
+  
+  tags$p(
+    tags$strong("Strong Positive Correlation:"),
+    tags$ul(
+      tags$li("Log GDP per Capita: There is a robust positive correlation between a country's happiness and its logarithmic GDP per capita. Higher GDP per capita tends to be associated with increased happiness."),
+      tags$li("Social Support: Countries where individuals report having strong social support networks tend to exhibit higher happiness levels. The positive influence of social connections contributes significantly to overall well-being."),
+      tags$li("Healthy Life Expectancy at Birth: Happiness is positively correlated with the healthy life expectancy at birth. Longer, healthier lives are associated with higher levels of happiness."),
+      tags$li("Freedom to Make Life Choices: Individuals in countries where there is a greater perceived freedom to make life choices tend to report higher levels of happiness."),
+      tags$li("Positive Affect: The presence of positive affect, including experiences of laughter, enjoyment, and interest, is strongly correlated with overall happiness levels.")
+    )
+  ),
+  
+  tags$p(
+    tags$strong("Less Significant Relationship:"),
+    tags$ul(
+      tags$li("Confidence in National Government: The relationship between confidence in the national government and happiness is less pronounced. While there may be some influence, it is not as statistically significant compared to the factors mentioned above.")
+    )
+  ),
+  
+  tags$p(
+    tags$strong("Strong Negative Correlation:"),
+    tags$ul(
+      tags$li("Perception of Corruption and Negative Affect: There is a strong negative correlation between happiness and the perception of corruption, as well as negative affect. Higher levels of perceived corruption and experiences of negative affect are associated with lower overall happiness.")
+    )
+  )
+)
+
+trendBackground.content <- tagList(
+  tags$h3("Happiness Trend", style = "text-align: center;"),
+  tags$p("This page looks at the happiness trend over time from 2005-2022. The objective, is to determine the general trend of happiness scores of countries and determine the significance of the trends. Analysis is also done when the data is partitioned based on Continent and sub-region.
+         From this analysis, we can determine if countries in close proximity have similar scores."),
+  tags$p(),
+  tags$strong("World Happiness Report:"),
+  tags$p("The", tags$span("World Happiness Report, 2005-Present", style = "color:blue"), "dataset contains data from years 2005 to 2022. The dataset looks at six factors that affect a country’s happiness score, in addition to other factors:", tags$em('Positive Affect'), "and", tags$em('Negative Affect'), "."),
+  tags$p(),
+  tags$strong("Look to About section in Influencers of Happiness tab")
+)
+
 happinessByContinentText.content <- tagList(
-  tags$h3("Global Happiness Trends and Analysis by Continent"),
+  tags$h3("Global Happiness Trends and Analysis by Continent", style = "text-align: center;"),
   tags$strong("1. Country Distribution by Continent"),
   tags$p(tags$em("Africa: 43 countries")),
   tags$p(tags$em("Europe: 38 countries (including Western Europe, CIS, Central, and Eastern Europe)")),
@@ -34,7 +148,7 @@ happinessByContinentText.content <- tagList(
 )
 
 warandpeace.background.content <- tagList(
-  tags$h3("Happiness and Conflict"),
+  tags$h3("Happiness and Conflict", style = "text-align: center;"),
   tags$p("This section delves into the correlation between war and conflict and a country's Happiness Score. The project draws upon one dataset from the Correlates of War Project and two datasets from the ACLED curated data catalog. The correlation between war and conflict and a country's happiness level is explored, recognizing that ongoing conflicts can lead to a decline in the maintenance of social infrastructure. This page examines potential trends between global conflicts and the Happiness Scores of countries, shedding light on the complex interplay between geopolitical factors and well-being."),
   tags$p(),
   tags$strong("The Correlate of War Project:"),
@@ -46,7 +160,7 @@ warandpeace.background.content <- tagList(
 
     # Your existing content goes here
 about.COW.content <- tagList(
-  tags$h3("The Correlates of War (COW) Project"),
+  tags$h3("The Correlates of War (COW) Project", style = "text-align: center;"),
   tags$p("The Correlates of War (COW) project facilitates the collection, dissemination, and use of free resource, quantitative data in international relations."),
   tags$p(),
   tags$strong("The wars identified in this dataset meet certain requirements:"),
@@ -96,7 +210,7 @@ about.COW.content <- tagList(
 )
 
 about.ACLED.content <- tagList(
-  tags$h3("The ACLED Data Project"),
+  tags$h3("The ACLED Data Project", style = "text-align: center;"),
   tags$p("The ACLED is an event-based data project designed for disaggregated conflict analysis and crisis mapping."),
   tags$p(),
   tags$p("Demonstrations: All protest and violent demonstration events (may overlap with political violence files as they both include Excessive force against protesters)"),

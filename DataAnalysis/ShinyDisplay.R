@@ -17,18 +17,20 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       # what you will see when you are in the dashboard tab
-      tabItem(tabName = "exploratory", box(width = 12)
+      tabItem(tabName = "exploratory", box(width = 12, htmlOutput('projectIntroduction'))
               ), # tabItem1
       tabItem(tabName = "Happiness",
               fluidRow(
                 tabsetPanel(
-                  tabPanel('Background', box(width = 12, 
-                                             p("General Discription for the panels within the happiness page."))),
+                  tabPanel('Background', box(width = 12, htmlOutput('influenceofHappiness.background')),
+                           tabsetPanel(
+                           tabPanel('About the World Happiness Report', 
+                                    box(width = 12, htmlOutput('WHR', 
+                                                               style = "height: 250px; overflow-y: auto;"))))),
                   tabPanel('graph 1', box(title = "Corr. Matrix of Happiness Indicators", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotlyOutput('correlationMatrix')),
-                           box(width = 12, 
-                               p("Textbox to discribe corr. matrix of Happiness Indicators"))),
+                                          width = 7, plotlyOutput('correlationMatrix')),
+                           box(width = 5, htmlOutput('corrleationMaxtrix', style = "height: 440px; overflow-y: auto;"))),
                   tabPanel('graph 2', box(width = 12, 
                                           title = "Happiness Indicators and Happiness by Continent", 
                                           status = "primary", solidHeader = TRUE,
@@ -78,7 +80,7 @@ ui <- dashboardPage(
               fluidRow(
                 tabsetPanel(
                   tabPanel('Background',box(width = 12,
-                                            p("General Discription for the panels within the exploratory page."))),
+                                            htmlOutput('trendBackground'))),
                   tabPanel('graph 1', tabsetPanel(
                     tabPanel("Happiness Trend By Continent",
                              box(title = "Happiness Lvl Over The Years By Continent", 
@@ -206,6 +208,26 @@ server <- function(input, output) {
   })
   
   # text description 
+  output$projectIntroduction <- renderUI({
+    tagList(projectIntroduction.content)
+  })
+  
+  output$influenceofHappiness.background <- renderUI({
+    tagList(influenceofHappiness.background.content)
+  })
+  
+  output$WHR <- renderUI({
+    tagList(WHR.content)
+  })
+  
+  output$corrleationMaxtrix <-renderUI({
+    tagList(correlationMatrix.content)
+  })
+  
+  output$trendBackground <- renderUI({
+    tagList(trendBackground.content)
+  })
+  
   output$happinessByContinentText <- renderUI({
     tagList(happinessByContinentText.content)
   })
