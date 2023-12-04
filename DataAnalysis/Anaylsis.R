@@ -1,40 +1,251 @@
-happinessByContinentText.content <- tagList(
-  tags$h3("Global Happiness Trends and Analysis by Continent"),
-  tags$strong("1. Country Distribution by Continent"),
-  tags$p(tags$em("Africa: 43 countries")),
-  tags$p(tags$em("Europe: 38 countries (including Western Europe, CIS, Central, and Eastern Europe)")),
-  tags$p(tags$em('Asia: 37 countries')),
-  tags$p(tags$em("Americas: 26 countries")),
-  tags$p(tags$em("Oceania: 2 countries")),
+# output$happinessIndicatorByContinent <- renderUI({
+#   tagList(happinessIndicatorByContinent.content)
+# })
+# 
+# output$happinessIndicatorDistribution <- renderUI({
+#   tagList(happinessIndicatorDistribution.content)
+# })
+
+projectIntroduction.content <- tagList(
+  tags$h3("World Happiness Report Analysis", style = "text-align: center;"),
+  tags$h5("by Emma Horton, Hanna Butsko, Jin YuHan Burgess", style = "text-align: center;"),
   tags$p(),
-  tags$strong("2. General Observations"),
-  tags$p("Approximately 25% of the global population rates their happiness at the mid-point (5 out of 11)."),
-  tags$p("Significant disparities in average life evaluations exist among regions, notably between Africa and other continents and Oceania and the other continents."),
+  tags$p(
+    "The primary aim of this project is to undertake a comprehensive analysis of the extensive World Happiness Report dataset spanning from 2005 to the present,",
+    "which is available on Kaggle. Supplementary datasets will be incorporated to provide a robust foundation for statistical analysis and exploration of",
+    "the intricate relationships within the data."),
   tags$p(),
-  tags$strong("3. Trends in Positive and Negative Affects"),
-  tags$p("Positive Affect: Higher on average but varies greatly between regions."),
-  tags$p("Negative Affect: Showed an increasing trend from 2010-2018, rising globally from 22% to 28%. This trend differs among regions."),
+  tags$p("Several key questions will be addressed through this analysis:"),
   tags$p(),
-  tags$strong("4. Regional Variations and Economic Impacts"),
-  tags$p("Post-2007-2008 financial crisis, all regions experienced a drop in happiness, with Europe (Western, CIS, Central, and Eastern) showing varied recovery patterns."),
-  tags$p("Happiness convergence is observed in parts of Europe, but disparities remain, particularly between Central and Eastern Europe and the CIS."),
-  tags$p("Economic factors play a role, but other factors like trust and social relationships also significantly impact happiness levels."),
+  tags$strong("Influencers of Happiness", style = "text-align: center;"),
   tags$p(),
-  tags$strong("5. Country-Level Happiness Averages"),
-  tags$p("Wide inter-country variations in happiness, with Northern Europe scoring highest (average 7.6) and sub-Saharan Africa lowest (average 3.4)."),
-  tags$p("Key factors contributing to these differences include income, healthy life expectancy, social support, perceived freedom, and corruption levels."),
+  tags$p(tags$strong("1."), "Is there a statistically significant relationship between key happiness indicators (GDP per capita, perception of corruption, generosity) ",
+           "and the happiness scores of individual countries?"),
+  tags$p(tags$strong("2."), "How does each happiness indicator correlate with happiness scores, and is this correlation consistent across different regions?"),
   tags$p(),
-  tags$strong('6. Inequality of Happiness'),
-  tags$p("Within-country happiness inequality varies significantly."),
-  tags$p("High-scoring countries exhibit varying levels of happiness equality. For example, Denmark and the Netherlands show more equality, whereas countries like Costa Rica and the U.S. display greater dispersion."),
-  tags$p("Income inequality trends in OECD countries do not necessarily correlate with happiness inequality."),
+  tags$strong("Happiness Trend"),
   tags$p(),
-  tags$strong("Conclusion"),
-  tags$p("This analysis underscores that happiness is influenced by a complex interplay of economic, social, and institutional factors. The global happiness trend reveals significant regional disparities, influenced by both material and non-material aspects of life.")
+  tags$p(tags$strong("1."), "Can significant trends in global happiness be identified over the years, and how do these trends vary when analyzed in conjunction with different variables?"),
+  tags$p(tags$strong("2."), "How has overall happiness changed globally from 2005 to the present?"),
+  tags$p(tags$strong("3."), "Are there specific time periods where happiness has notably increased or decreased?"),
+  tags$p(),
+  tags$strong("Happiness and Conflicts"),
+  tags$p(),
+  tags$p(tags$strong("1."), "What is the exploratory relationship between the happiness scores of countries and their involvement in or exposure to war and conflict?"),
+  tags$p(tags$strong("2."), "Are there discernible patterns in happiness scores during and after periods of conflict?")
 )
 
+influenceofHappiness.background.content <- tagList(
+  tags$h3("Influencers of Happiness", style = "text-align: center;"),
+  tags$p("The World Happiness Report is a publication of the Sustainable Development Solutions Network, powered by the Gallup World Poll data. The World Happiness Report reflects a worldwide demand for more attention to happiness and well-being as criteria for government policy. It reviews the state of happiness in the world today and shows how the science of happiness explains personal and national variations in happiness. We conduct an exploratory analysis on the strength of correlation between the variables within the World Happiness Report dataset."),
+  tags$p(),
+  tags$strong("World Happiness Report:"),
+  tags$p("The", tags$span("World Happiness Report, 2005-Present", style = "color:blue"), "dataset contains data from years 2005 to 2022. The dataset looks at six factors that affect a country’s happiness score, in addition to other factors:", tags$em('Positive Affect'), "and", tags$em('Negative Affect'), ".")
+)
+
+WHR.content <- tagList(
+  tags$h3("The World Happiness Report, 2005-Present", style = "text-align: center;"),
+  tags$p("Life evaluations from the Gallup World Poll provide the basis for the annual happiness rankings. They are based on answers to the main life evaluation question."),
+  tags$p(
+    tags$strong("1. Log GDP per capita:"),
+    "This is in terms of Purchasing Power Parity (PPP) adjusted to a constant 2017 international dollars, taken from the World Development Indicators (WDI) by the World Bank. GDP data for 2022 are pulled from the 2021 to 2022 set using country-specific forecasts of real GDP growth from the OECD Economic Outlook in November 2022 or, if missing, from the World Bank’s Global Economic Prospects, after adjustment for population growth. The equation uses the natural log of GDP per capita."
+  ),
+  tags$p(
+    tags$strong("2. Healthy life expectancy at birth:"),
+    "Constructed based on data from the World Health Organization (WHO) Global Health Observatory data repository, with data available for 2005, 2010, 2015, 2016, and 2019. To match this report’s sample period (2005-2022), interpolation and extrapolation are used."
+  ),
+  tags$p(
+    tags$strong("3. Social support (0-1):"),
+    "The national average of the binary responses (0=no, 1=yes) to the Gallup World Poll (GWP) question 'If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?'"
+  ),
+  tags$p(
+    tags$strong("4. Freedom to make life choices (0-1):"),
+    "The national average of binary responses to the GWP question 'Are you satisfied or dissatisfied with your freedom to choose what you do with your life?'"
+  ),
+  tags$p(
+    tags$strong("5. Generosity:"),
+    "The residual of regressing the national average of GWP responses to the donation question 'Have you donated money to a charity in the past month?' on log GDP per capita."
+  ),
+  tags$p(
+    tags$strong("6. Perceptions of corruption (0-1):"),
+    "The average of binary answers to two GWP questions: 'Is corruption widespread throughout the government or not?' and 'Is corruption widespread within businesses or not?' Where data for government corruption are missing, the perception of business corruption is used as the overall corruption perception measure."
+  ),
+  tags$p(
+    tags$strong("7. Positive affect:"),
+    "Defined as the average of previous-day effects measures for laughter, enjoyment, and interest. The inclusion of interest (first added for World Happiness Report 2022). The general form for the affect questions is: 'Did you experience the following feelings during a lot of the day yesterday?'"
+  ),
+  tags$p(
+    tags$strong("8. Negative affect:"),
+    "Defined as the average of previous-day effects measures for worry, sadness, and anger."
+  )
+)
+
+correlationMaxtrixText.content<- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  
+  tags$p(
+    tags$strong("Strong Positive Correlation:"),
+    tags$ul(
+      tags$li("Log GDP per Capita: There is a robust positive correlation between a country's happiness and its logarithmic GDP per capita. Higher GDP per capita tends to be associated with increased happiness."),
+      tags$li("Social Support: Countries where individuals report having strong social support networks tend to exhibit higher happiness levels. The positive influence of social connections contributes significantly to overall well-being."),
+      tags$li("Healthy Life Expectancy at Birth: Happiness is positively correlated with the healthy life expectancy at birth. Longer, healthier lives are associated with higher levels of happiness."),
+      tags$li("Freedom to Make Life Choices: Individuals in countries where there is a greater perceived freedom to make life choices tend to report higher levels of happiness."),
+      tags$li("Positive Affect: The presence of positive affect, including experiences of laughter, enjoyment, and interest, is strongly correlated with overall happiness levels.")
+    )
+  ),
+  
+  tags$p(
+    tags$strong("Less Significant Relationship:"),
+    tags$ul(
+      tags$li("Confidence in National Government: The relationship between confidence in the national government and happiness is less pronounced. While there may be some influence, it is not as statistically significant compared to the factors mentioned above.")
+    )
+  ),
+  
+  tags$p(
+    tags$strong("Strong Negative Correlation:"),
+    tags$ul(
+      tags$li("Perception of Corruption and Negative Affect: There is a strong negative correlation between happiness and the perception of corruption, as well as negative affect. Higher levels of perceived corruption and experiences of negative affect are associated with lower overall happiness.")
+    )
+  )
+)
+
+happinessIndicatorByContinent.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(
+    tags$strong("Oceania:"),
+    "The only region that has a negative correlation between happiness and GDP per capita, and healthy life expectancy at birth. The countries considered in the region “Oceania” are New Zealand and Australia. The negative correlation could be a result of these two countries being islands."
+  ),
+  tags$p(
+    tags$strong("Oceania and Europe:"),
+    "Look to have a positive correlation between happiness and generosity, whereas countries from other continents have either no correlation or a negative correlation."
+  ),
+  tags$p(
+    "There is a general positive correlation between Positive Affect (laughter, enjoyment, and interest) and Happiness score."
+  ),
+  tags$p(
+    tags$strong("Africa and Asia:"),
+    "Are the only two continents that do not have a positive correlation between happiness and confidence in the national government. The various governmental structures within these continents, such as one-state government, constitutional monarchy, and democracy, may result in stronger or weaker correlations with happiness."
+  ),
+  tags$p(
+    "Unlike the comparison between happiness and confidence in the national government, all regions see a negative correlation between happiness and perception of corruption. As corruption decreases, the happiness score increases.")
+)
+
+happinessIndicatorDistribution.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(
+    tags$strong("GDP per Capita:"),
+    "Although the region Oceania has a negative correlation with happiness, a majority of their GDP is well above the rest of the countries."
+  ),
+  tags$p(
+    tags$strong("Perception of Corruption:"),
+    "Oceania has the lowest level of Perception of Corruption compared to other regions."
+  )
+)
+
+  
+trendBackground.content <- tagList(
+  tags$h3("Happiness Trend", style = "text-align: center;"),
+  tags$p("This page looks at the happiness trend over time from 2005-2022. The objective, is to determine the general trend of happiness scores of countries and determine the significance of the trends. Analysis is also done when the data is partitioned based on Continent and sub-region.
+         From this analysis, we can determine if countries in close proximity have similar scores."),
+  tags$p(),
+  tags$strong("World Happiness Report:"),
+  tags$p("The", tags$span("World Happiness Report, 2005-Present", style = "color:blue"), "dataset contains data from years 2005 to 2022. The dataset looks at six factors that affect a country’s happiness score, in addition to other factors:", tags$em('Positive Affect'), "and", tags$em('Negative Affect'), "."),
+  tags$p(),
+  tags$strong("Look to About section in Influencers of Happiness tab")
+)
+
+happinessByContinentText.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tagList(
+    tags$p(
+      "When partitioned based on region, we can see that all of them had a decrease in happiness score from when it was initially taken to when it was last taken."
+    ),
+    tags$p(
+      "All regions except Oceania saw a steep decline from 2005-2007 suggesting there was a global issue that affected a majority of the countries."
+    ),
+    tags$p(
+      "Countries in Africa have a lower happiness score average in comparison to other regions. This could suggest inner turmoil within the country and conflicts with neighboring countries. It could also be a result of their colonial past and exploitation by other countries."
+    )
+  )
+  
+)
+
+happinessTrendLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    "This graph looks at the trend of mean happiness scores of countries based on the continent where they are located between the years 2005-2022."
+  )
+)
+
+happinessTrendbysubRegionLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    "This graph looks at the trend of mean happiness scores of countries based on sub-region where they are located between the years 2005-2022."
+  )
+)
+
+TrendbyCountryLegend.content <- tagList(
+  tags$p(
+    tags$strong("Legend:"),
+    " This graph looks at the difference between the happiness score of a country when they initially recorded their score and the last record of their happiness score. This graph is used to help determine overall change in happiness that a country has experienced between 2005-2022."
+  ),
+  tags$p(
+    tags$span("Red:", style = "color:red;"),
+    " Initial happiness score recorded"
+  ),
+  tags$p(
+    tags$span("Blue:", style = "color:blue;"),
+    " Last happiness score recorded"
+  ),
+  tags$p(
+    tags$span("Green:", style = "color:green;"),
+    " Indicates increase in happiness score"
+  ),
+  tags$p(
+    tags$span("Black:", style = "color:black;"),
+    " Indicates decrease in happiness score"
+  )
+)
+
+TrendbyCountry.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(tags$strong("Regional Analysis")),
+  tags$p(tags$strong("North America:"), "13/27 increases, mixed results"),
+  tags$p(tags$strong("Oceania:"), "Two significant declines, no gains"),
+  tags$p(tags$strong("Europe:"),"23/41, increases, mixed results"),
+  tags$p(tags$strong("Sub-Saharan Africa:"),"26/49 gains, mixed results"),
+  tags$p(tags$strong("South and Southeast Asia:"), "23/47 Balanced mix of gains and losses."),
+  tags$h4("Top Gainers:", style = "text-align: center;"),
+  tags$p(tags$strong("Africa:"), "Chad, Congo Brazzaville"),
+  tags$p(tags$strong("Americas:"), "Nicaragua and Paraguay"),
+  tags$p(tags$strong("Asia:"), "Georgia and China"),
+  tags$p(tags$strong("Europe:"),"Bulgaria and Latvia"),
+  tags$h4("Top Losers:", style = "text-align: center;"),
+  tags$p(tags$strong("Africa:"), "Angola and Zambia"),
+  tags$p(tags$strong("Americas:"), "Venezuela"),
+  tags$p(tags$strong("Asia:"), "Lebanon and Afghanistan"),
+  tags$p(tags$strong("Europe:"), "Spain and Italy")
+)
+
+top.bottom.15.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  
+  tags$p("The top countries are those in the sub region of Northern Europe, Oceania, and North America"),
+  tags$p("The bottom countries are mostly populated by countries in Africa, as well as Haiti and Afghanistan."),
+  tags$p("Afghanistan could be very low because of the military presence between the years 2001-2021."),
+  tags$p("This analysis is in line with the graph from the first page where we saw that countries in Africa reported lower happiness scores than those in Europe and Oceania.")
+)
+
+top.bottom.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  
+  tags$p("This compares the happiness score over time of the happiest country and the least happy country."),
+  tags$p("We can see from this graph that both still see a decrease in happiness over time.")
+)
+
+
 warandpeace.background.content <- tagList(
-  tags$h3("Happiness and Conflict"),
+  tags$h3("Happiness and Conflict", style = "text-align: center;"),
   tags$p("This section delves into the correlation between war and conflict and a country's Happiness Score. The project draws upon one dataset from the Correlates of War Project and two datasets from the ACLED curated data catalog. The correlation between war and conflict and a country's happiness level is explored, recognizing that ongoing conflicts can lead to a decline in the maintenance of social infrastructure. This page examines potential trends between global conflicts and the Happiness Scores of countries, shedding light on the complex interplay between geopolitical factors and well-being."),
   tags$p(),
   tags$strong("The Correlate of War Project:"),
@@ -46,7 +257,7 @@ warandpeace.background.content <- tagList(
 
     # Your existing content goes here
 about.COW.content <- tagList(
-  tags$h3("The Correlates of War (COW) Project"),
+  tags$h3("The Correlates of War (COW) Project", style = "text-align: center;"),
   tags$p("The Correlates of War (COW) project facilitates the collection, dissemination, and use of free resource, quantitative data in international relations."),
   tags$p(),
   tags$strong("The wars identified in this dataset meet certain requirements:"),
@@ -96,7 +307,7 @@ about.COW.content <- tagList(
 )
 
 about.ACLED.content <- tagList(
-  tags$h3("The ACLED Data Project"),
+  tags$h3("The ACLED Data Project", style = "text-align: center;"),
   tags$p("The ACLED is an event-based data project designed for disaggregated conflict analysis and crisis mapping."),
   tags$p(),
   tags$p("Demonstrations: All protest and violent demonstration events (may overlap with political violence files as they both include Excessive force against protesters)"),
@@ -109,8 +320,32 @@ about.ACLED.content <- tagList(
   tags$p("Events - Occurrence of Instances")
 )
 
+treemap.content <- tagList(
+  tags$p(
+    tags$strong("Treemap Analysis:"),
+    "This treemap visualizes the frequency of wars fought on each continent and the countries involved, based on their continent of origin."
+  ),
+  tags$p(
+    "We expect that countries from each continent will take up a majority of the space within that continent. For example, in wars in Europe, the major actors are European countries, followed by Middle Eastern countries, and then North American countries."
+  ),
+  tags$p(
+    "Interestingly, we can observe that European countries are the second-largest cohort to fight in wars that are not within their respective continent."
+  )
+)
+
+war.stackedBar.content <- tagList(
+  tags$p(
+    tags$strong("Overview:"),
+    "European countries tend to win a majority of their wars compared to other countries. This could be attributed to the military superiority that these countries have over others."
+  ),
+  tags$p(
+    tags$strong("Africa:"),
+    "Countries experiencing losses in wars are primarily located on the northern side of Africa. There is a possibility that these losses result from battles with countries outside of Europe due to their proximity to European countries and the Middle East."
+  )
+)
+
 works.cited.content <- tagList(
-  tags$h3("References"),
+  tags$h3("References", style = "text-align: center;"),
   tags$p(
   tags$em("COW War Data, 1816 – 2007 (v4.0) – Correlates of War"),
   ". (2020). Correlatesofwar.org. ",
@@ -130,6 +365,11 @@ works.cited.content <- tagList(
   tags$em("The R Graph Gallery – Help and inspiration for R charts"),
   ". The R Graph Gallery. ",
   tags$a(href = "https://r-graph-gallery.com/", "https://r-graph-gallery.com/")),
+  tags$p(
+    tags$em("Online Courses - Learn Anything, On Your Schedule | Udemy."),
+    " (2023). Udemy; Udemy.",
+    tags$a(href = "https://www.udemy.com/join/login-popup/?next=/course/learn-ggplot2-in-r-for-data-viz/learn/lecture/27058534#overview", "Link Text")
+  ),
   tags$p(
   tags$em("Shiny - Build a user interface"),
   ". (2023). Posit.co. ",
