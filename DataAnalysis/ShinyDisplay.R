@@ -298,7 +298,8 @@ server <- function(input, output) {
       geom_violin(aes(fill=region), alpha=0.5, color=NA, scale="area", show.legend=FALSE) +
       geom_boxplot(aes(fill=NA), alpha=0.3, width=0.15, outlier.alpha=1, show.legend=FALSE) +
       scale_fill_viridis(discrete=TRUE) +
-      labs("title" = paste("Distribution of", input$Happiness_check, "by Continent"), x= input$Happiness_check)
+      labs("title" = paste("Distribution of", input$Happiness_check, "by Continent"), x= input$Happiness_check) +
+      theme_minimal()
   })
   
   output$TopBottom15 <- renderPlotly({
