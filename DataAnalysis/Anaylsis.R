@@ -320,6 +320,30 @@ about.ACLED.content <- tagList(
   tags$p("Events - Occurrence of Instances")
 )
 
+treemap.content <- tagList(
+  tags$p(
+    tags$strong("Treemap Analysis:"),
+    "This treemap visualizes the frequency of wars fought on each continent and the countries involved, based on their continent of origin."
+  ),
+  tags$p(
+    "We expect that countries from each continent will take up a majority of the space within that continent. For example, in wars in Europe, the major actors are European countries, followed by Middle Eastern countries, and then North American countries."
+  ),
+  tags$p(
+    "Interestingly, we can observe that European countries are the second-largest cohort to fight in wars that are not within their respective continent."
+  )
+)
+
+war.stackedBar.content <- tagList(
+  tags$p(
+    tags$strong("Overview:"),
+    "European countries tend to win a majority of their wars compared to other countries. This could be attributed to the military superiority that these countries have over others."
+  ),
+  tags$p(
+    tags$strong("Africa:"),
+    "Countries experiencing losses in wars are primarily located on the northern side of Africa. There is a possibility that these losses result from battles with countries outside of Europe due to their proximity to European countries and the Middle East."
+  )
+)
+
 works.cited.content <- tagList(
   tags$h3("References", style = "text-align: center;"),
   tags$p(
@@ -341,6 +365,11 @@ works.cited.content <- tagList(
   tags$em("The R Graph Gallery – Help and inspiration for R charts"),
   ". The R Graph Gallery. ",
   tags$a(href = "https://r-graph-gallery.com/", "https://r-graph-gallery.com/")),
+  tags$p(
+    tags$em("Online Courses - Learn Anything, On Your Schedule | Udemy."),
+    " (2023). Udemy; Udemy.",
+    tags$a(href = "https://www.udemy.com/join/login-popup/?next=/course/learn-ggplot2-in-r-for-data-viz/learn/lecture/27058534#overview", "Link Text")
+  ),
   tags$p(
   tags$em("Shiny - Build a user interface"),
   ". (2023). Posit.co. ",

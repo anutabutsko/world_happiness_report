@@ -127,10 +127,10 @@ ui <- dashboardPage(
                                 tabPanel("About ACLED Cured Data", 
                                          box(width = 12, htmlOutput('about.ACLED.content'))
                                  ))),
-                  tabPanel('graph 1', box(width = 12,
+                  tabPanel('graph 1', box(width = 8,
                                           plotOutput('TreeMapConflicts')),
-                           box(width = 12, p("Textbox to discribe the tree map conflict"))),
-                  tabPanel('graph 2', box(width = 12, title = 'War Outcome of Countries', 
+                           box(width = 4, htmlOutput('treemapLegend'))),
+                  tabPanel('graph 2', box(width = 9, title = 'War Outcome of Countries', 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
                                           selectInput("Outcome_check", "Select Continent",
@@ -140,8 +140,8 @@ ui <- dashboardPage(
                                                       selected = 'Overview'),
                                           plotlyOutput('WarOutcomes')
                   ),
-                  box(width = 12, 
-                      p("Textbox to discribe the War Outcome of Countries"))),
+                  box(width = 3,htmlOutput('war.stackedBar')
+                      )),
                   tabPanel('graph 3', fluidRow(box(title = "Happiness and Conflict Across the World", 
                                                    status = "primary", solidHeader = TRUE,
                                                    width = 12, sliderInput("year_slider", "Select Year",
@@ -160,15 +160,12 @@ ui <- dashboardPage(
                                                    width = 6, plotlyOutput("stackedDemonstrations")),
                                                box(title = "Violence by Continent",
                                                    status = "primary", solidHeader = TRUE,
-                                                   width = 6, plotlyOutput("stackedViolence")),
-                                               box(width = 12, 
-                                               p("Textbox discription for Happiness and Conflict Across 
-                                                                 the World"))
+                                                   width = 6, plotlyOutput("stackedViolence"))
                   )) #tabPanel
                 )) # fluidrow
       ), # tabItem3
       tabItem(tabName = "works",
-              fluidRow(box(width = 12, title = "Works Cited", htmlOutput('works.cited.content')))
+              fluidRow(box(width = 12, htmlOutput('works.cited.content')))
       ) # tabItem4
     ) # tabItems 
   ) # dashboard body
@@ -273,6 +270,14 @@ server <- function(input, output) {
   
   output$about.ACLED.content <- renderUI({
     tagList(about.ACLED.content)
+  })
+  
+  output$treemapLegend <- renderUI({
+    tagList(treemap.content)
+  })
+  
+  output$war.stackedBar <- renderUI({
+    tagList(war.stackedBar.content)
   })
   
   output$works.cited.content <- renderUI({
