@@ -30,8 +30,8 @@ ui <- dashboardPage(
                   tabPanel('graph 1', box(title = "Corr. Matrix of Happiness Indicators", 
                                           status = "primary", solidHeader = TRUE,
                                           width = 7, plotlyOutput('correlationMatrix')),
-                           box(width = 5, htmlOutput('corrleationMaxtrix', style = "height: 440px; overflow-y: auto;"))),
-                  tabPanel('graph 2', box(width = 12, 
+                           box(width = 5, htmlOutput('correlationMaxtrixText', style = "height: 440px; overflow-y: auto;"))),
+                  tabPanel('graph 2', box(width = 7, 
                                           title = "Happiness Indicators and Happiness by Continent", 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
@@ -52,11 +52,11 @@ ui <- dashboardPage(
                                                              'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                       selected = 'Log.GDP.Per.Capita'), 
                                           plotlyOutput('WHIandHappinessByCountinent')),
-                           box(width = 12, 
-                               p("Textbox to discribe happiness Indicators and Happiness by Continent "))),
+                           box(width = 5, htmlOutput('happinessIndicatorByContinent', style = "height: 597px; overflow-y: auto;")
+                               )),
                   tabPanel('graph 3', box(title = "Happiness Indicator Distribution", 
                                           status = "primary", solidHeader = TRUE,
-                                          width = 12, plotOutput('HappinessIndicator'),
+                                          width = 8, plotOutput('HappinessIndicator'),
                                           radioButtons("Happiness_check", "Select Happiness Indicator",
                                                        # names of the valid choices
                                                        choiceNames =
@@ -72,8 +72,8 @@ ui <- dashboardPage(
                                                               'Freedom.To.Make.Life.Choices', 'Perceptions.Of.Corruption',
                                                               'Negative.Affect', 'Social.Support')) # radio button
                   ),
-                  box(width = 12, 
-                      p("Textbox to discribe Happiness Indicator Distribution"))
+                  box(width = 4, htmlOutput('happinessIndicatorDistribution', style = "height: 440px; overflow-y: auto;")
+                      )
                   ) # tabPanel
                 ))), # tabItem2
       tabItem(tabName = "trend",
@@ -220,8 +220,16 @@ server <- function(input, output) {
     tagList(WHR.content)
   })
   
-  output$corrleationMaxtrix <-renderUI({
-    tagList(correlationMatrix.content)
+  output$correlationMaxtrixText <-renderUI({
+    tagList(correlationMaxtrixText.content)
+  })
+  
+  output$happinessIndicatorByContinent <- renderUI({
+    tagList(happinessIndicatorByContinent.content)
+  })
+
+  output$happinessIndicatorDistribution <- renderUI({
+    tagList(happinessIndicatorDistribution.content)
   })
   
   output$trendBackground <- renderUI({
@@ -251,10 +259,6 @@ server <- function(input, output) {
   output$correlationMatrix <- renderPlotly({
     ggplotly(correlation.matrix)
   })
-  
-  # output$choroplethMapStag <- renderPlotly({
-  #   ggplotly(life.ladder.plot)
-  # })
   
   output$happinessSubregionTrend <- renderPlotly({
     ggplotly(trend)

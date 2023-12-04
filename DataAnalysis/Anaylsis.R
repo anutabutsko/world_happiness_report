@@ -1,3 +1,11 @@
+# output$happinessIndicatorByContinent <- renderUI({
+#   tagList(happinessIndicatorByContinent.content)
+# })
+# 
+# output$happinessIndicatorDistribution <- renderUI({
+#   tagList(happinessIndicatorDistribution.content)
+# })
+
 projectIntroduction.content <- tagList(
   tags$h3("World Happiness Report Analysis", style = "text-align: center;"),
   tags$h5("by Emma Horton, Hanna Butsko, Jin YuHan Burgess", style = "text-align: center;"),
@@ -9,7 +17,7 @@ projectIntroduction.content <- tagList(
   tags$p(),
   tags$p("Several key questions will be addressed through this analysis:"),
   tags$p(),
-  tags$strong("Influences of Happiness", style = "text-align: center;"),
+  tags$strong("Influencers of Happiness", style = "text-align: center;"),
   tags$p(),
   tags$p(tags$strong("1."), "Is there a statistically significant relationship between key happiness indicators (GDP per capita, perception of corruption, generosity) ",
            "and the happiness scores of individual countries?"),
@@ -21,7 +29,7 @@ projectIntroduction.content <- tagList(
   tags$p(tags$strong("2."), "How has overall happiness changed globally from 2005 to the present?"),
   tags$p(tags$strong("3."), "Are there specific time periods where happiness has notably increased or decreased?"),
   tags$p(),
-  tags$strong("Happiness and Conflict"),
+  tags$strong("Happiness and Conflicts"),
   tags$p(),
   tags$p(tags$strong("1."), "What is the exploratory relationship between the happiness scores of countries and their involvement in or exposure to war and conflict?"),
   tags$p(tags$strong("2."), "Are there discernible patterns in happiness scores during and after periods of conflict?")
@@ -72,8 +80,8 @@ WHR.content <- tagList(
   )
 )
 
-correlationMatrix.content<- tagList(
-  tags$h3("Correlation Analysis: Happiness and Key Factors", style = "text-align: center;"),
+correlationMaxtrixText.content<- tagList(
+  tags$h3("Correlation Analysis", style = "text-align: center;"),
   
   tags$p(
     tags$strong("Strong Positive Correlation:"),
@@ -101,6 +109,40 @@ correlationMatrix.content<- tagList(
   )
 )
 
+happinessIndicatorByContinent.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(
+    tags$strong("Oceania:"),
+    "The only region that has a negative correlation between happiness and GDP per capita, and healthy life expectancy at birth. The countries considered in the region “Oceania” are New Zealand and Australia. The negative correlation could be a result of these two countries being islands."
+  ),
+  tags$p(
+    tags$strong("Oceania and Europe:"),
+    "Look to have a positive correlation between happiness and generosity, whereas countries from other continents have either no correlation or a negative correlation."
+  ),
+  tags$p(
+    "There is a general positive correlation between Positive Affect (laughter, enjoyment, and interest) and Happiness score."
+  ),
+  tags$p(
+    tags$strong("Africa and Asia:"),
+    "Are the only two continents that do not have a positive correlation between happiness and confidence in the national government. The various governmental structures within these continents, such as one-state government, constitutional monarchy, and democracy, may result in stronger or weaker correlations with happiness."
+  ),
+  tags$p(
+    "Unlike the comparison between happiness and confidence in the national government, all regions see a negative correlation between happiness and perception of corruption. As corruption decreases, the happiness score increases.")
+)
+
+happinessIndicatorDistribution.content <- tagList(
+  tags$h3("Analysis", style = "text-align: center;"),
+  tags$p(
+    tags$strong("GDP per Capita:"),
+    "Although the region Oceania has a negative correlation with happiness, a majority of their GDP is well above the rest of the countries."
+  ),
+  tags$p(
+    tags$strong("Perception of Corruption:"),
+    "Oceania has the lowest level of Perception of Corruption compared to other regions."
+  )
+)
+
+  
 trendBackground.content <- tagList(
   tags$h3("Happiness Trend", style = "text-align: center;"),
   tags$p("This page looks at the happiness trend over time from 2005-2022. The objective, is to determine the general trend of happiness scores of countries and determine the significance of the trends. Analysis is also done when the data is partitioned based on Continent and sub-region.
@@ -116,8 +158,8 @@ happinessByContinentText.content <- tagList(
   tags$h3("Global Happiness Trends and Analysis by Continent", style = "text-align: center;"),
   tags$strong("1. Country Distribution by Continent"),
   tags$p(tags$em("Africa: 43 countries")),
-  tags$p(tags$em("Europe: 38 countries (including Western Europe, CIS, Central, and Eastern Europe)")),
-  tags$p(tags$em('Asia: 37 countries')),
+  tags$p(tags$em("Europe: 38 countries (including Western, Northern, South, Central and Eastern Europe)")),
+  tags$p(tags$em('Asia: 37 countries (including countries in the Middle East')),
   tags$p(tags$em("Americas: 26 countries")),
   tags$p(tags$em("Oceania: 2 countries")),
   tags$p(),
