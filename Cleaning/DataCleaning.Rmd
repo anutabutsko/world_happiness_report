@@ -17,6 +17,8 @@ library(here)
 library(readr)
 library(ggplot2)
 library(tidyr)
+library(stringr)
+
 ```
 
 Set Root
@@ -235,8 +237,66 @@ unique_countries <- happydf %>%
 Join Population and Country Name Based on Year in New Set Happy Population
 
 ```{r}
-happydf <- inner_join(happydf, population, by = c("Country.Name", "Year"))
-View(happydf)
+happydf <- full_join(happydf, population, by = c("Country.Name", "Year"))
+happydf
+
+```
+
+Read in COVID Case Statistics 
+
+```{r}
+covid <- here("Datasets", "StatisticsData", "WHO-COVID-19-global-data.csv")
+covid <- read.csv(covid)
+View(covid)
+
+
+# Split for year element
+covid[c('Year', 'Month', 'Day')] <- str_split_fixed(covid$Date_reported, '-', 3)
+ 
+# Select columns of interest
+covid <- 
+  covid %>% 
+  select(Year, Country_code, Country, WHO_region, New_cases, New_deaths) 
+
+# Summarize the data by year
+covid <- covid %>%
+  group_by(Year, Country_code, Country, WHO_region) %>%
+  summarize(
+    Total_New_Deaths = sum(New_deaths, na.rm = TRUE),
+    Total_New_Cases = sum(New_cases, na.rm = TRUE),
+    .groups = 'drop'  # Ungroup data after summarizing
+  )
+
+names(covid)[names(covid) == "Country"] <- "Country.Name"
+
+```
+Join Happy DF with Covid
+
+```{r}
+class(happydf$Year)= "character"
+str(happydf)
+happydf <- full_join(happydf, covid, by = c("Country.Name", "Year"))
+happydf$Year <- as.numeric(as.character(happydf$Year))
+
+```
+
+
+
+```{r}
+happydf <- happydf %>% 
+  filter(Continent %in% c("Asia", "Africa", "Europe", "Americas"))
+  
+# Plot
+happydf %>%
+  ggplot(aes(x=Year, 
+              y=Life.Ladder, 
+              group=Continent, 
+              color=Continent)) +
+    geom_smooth() +
+    ggtitle("Happiness Over Time") +
+    xlab("Time") +
+    ylab("Happiness")
+
 
 ```
 
