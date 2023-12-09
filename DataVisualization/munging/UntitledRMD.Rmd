@@ -1,3 +1,4 @@
+```{r}
 library(dplyr)
 library(ggplot2)
 library(ggeasy)
@@ -40,3 +41,5 @@ combined_plot <- ggarrange(top_trend, low_trend, ncol = 1, nrow =2)
 
 final_plot <- annotate_figure(combined_plot, top = text_grob("Happiness Trend Across Years", face = "bold", size = 16))
 final_plot
+```
+

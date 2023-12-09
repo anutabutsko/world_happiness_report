@@ -1,0 +1,45 @@
+libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+df <- read.csv("../DataAnalysis/Datasets/WorldHappinessReport.csv")
+```
+
+Calculate linear regression
+```{r}
+linear_regression <- function(x, y, data) {
+  formula <- as.formula(paste(y, "~", x))
+
+  regression <- lm(formula, data = data)
+
+  intercept <- coef(regression)[1]
+  slope <- coef(regression)[2]
+  r_squared_percentage <- round(summary(regression)$r.squared * 100, 1)
+  
+  return(list(intercept=intercept, 
+              slope=slope, 
+              r_squared_percentage=r_squared_percentage))
+}
+```
+
+```{r}
+mean.happiness.before.covid <- df %>%
+  filter(Year > 2015 & Year < 2021 ) %>%
+  group_by(Year, Regional.Indicator) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
+```
+
+
+```{r}
+ggplot(mean.happiness.before.covid, aes(Year, Petal.Length)) +
+  geom_point(data=iris2, color="gray") +
+  geom_point(aes(color=Species)) +
+  facet_wrap(vars(Species)) +
+  scale_color_viridis_d() +
+  theme(strip.background=element_rect(fill="gray40", color=NA),
+        strip.text = element_text(color="white"))
+```
+
