@@ -242,39 +242,59 @@ happydf
 
 ```
 
-Read in COVID Case Statistics 
+Read in COVID Hospitalization Statistics 
 
 ```{r}
-covid <- here("Datasets", "StatisticsData", "WHO-COVID-19-global-data.csv")
+covid <- here("Datasets", "StatisticsData", "covid-hospitalizations.csv")
 covid <- read.csv(covid)
-View(covid)
-
-
-# Split for year element
-covid[c('Year', 'Month', 'Day')] <- str_split_fixed(covid$Date_reported, '-', 3)
- 
-# Select columns of interest
-covid <- 
-  covid %>% 
-  select(Year, Country_code, Country, WHO_region, New_cases, New_deaths) 
-
-# Summarize the data by year
 covid <- covid %>%
-  group_by(Year, Country_code, Country, WHO_region) %>%
-  summarize(
-    Total_New_Deaths = sum(New_deaths, na.rm = TRUE),
-    Total_New_Cases = sum(New_cases, na.rm = TRUE),
-    .groups = 'drop'  # Ungroup data after summarizing
+  rename(Country.Name = entity) %>%
+  pivot_wider(
+    names_from = indicator, 
+    values_from = value
+  ) %>%
+  select(Country.Name, iso_code, date, `Daily ICU occupancy`, `Daily ICU occupancy per million`) %>%
+  mutate(
+    Year = year(date),
+    month = month(date),
+    day = day(date),
+    week_of_year = week(date),
+    year_week = paste(Year, week_of_year, sep = ""),
+    year_month = paste(Year, month, sep = "")
   )
 
-names(covid)[names(covid) == "Country"] <- "Country.Name"
+# Detailed Averaging for Daily Average ICU Occupies and ICU Occupies per million
+# by week
+covid_summary <- covid %>%
+  group_by(Country.Name, iso_code, Year, month, week_of_year) %>%
+  summarize(
+    Avg_Daily_ICU_Occupancy = mean(`Daily ICU occupancy`, na.rm = TRUE),
+    Avg_Daily_ICU_Occupancy_Per_Million = mean(`Daily ICU occupancy per million`, na.rm = TRUE)
+  )
+#THEN by month
+covid_summary <- covid_summary %>%
+  group_by(Country.Name, iso_code, Year, month) %>%
+  summarize(
+    Avg_Daily_ICU_Occupancy = mean(`Avg_Daily_ICU_Occupancy`, na.rm = TRUE),
+    Avg_Daily_ICU_Occupancy_Per_Million = mean(`Avg_Daily_ICU_Occupancy_Per_Million`, na.rm = TRUE)
+  )
+#THEN by Year
+covid_summary <- covid_summary %>%
+  group_by(Country.Name, iso_code, Year) %>%
+  summarize(
+    Avg_Daily_ICU_Occupancy = mean(`Avg_Daily_ICU_Occupancy`, na.rm = TRUE),
+    Avg_Daily_ICU_Occupancy_Per_Million = mean(`Avg_Daily_ICU_Occupancy_Per_Million`, na.rm = TRUE)
+  )
+covid <- covid_summary
+#str(covid)
 
 ```
 Join Happy DF with Covid
 
 ```{r}
 class(happydf$Year)= "character"
-str(happydf)
+class(covid$Year)= "character"
+#str(happydf)
 happydf <- full_join(happydf, covid, by = c("Country.Name", "Year"))
 happydf$Year <- as.numeric(as.character(happydf$Year))
 
@@ -283,11 +303,11 @@ happydf$Year <- as.numeric(as.character(happydf$Year))
 
 
 ```{r}
-happydf <- happydf %>% 
+plot <- happydf %>% 
   filter(Continent %in% c("Asia", "Africa", "Europe", "Americas"))
   
 # Plot
-happydf %>%
+plot %>%
   ggplot(aes(x=Year, 
               y=Life.Ladder, 
               group=Continent, 
@@ -299,12 +319,89 @@ happydf %>%
 
 
 ```
+# Read in Case / Death Stats
+
+```{r}
+
+case <- here("Datasets", "StatisticsData", "WHO-COVID-19-global-data.csv")
+case <- read.csv(case)
+#View(case)
+case <- case %>%
+  rename(Country.Name = Country) %>%
+  mutate(
+    Year = year(Date_reported),
+    month = month(Date_reported),
+    day = day(Date_reported),
+    week_of_year = week(Date_reported),
+    year_week = paste(Year, week_of_year, sep = ""),
+    year_month = paste(Year, month, sep = "")
+  )
+
+# Detailed Averaging for Daily Average ICU Occupies and ICU Occupies per million
+# by week
+case_summary <- case %>%
+  group_by(Country.Name, Country_code, Year, month, week_of_year) %>%
+  summarize(
+    Avg_Daily_NewCases = mean(New_cases, na.rm = TRUE),
+    Avg_Daily_NewDeaths = mean(New_deaths, na.rm = TRUE),
+    Avg_Daily_Cumulative_Cases = mean(Cumulative_cases, na.rm = TRUE),
+    Avg_Daily_Cumulative_Death = mean(Cumulative_deaths, na.rm = TRUE)
+  )
+#THEN by month
+case_summary <- case_summary %>%
+  group_by(Country.Name, Country_code, Year, month) %>%
+  summarize(
+    Avg_Daily_NewCases = mean(Avg_Daily_NewCases, na.rm = TRUE),
+    Avg_Daily_NewDeaths = mean(Avg_Daily_NewDeaths, na.rm = TRUE),
+    Avg_Daily_Cumulative_Cases = mean(Avg_Daily_Cumulative_Cases, na.rm = TRUE),
+    Avg_Daily_Cumulative_Death = mean(Avg_Daily_Cumulative_Death, na.rm = TRUE)
+  )
+#THEN by Year
+case_summary <- case_summary %>%
+  group_by(Country.Name, Country_code, Year) %>%
+  summarize(
+    Avg_Daily_NewCases = mean(Avg_Daily_NewCases, na.rm = TRUE),
+    Avg_Daily_NewDeaths = mean(Avg_Daily_NewDeaths, na.rm = TRUE),
+    Avg_Daily_Cumulative_Cases = mean(Avg_Daily_Cumulative_Cases, na.rm = TRUE),
+    Avg_Daily_Cumulative_Death = mean(Avg_Daily_Cumulative_Death, na.rm = TRUE)
+  )
+case <- case_summary
+
+```
+Join Happy DF with Cases
+
+```{r}
+class(happydf$Year)= "character"
+class(case$Year)= "character"
+
+#str(happydf)
+happydf <- full_join(happydf, case, by = c("Country.Name", "Year"))
+happydf$Year <- as.numeric(as.character(happydf$Year))
 
 
-Export Data to CSV
+```
+
+Create Epi-Pandemic Year Conditional
+```{r}
+happydf <- happydf %>%
+  mutate(Epi_Pandemic_Year = case_when(
+    Year %in% c(2014, 2015, 2016) ~ 1,
+    Year %in% c(2009, 2010) ~ 1,
+    Year %in% c(2020, 2021, 2022) ~ 1,
+    TRUE ~ 0
+  ))
+View(happydf)
+```
+
+
+Export Data to CSV into Datasets
 ```{r}
 path <- here("Datasets", "HappyDataFrame.csv")
 write.csv(happydf, path, row.names=FALSE)
 ```
 
-
+Export Data to CSV into Datasets
+```{r}
+path <- here("DataAnalysis","Datasets","WorldHappinessReport.csv")
+write.csv(happydf, path, row.names=FALSE)
+```
