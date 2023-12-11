@@ -2,52 +2,57 @@ libraries
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
+library(reshape2)
+library(DataExplorer)
+library(here)
+library(tidyr)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(graphics)
+library(crosstalk)
 ```
 
 ```{r}
 df <- read.csv("../../Datasets/MLRHappyDataFrame.csv")
+View(df)
 ```
 
 ```{r}
+
 WHO <- df %>%
-  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Continent, Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
   na.omit(df)
 
-df <- df %>%
-  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death)
-
 # Calculate Missing-ness
-#missing_percent <- colSums(is.na(df)) / nrow(df) * 100
+#missing_percent <- colSums(is.na(WHO)) / nrow(WHO) * 100
 #print(missing_percent)
 
 # Perform multiple linear regression on the  dataframe
-MLR_who <- lm(Life.Ladder ~ Year + Healthy.Life.Expectancy.At.Birth+ Confidence.In.National.Government+ Population+ Avg_Daily_ICU_Occupancy_Per_Million+ Avg_Daily_NewCases+Avg_Daily_Cumulative_Cases+ Epi_Pandemic_Year+Perceptions.Of.Corruption+ Population+ Avg_Daily_ICU_Occupancy+ Avg_Daily_NewDeaths+ Avg_Daily_Cumulative_Death, data = WHO)
+MLR_who <- lm(Life.Ladder ~ Epi_Pandemic_Year+Avg_Daily_NewCases+Avg_Daily_NewDeaths+Avg_Daily_ICU_Occupancy_Per_Million+Avg_Daily_Cumulative_Cases+Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
 
 
 #Get residuals
 model_residuals = MLR_who$residuals
 
-#Plot results
+# diagnostic plots #YUHAN
+
+par(mfrow = c(2, 2))  # grid for plots
+#The histogram looks normal; hence we can conclude the normality with enough confidence.
+
 hist(model_residuals)
-#The histogram looks normal; hence we can conclude the normality with enough confidence. 
 
-# Create diagnostic plots
-par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
-
-# Residuals vs. Fitted Values (Check for Homoscedasticity)
+# residuals vs. fitted values (check homoscedasticity)
 plot(MLR_who, 1)
 
-# Normal Q-Q Plot (Check for Normality of Residuals)
+# Q-Q Plot (check for normality of residuals)
 plot(MLR_who, 2)
 
-# Scale-Location Plot (Check for Homoscedasticity)
-plot(MLR_who, 3)
-
-# Cook's Distance Plot (Check for Outliers/Influential Points)
+# Cook's distance (check outliers)
 plot(MLR_who, 5)
 
-# Reset the plotting layout
-par(mfrow = c(1, 1))
+par(mfrow = c(1, 1)) #  plotting layout
 
 ```
 
@@ -56,6 +61,8 @@ par(mfrow = c(1, 1))
 ```{r}
 #install.packages("ggcorrplot")
 library(ggcorrplot)
+library(heatmaply)
+
 
 # Remove the Y column and non-numeric
 columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Epi_Pandemic_Year")
@@ -65,10 +72,14 @@ reduced_data <- na.omit(reduced_data)
 
 # Compute correlation at 2 decimal places
 corr_matrix = round(cor(reduced_data), 2)
+# Compute a matrix of correlation p-values
+p.mat <- cor_pmat(reduced_data)
+
+
 #View(corr_matrix)
 # Compute and show the  result
-ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower",
-          lab = TRUE)
+corr.plot <- ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower", outline.col = "white",  p.mat = p.mat)
+ggplotly(corr.plot) #YUHAN
 
 #We see values with >.8 correlation
 high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
@@ -86,76 +97,8 @@ print(result)
 
 ```
 
-Do a new MLR
-```{r}
-df <- df %>%
-  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death)
 
-# Calculate Missing-ness
-#missing_percent <- colSums(is.na(df)) / nrow(df) * 100
-#print(missing_percent)
-
-# Perform multiple linear regression on the  dataframe
-MLR_df <- lm(Life.Ladder ~ Year + Healthy.Life.Expectancy.At.Birth+Confidence.In.National.Government+ Population+ Continent+ Avg_Daily_NewCases+Avg_Daily_Cumulative_Cases+ Epi_Pandemic_Year+Perceptions.Of.Corruption+ Population+ Avg_Daily_NewDeaths+ Avg_Daily_Cumulative_Death, data = df)
-
-
-#Get residuals
-model_residuals = MLR_df$residuals
-
-#Plot results
-hist(model_residuals)
-#The histogram looks normal; hence we can conclude the normality with enough confidence. 
-
-# Create diagnostic plots
-par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
-
-# Residuals vs. Fitted Values (Check for Homoscedasticity)
-plot(MLR_df, 1)
-
-# Normal Q-Q Plot (Check for Normality of Residuals)
-plot(MLR_df, 2)
-
-# Scale-Location Plot (Check for Homoscedasticity)
-plot(MLR_df, 3)
-
-# Cook's Distance Plot (Check for Outliers/Influential Points)
-plot(MLR_df, 5)
-
-# Reset the plotting layout
-par(mfrow = c(1, 1))
-
-```
-
-```{r}
-# Remove the Y column and non-numeric
-columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Epi_Pandemic_Year")
-
-reduced_data <- df[, !(names(df) %in% columns_to_exclude)]
-reduced_data <- na.omit(reduced_data)
-
-# Compute correlation at 2 decimal places
-corr_matrix = round(cor(reduced_data), 2)
-#View(corr_matrix)
-# Compute and show the  result
-ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower",
-          lab = TRUE)
-
-#We see values with >.8 correlation
-high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
-correlation_values <- corr_matrix[high_correlations]
-variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
-correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
-
-result <- data.frame(
-  Variable1 = variable_names,
-  Variable2 = correlated_variable_names,
-  Correlation = correlation_values
-)
-
-print(result)
-
-```
-
+#YUHAN
 
 See which performed better
 ```{r}
@@ -163,38 +106,6 @@ See which performed better
 summary(MLR_who)
 ```
 
-See which performed better
-
-A variable will be significant if its p-value is less than 0.05. In addition to providing that information about the model it also renders the adjusted R-square, which evaluates the performance .
-
-
-```{r}
-#MLR_df
-summary(MLR_df)
-```
-
-
-
-
-```{r}
-# Create diagnostic plots
-par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
-
-# Residuals vs. Fitted Values (Check for Homoscedasticity)
-plot(MLR_df, 1)
-
-# Normal Q-Q Plot (Check for Normality of Residuals)
-plot(MLR_df, 2)
-
-# Scale-Location Plot (Check for Homoscedasticity)
-plot(MLR_df, 3)
-
-# Cook's Distance Plot (Check for Outliers/Influential Points)
-plot(MLR_df, 5)
-
-# Reset the plotting layout
-par(mfrow = c(1, 1))
-```
 
 
 
@@ -210,6 +121,12 @@ par(mfrow = c(1, 1))
 
 
 
+
+
+
+
+
+#IGNORE
 # Calculate linear regression (MLR) ( I was able to get this to work but not plot like you Hanna)
 ```{r}
 mlr_regression <- function(x_vars, y_var, data) {
@@ -227,7 +144,7 @@ mlr_regression <- function(x_vars, y_var, data) {
 
 ```
 
-
+#IGNORE
 World happiness for years 2016 to 2020 (WHO)
 ```{r}
 
@@ -294,6 +211,28 @@ happiness.regression.before.covid
 
 ```
 
+#YUHAN
+
+```{r}
+happydf <- read.csv("../../Datasets/HappyDataFrame.csv")
+happydf %>%
+  plot_ly(x = ~Year, y = ~Life.Ladder) %>%
+  add_boxplot(
+    color = ~Life.Ladder,
+    colorscale = 'Viridis', 
+    boxpoints = 'outliers', 
+    text = ~Regional.Indicator, 
+    marker = list(
+      symbol = 'circle',  
+      color = ~Regional.Indicator  
+    )
+  ) %>%
+  layout(
+    title = "Life Ladder by Year",
+    xaxis = list(title = "Year"), 
+    yaxis = list(title = "Life Ladder")
+  )
+```
 
 
 
