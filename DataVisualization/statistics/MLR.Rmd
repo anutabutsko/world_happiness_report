@@ -5,162 +5,296 @@ library(ggplot2)
 ```
 
 ```{r}
-df <- read.csv("../../Datasets/HappyDataFrame.csv")
+df <- read.csv("../../Datasets/MLRHappyDataFrame.csv")
 ```
 
-Calculate linear regression
 ```{r}
-linear_regression <- function(x, y, data) {
-  formula <- as.formula(paste(y, "~", x))
+WHO <- df %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
+  na.omit(df)
 
+df <- df %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death)
+
+# Calculate Missing-ness
+#missing_percent <- colSums(is.na(df)) / nrow(df) * 100
+#print(missing_percent)
+
+# Perform multiple linear regression on the  dataframe
+MLR_who <- lm(Life.Ladder ~ Year + Healthy.Life.Expectancy.At.Birth+ Confidence.In.National.Government+ Population+ Avg_Daily_ICU_Occupancy_Per_Million+ Avg_Daily_NewCases+Avg_Daily_Cumulative_Cases+ Epi_Pandemic_Year+Perceptions.Of.Corruption+ Population+ Avg_Daily_ICU_Occupancy+ Avg_Daily_NewDeaths+ Avg_Daily_Cumulative_Death, data = WHO)
+
+
+#Get residuals
+model_residuals = MLR_who$residuals
+
+#Plot results
+hist(model_residuals)
+#The histogram looks normal; hence we can conclude the normality with enough confidence. 
+
+# Create diagnostic plots
+par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
+
+# Residuals vs. Fitted Values (Check for Homoscedasticity)
+plot(MLR_who, 1)
+
+# Normal Q-Q Plot (Check for Normality of Residuals)
+plot(MLR_who, 2)
+
+# Scale-Location Plot (Check for Homoscedasticity)
+plot(MLR_who, 3)
+
+# Cook's Distance Plot (Check for Outliers/Influential Points)
+plot(MLR_who, 5)
+
+# Reset the plotting layout
+par(mfrow = c(1, 1))
+
+```
+
+
+#multicollinearity assumption check
+```{r}
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+
+# Remove the Y column and non-numeric
+columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Epi_Pandemic_Year")
+
+reduced_data <- WHO[, !(names(WHO) %in% columns_to_exclude)]
+reduced_data <- na.omit(reduced_data)
+
+# Compute correlation at 2 decimal places
+corr_matrix = round(cor(reduced_data), 2)
+#View(corr_matrix)
+# Compute and show the  result
+ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower",
+          lab = TRUE)
+
+#We see values with >.8 correlation
+high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
+correlation_values <- corr_matrix[high_correlations]
+variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
+correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
+
+result <- data.frame(
+  Variable1 = variable_names,
+  Variable2 = correlated_variable_names,
+  Correlation = correlation_values
+)
+
+print(result)
+
+```
+
+Do a new MLR
+```{r}
+df <- df %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Healthy.Life.Expectancy.At.Birth,Confidence.In.National.Government, Population, Continent, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Perceptions.Of.Corruption, Population, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death)
+
+# Calculate Missing-ness
+#missing_percent <- colSums(is.na(df)) / nrow(df) * 100
+#print(missing_percent)
+
+# Perform multiple linear regression on the  dataframe
+MLR_df <- lm(Life.Ladder ~ Year + Healthy.Life.Expectancy.At.Birth+Confidence.In.National.Government+ Population+ Continent+ Avg_Daily_NewCases+Avg_Daily_Cumulative_Cases+ Epi_Pandemic_Year+Perceptions.Of.Corruption+ Population+ Avg_Daily_NewDeaths+ Avg_Daily_Cumulative_Death, data = df)
+
+
+#Get residuals
+model_residuals = MLR_df$residuals
+
+#Plot results
+hist(model_residuals)
+#The histogram looks normal; hence we can conclude the normality with enough confidence. 
+
+# Create diagnostic plots
+par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
+
+# Residuals vs. Fitted Values (Check for Homoscedasticity)
+plot(MLR_df, 1)
+
+# Normal Q-Q Plot (Check for Normality of Residuals)
+plot(MLR_df, 2)
+
+# Scale-Location Plot (Check for Homoscedasticity)
+plot(MLR_df, 3)
+
+# Cook's Distance Plot (Check for Outliers/Influential Points)
+plot(MLR_df, 5)
+
+# Reset the plotting layout
+par(mfrow = c(1, 1))
+
+```
+
+```{r}
+# Remove the Y column and non-numeric
+columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Epi_Pandemic_Year")
+
+reduced_data <- df[, !(names(df) %in% columns_to_exclude)]
+reduced_data <- na.omit(reduced_data)
+
+# Compute correlation at 2 decimal places
+corr_matrix = round(cor(reduced_data), 2)
+#View(corr_matrix)
+# Compute and show the  result
+ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower",
+          lab = TRUE)
+
+#We see values with >.8 correlation
+high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
+correlation_values <- corr_matrix[high_correlations]
+variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
+correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
+
+result <- data.frame(
+  Variable1 = variable_names,
+  Variable2 = correlated_variable_names,
+  Correlation = correlation_values
+)
+
+print(result)
+
+```
+
+
+See which performed better
+```{r}
+#MLR_who
+summary(MLR_who)
+```
+
+See which performed better
+
+A variable will be significant if its p-value is less than 0.05. In addition to providing that information about the model it also renders the adjusted R-square, which evaluates the performance .
+
+
+```{r}
+#MLR_df
+summary(MLR_df)
+```
+
+
+
+
+```{r}
+# Create diagnostic plots
+par(mfrow = c(2, 2))  # Set up a 2x2 grid for plots
+
+# Residuals vs. Fitted Values (Check for Homoscedasticity)
+plot(MLR_df, 1)
+
+# Normal Q-Q Plot (Check for Normality of Residuals)
+plot(MLR_df, 2)
+
+# Scale-Location Plot (Check for Homoscedasticity)
+plot(MLR_df, 3)
+
+# Cook's Distance Plot (Check for Outliers/Influential Points)
+plot(MLR_df, 5)
+
+# Reset the plotting layout
+par(mfrow = c(1, 1))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Calculate linear regression (MLR) ( I was able to get this to work but not plot like you Hanna)
+```{r}
+mlr_regression <- function(x_vars, y_var, data) {
+  formula <- as.formula(paste(y_var, "~", paste(x_vars, collapse = "+")))
   regression <- lm(formula, data = data)
-
-  intercept <- coef(regression)[1]
-  slope <- coef(regression)[2]
+  
+  coefficients <- coef(regression)
+  intercept <- coefficients[1]
+  slopes <- coefficients[-1]
+  
   r_squared_percentage <- round(summary(regression)$r.squared * 100, 1)
   
-  return(list(intercept=intercept, 
-              slope=slope, 
-              r_squared_percentage=r_squared_percentage))
+  return(list(intercept = intercept, slopes = slopes, r_squared_percentage = r_squared_percentage))
 }
+
 ```
 
-World happiness for years 2016 to 2020
+
+World happiness for years 2016 to 2020 (WHO)
 ```{r}
-mean.happiness.before.covid <- df %>%
-  filter(Year > 2015 & Year < 2021 ) %>%
+
+#NO IDEA HOW TO USE THIS ( do i need to include all MLR variables?)
+mean.happiness.before.covid <- WHO %>%
+  filter(Year > 2015 & Year < 2021) %>%
   group_by(Year) %>%
   summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
 
-equation.before.covid = linear_regression("Year", "Life.Ladder", mean.happiness.before.covid)
+# predictors
+x_vars <- c(
+  "Year", 
+  "Healthy.Life.Expectancy.At.Birth", 
+  "Confidence.In.National.Government", 
+  "Population",
+  "Avg_Daily_ICU_Occupancy_Per_Million",
+  "Avg_Daily_NewCases",
+  "Avg_Daily_Cumulative_Cases",
+  "Epi_Pandemic_Year",
+  "Perceptions.Of.Corruption",
+  "Avg_Daily_NewDeaths",
+  "Avg_Daily_Cumulative_Death"
+)
 
-happiness.regression.before.covid <- mean.happiness.before.covid %>%
+data_frame <- WHO 
+y_var <- c("Life.Ladder")
+
+# Regression
+equation.before.covid <- mlr_regression(x_vars, y_var, WHO)
+
+# results
+intercept <- equation.before.covid$intercept
+slopes <- equation.before.covid$slopes
+r_squared_percentage <- equation.before.covid$r_squared_percentage
+
+# intercept/slope
+cat("Intercept:", intercept, "\n")
+cat("Slopes:", slopes, "\n")
+cat("R-squared Percentage:", r_squared_percentage, "%\n")
+
+
+# plt
+happiness.regression.before.covid <- WHO %>%
   ggplot(aes(Year, Life.Ladder)) +
   geom_line(color = "gold") +
-  geom_point(size=3, alpha=0.5, color = "gold") +
-  geom_smooth(method='lm', color = "red", fill="gray90", se = TRUE, size=0.6) +
-  labs(title="Average World Happiness", 
-       subtitle=paste("Years: 2016 to 2020", "\nRegression Equation: Happiness = ", round(equation.before.covid$intercept, 2), '+ (', round(equation.before.covid$slope, 2), " * Year)", "\nR^2 =", equation.before.covid$r_squared_percentage, "%"), 
-       x="\nYear", 
-       y="Happiness Index") +
+  geom_point(size = 3, alpha = 0.5, color = "gold") +
+  geom_smooth(method = 'lm', color = "red", fill = "gray90", se = TRUE, size = 0.6) +
+  labs(
+    title = "Average World Happiness", 
+    subtitle = paste("Years: 2016 to 2020", 
+                     "\nRegression Equation: Happiness = ", 
+                     round(intercept, 2), 
+                     '+ (', paste(round(slopes, 2), collapse = " + "), " * Year)", 
+                     "\nR^2 =", r_squared_percentage, "%"), 
+    x = "\nYear", 
+    y = "Happiness Index"
+  ) +
   theme_minimal() +
   scale_x_continuous(breaks = seq(2000, 2020, 1)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
 
 happiness.regression.before.covid
+
+
 ```
 
-Predicted world happiness for years 2020 to 2022
-```{r}
-years <- c(2021, 2022)
-n <- length(years)
-happiness.index <- numeric(n)
-for (i in 1:n){
-  happiness <- equation.before.covid$intercept + equation.before.covid$slope * years[i]
-  happiness.index[i] <- happiness
-}
 
-predicted.happiness.df <- data.frame(Year = years, Life.Ladder = happiness.index)
-predicted.happiness.df <- rbind(predicted.happiness.df, data.frame(Year = 2020, Life.Ladder = 5.727539))
 
-happiness.predicted <- predicted.happiness.df %>%
-  ggplot(aes(Year, Life.Ladder)) +
-  geom_line(color = "firebrick") +
-  geom_point(size=3, alpha=0.5, color = "firebrick") +
-  labs(title="Predicted World Happiness", 
-     subtitle=paste("Years: 2020 to 2022", "\nBased on Regression Equation: Happiness = ", round(equation.before.covid$intercept, 2), '+ (', round(equation.before.covid$slope, 2), " * Year)"),
-     x="\nYear", 
-     y="Happiness Index") +
-  theme_minimal() +
-  scale_x_continuous(breaks = seq(2020, 2023, 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
 
-happiness.predicted
-```
 
-```{r}
-happiness.predicted.all <- predicted.happiness.df %>%
-  ggplot(aes(Year, Life.Ladder)) +
-  geom_line(color = "firebrick") +
-  geom_point(size=3, alpha=0.5, color = "firebrick") +
-  geom_line(data=mean.happiness.before.covid, aes(Year, Life.Ladder), color = "gold") +
-geom_point(data=mean.happiness.before.covid, aes(Year, Life.Ladder), size=3, alpha=0.5, color = "gold") +
-  labs(title="Predicted World Happiness", 
-     subtitle=paste("Years: 2016 to 2022", "\nBased on Regression Equation: Happiness = ", round(equation.before.covid$intercept, 2), '+ (', round(equation.before.covid$slope, 2), " * Year)"),
-     x="\nYear", 
-     y="Happiness Index") +
-  theme_minimal() +
-  scale_x_continuous(breaks = seq(2016, 2023, 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
-
-happiness.predicted.all
-```
-
-Actual world happiness for years 2020 to 2022
-```{r}
-mean.happiness.after.covid <- df %>%
-  filter(Year > 2019) %>%
-  group_by(Year) %>%
-  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
-
-equation.after.covid = linear_regression("Year", "Life.Ladder", mean.happiness.after.covid)
-
-happiness.regression.after.covid <- mean.happiness.after.covid %>%
-  ggplot(aes(Year, Life.Ladder)) +
-  geom_line(color = "gold") +
-  geom_point(size=3, alpha=0.5, color = "gold") +
-  geom_smooth(method='lm', colour = "red", fill="gray90", se = TRUE, size=0.6) +
-  labs(title="Actual World Happiness", 
-       subtitle=paste("Years: 2020 to 2022", "\nRegression Equation: Happiness = ", round(equation.after.covid$intercept, 2), '+ (', round(equation.after.covid$slope, 2), " * Year)", "\nR^2 =", equation.after.covid$r_squared_percentage, "%"), 
-       x="\nYear", 
-       y="Happiness Index") +
-  theme_minimal() +
-  scale_x_continuous(breaks = seq(2020, 2023, 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
-
-happiness.regression.after.covid
-```
-
-```{r}
-mean.happiness.after.covid$type <- 'Actual'
-predicted.happiness.df$type <- 'Predicted'
-
-predicted.vs.actual <- ggplot() +
-  geom_line(data = predicted.happiness.df, aes(Year, Life.Ladder, color = type)) +
-  geom_point(data = predicted.happiness.df, aes(Year, Life.Ladder, color = type), size=3, alpha=0.5) +
-  geom_line(data = mean.happiness.after.covid, aes(Year, Life.Ladder, color = type)) +
-  geom_point(data = mean.happiness.after.covid, aes(Year, Life.Ladder, color = type), size=3, alpha=0.5) +
-  labs(title="Predicted vs Actual World Happiness", 
-       subtitle="Years: 2020 to 2022",
-       x="\nYear", 
-       y="Happiness Index") +
-  scale_color_manual(name='', values = c("Predicted" = "firebrick", "Actual" = "gold")) +
-  theme_minimal() +
-  scale_x_continuous(breaks = seq(2020, 2023, 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
-
-predicted.vs.actual
-```
-
-```{r}
-actual.data <- df %>%
-  filter(Year > 2015) %>%
-  group_by(Year) %>%
-  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE)) %>%
-  mutate(type = 'Actual')
-
-combined.df <- rbind(actual.data, predicted.happiness.df)
-combined.df
-predicted.vs.actual.all <- ggplot(combined.df, aes(Year, Life.Ladder, color = type)) +
-  geom_line() +
-  geom_point(size=3, alpha=0.5) +
-  labs(title="Predicted vs Actual World Happiness", 
-     x="\nYear", 
-     y="Happiness Index") +
-  scale_color_manual(name = "", values = c("Predicted" = "firebrick", "Actual" = "gold")) +
-  theme_minimal() +
-  scale_x_continuous(breaks = seq(2015, 2023, 1)) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0))
-
-predicted.vs.actual.all
-```
