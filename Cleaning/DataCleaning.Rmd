@@ -22,10 +22,10 @@ library(stringr)
 ```
 
 Set Root
+
 ```{r}
 here::i_am("Cleaning/DataCleaning.rmd")
 ```
-
 
 Read in Dataset
 
@@ -37,15 +37,18 @@ df <- read.csv(df)
 ```
 
 View Head
+
 ```{r}
 #head(df)
 #tail(df)
 ```
 
 View Missing
+
 ```{r}
 summary(df)
 ```
+
 Cleaning Data for Regional Indicator
 
 ```{r}
@@ -53,6 +56,7 @@ df[df$Regional.Indicator == "",]
 ```
 
 Missing Regions Replacement
+
 ```{r}
 cleaning <- df %>%
   mutate(Regional.Indicator = case_when(
@@ -83,13 +87,14 @@ cleaning <- df %>%
 ```
 
 Verify Region does not contain empty values
+
 ```{r}
 cleaning[cleaning$Regional.Indicator == "", ]
 ```
+
 ```{r}
 cleaning[cleaning$Regional.Indicator == "NA", ]
 ```
-
 
 Cleaning Data Median Values for Numeric Variables
 
@@ -103,12 +108,12 @@ cleaning <- cleaning %>%
 summary(cleaning)
 ```
 
-
 ```{r}
 unique(cleaning$Regional.Indicator)
 ```
 
 Attach Continents
+
 ```{r}
 cleaning <- cleaning %>%
   mutate(Continent = case_when(
@@ -123,6 +128,7 @@ cleaning <- cleaning %>%
     TRUE ~ "Other" 
   ))
 ```
+
 Outlier Detection on Life Ladder
 
 ```{r}
@@ -132,9 +138,8 @@ boxplot(Life.Ladder ~ Continent, data = cleaning,
 
 ```
 
-
-
 Outlier Detection on Log.GDP.Per.Capita
+
 ```{r}
 boxplot(Log.GDP.Per.Capita ~ Continent, data = cleaning,
         main = "Log.GDP.Per.Capita Distribution by Continent",
@@ -142,11 +147,13 @@ boxplot(Log.GDP.Per.Capita ~ Continent, data = cleaning,
 ```
 
 Outlier Detection on Social Support
+
 ```{r}
 boxplot(Social.Support ~ Continent, data = cleaning,
         main = "Social Support Distribution by Continent",
         xlab = "Continent", ylab = "Social Support")
 ```
+
 Outlier Detection on Healthy Life Expectancy
 
 ```{r}
@@ -154,7 +161,6 @@ boxplot(Healthy.Life.Expectancy.At.Birth ~ Continent, data = cleaning,
         main = "Healthy Life Expectancy Distribution by Continent",
         xlab = "Continent", ylab = "Healthy Life Expectancy")
 ```
-
 
 Outlier Detection on Freedom.To.Make.Life.Choices
 
@@ -166,15 +172,14 @@ boxplot(Freedom.To.Make.Life.Choices ~ Continent, data = cleaning,
 
 Outlier Detection on Generosity
 
-
 ```{r}
 boxplot(Generosity ~ Continent, data = cleaning,
         main = "Generosity Distribution by Continent",
         xlab = "Continent", ylab = "Generosity")
 ```
 
-
 Outlier Detection on Corruption Perception
+
 ```{r}
 summary(cleaning)
 boxplot(Perceptions.Of.Corruption ~ Continent, data = cleaning,
@@ -182,16 +187,16 @@ boxplot(Perceptions.Of.Corruption ~ Continent, data = cleaning,
         xlab = "Continent", ylab = "Perception of Corruption")
 ```
 
-
 Outlier Detection on Positive Affect by Region
+
 ```{r}
 boxplot(Positive.Affect ~ Continent, data = cleaning,
         main = "Positive.Affect Distribution by Continent",
         xlab = "Continent", ylab = "Positive.Affect")
 ```
 
-
 Outlier Detection on Negative Effect
+
 ```{r}
 boxplot(Negative.Affect ~ Continent, data = cleaning,
         main = "Negative Effect Distribution by Continent",
@@ -199,11 +204,13 @@ boxplot(Negative.Affect ~ Continent, data = cleaning,
 ```
 
 Save DataFrame in a Pretty Name
+
 ```{r}
-cleaning -> happydf
+happydf <- cleaning
 ```
 
 Read in Auxiliary Dataset, Population and Pre-Process
+
 ```{r}
 df <- here("Datasets", "WorldBank_Population", "PopulationData.csv")
 here()
@@ -218,14 +225,15 @@ population <- population %>%
 ```
 
 Gather Population Data
+
 ```{r}
 population <- population %>%
   gather(key = "Year", value = "Population", -Country.Name, -Country.Code) %>%
     mutate(Year = as.integer(Year))
 ```
 
-
 Attach Continents to Population
+
 ```{r}
 #get unique countries from happydf
 unique_countries <- happydf %>%
@@ -237,12 +245,11 @@ unique_countries <- happydf %>%
 Join Population and Country Name Based on Year in New Set Happy Population
 
 ```{r}
-happydf <- full_join(happydf, population, by = c("Country.Name", "Year"))
-happydf
-
+happydf <- merge(happydf, population, by = c("Country.Name", "Year"), all.x = TRUE)
+happy_linear <- happydf
 ```
 
-Read in COVID Hospitalization Statistics 
+Read in COVID Hospitalization Statistics
 
 ```{r}
 covid <- here("Datasets", "StatisticsData", "covid-hospitalizations.csv")
@@ -253,7 +260,7 @@ covid <- covid %>%
     names_from = indicator, 
     values_from = value
   ) %>%
-  select(Country.Name, iso_code, date, `Daily ICU occupancy`, `Daily ICU occupancy per million`) %>%
+  select(Country.Name, date, `Daily ICU occupancy`, `Daily ICU occupancy per million`) %>%
   mutate(
     Year = year(date),
     month = month(date),
@@ -266,21 +273,21 @@ covid <- covid %>%
 # Detailed Averaging for Daily Average ICU Occupies and ICU Occupies per million
 # by week
 covid_summary <- covid %>%
-  group_by(Country.Name, iso_code, Year, month, week_of_year) %>%
+  group_by(Country.Name, Year, month, week_of_year) %>%
   summarize(
     Avg_Daily_ICU_Occupancy = mean(`Daily ICU occupancy`, na.rm = TRUE),
     Avg_Daily_ICU_Occupancy_Per_Million = mean(`Daily ICU occupancy per million`, na.rm = TRUE)
   )
 #THEN by month
 covid_summary <- covid_summary %>%
-  group_by(Country.Name, iso_code, Year, month) %>%
+  group_by(Country.Name, Year, month) %>%
   summarize(
     Avg_Daily_ICU_Occupancy = mean(`Avg_Daily_ICU_Occupancy`, na.rm = TRUE),
     Avg_Daily_ICU_Occupancy_Per_Million = mean(`Avg_Daily_ICU_Occupancy_Per_Million`, na.rm = TRUE)
   )
 #THEN by Year
 covid_summary <- covid_summary %>%
-  group_by(Country.Name, iso_code, Year) %>%
+  group_by(Country.Name, Year) %>%
   summarize(
     Avg_Daily_ICU_Occupancy = mean(`Avg_Daily_ICU_Occupancy`, na.rm = TRUE),
     Avg_Daily_ICU_Occupancy_Per_Million = mean(`Avg_Daily_ICU_Occupancy_Per_Million`, na.rm = TRUE)
@@ -289,18 +296,17 @@ covid <- covid_summary
 #str(covid)
 
 ```
+
 Join Happy DF with Covid
 
 ```{r}
 class(happydf$Year)= "character"
 class(covid$Year)= "character"
 #str(happydf)
-happydf <- full_join(happydf, covid, by = c("Country.Name", "Year"))
+happydf <- merge(happydf, covid, by = c("Country.Name", "Year"), all.x = TRUE)
 happydf$Year <- as.numeric(as.character(happydf$Year))
 
 ```
-
-
 
 ```{r}
 plot <- happydf %>% 
@@ -319,6 +325,7 @@ plot %>%
 
 
 ```
+
 # Read in Case / Death Stats
 
 ```{r}
@@ -368,6 +375,7 @@ case_summary <- case_summary %>%
 case <- case_summary
 
 ```
+
 Join Happy DF with Cases
 
 ```{r}
@@ -375,13 +383,14 @@ class(happydf$Year)= "character"
 class(case$Year)= "character"
 
 #str(happydf)
-happydf <- full_join(happydf, case, by = c("Country.Name", "Year"))
+happydf <- merge(happydf, case, by = c("Country.Name", "Year"), all.x = TRUE)
 happydf$Year <- as.numeric(as.character(happydf$Year))
 
 
 ```
 
 Create Epi-Pandemic Year Conditional
+
 ```{r}
 happydf <- happydf %>%
   mutate(Epi_Pandemic_Year = case_when(
@@ -390,14 +399,20 @@ happydf <- happydf %>%
     Year %in% c(2020, 2021, 2022) ~ 1,
     TRUE ~ 0
   ))
-View(happydf)
+#View(happydf)
 ```
 
+Export Data to CSV into Datasets for Linear regression
 
-Export Data to CSV into Datasets
 ```{r}
 path <- here("Datasets", "HappyDataFrame.csv")
-write.csv(happydf, path, row.names=FALSE)
+write.csv(happy_linear, path, row.names=FALSE)
 ```
 
+Export Data to CSV into Datasets for Linear regression
+
+```{r}
+path <- here("Datasets", "MLRHappyDataFrame.csv")
+write.csv(happydf, path, row.names=FALSE)
+```
 
