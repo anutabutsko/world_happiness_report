@@ -217,3 +217,33 @@ happydf <- happydf %>%
     Year %in% c(2020, 2021, 2022) ~ 1,
     TRUE ~ 0
   ))
+
+
+corruption_regression <- function(df, continent){
+  corruption <- df %>%
+    filter(Continent == continent) %>%
+    group_by(Country.Name) %>% 
+    summarise(Life.Ladder = mean(Life.Ladder), Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
+    mutate(Continent = continent)
+  
+  return(corruption)
+}
+
+cor_america <- corruption_regression(happydf, "Americas")
+cor_asia <- corruption_regression(happydf, "Asia")
+cor_europe <- corruption_regression(happydf, "Europe")
+cor_africa <- corruption_regression(happydf, "Africa")
+combined_df <- rbind(cor_america, cor_asia, cor_europe, cor_africa)
+
+
+top_happiness <- happydf %>%
+  group_by(Country.Name) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), corruption = mean(Perceptions.Of.Corruption, na.rm = TRUE)) %>%
+  arrange(desc(Life.Ladder)) %>%
+  head(15)
+
+low_happiness <- happydf %>%
+  group_by(Country.Name) %>%
+  summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), corruption = mean(Perceptions.Of.Corruption, na.rm = TRUE)) %>%
+  arrange(Life.Ladder) %>%
+  head(15)

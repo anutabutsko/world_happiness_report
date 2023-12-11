@@ -1,6 +1,10 @@
 library(dplyr)
 library(ggeasy)
 library(ggplot2)
+library(ggpubr)
+library(plotly)
+library(viridis)
+library(tidyr)
 
 source("whiStats.R")
 
@@ -19,11 +23,47 @@ linear_regression <- function(x, y, data) {
               r_squared_percentage=r_squared_percentage))
 }
 
+simpsons.plot <- ggplot(combined_df, aes(x = Perceptions.Of.Corruption, y = Life.Ladder)) +
+  geom_point(alpha = 0.5, color = "darkblue", aes(text = Country.Name)) +
+  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  facet_wrap(~Continent, scales="free") +
+  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
+       x = "Perceptions of Corruption", 
+       y = "Happiness Index") +
+  theme_minimal() +
+  geom_text(aes(label = Country.Name), vjust = -2, size = 1.8, check_overlap = TRUE) +
+  theme(strip.text = element_text(face = "bold"))+
+  ggeasy::easy_center_title()
 
+top_perception <- top_happiness %>%
+  ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
+  geom_point(show.legend = FALSE) + 
+  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
+       subtitle="Top 15 Happiest Countries",
+       x = "Perceptions of Corruption", 
+       y = "Happiness Index") +
+  geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
+  theme_minimal()
+
+low_perception <- low_happiness %>%
+  ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
+  geom_point(show.legend = FALSE) + 
+  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
+       subtitle="Top 15 Unhappies Countries",
+       x = "Perceptions of Corruption", 
+       y = "Happiness Index") +
+  geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
+  theme_minimal()
 region.mean.by.year <- happydf %>%
   group_by(Regional.Indicator, Year) %>%
   summarise(n = n(), Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
 
+combined.plot <- ggarrange(top_perception, low_perception, ncol = 1, nrow =2)
+top.bottom.15.plot <- annotate_figure(combined.plot, 
+                              top = text_grob("Happiness Trend Across Years", 
+                                              face = "bold", size = 16))
 predict <- function(equation, df1){
   # before covid
   before_covid1 <- filter(df1, Year < 2021)
@@ -65,7 +105,8 @@ prediction.model <- function(df1, df2){
          x="\nYear", 
          y="Happiness Index") +
     theme_minimal() +
-    scale_x_continuous(breaks = seq(min(df$Year), max(df$Year), 1)) +
+    scale_x_continuous(breaks = seq(min(before_covid1$Year), max(before_covid1$Year), 1)) +  # Update this line
+    
     scale_y_continuous(breaks = seq(2, 9, 1)) +
     theme(axis.text.x = element_text(angle = 45, hjust = 0.2, vjust = 0),
           legend.position = "none",
@@ -97,6 +138,3 @@ prediction.model <- function(df1, df2){
   
   return(result)
 }
-
-
-

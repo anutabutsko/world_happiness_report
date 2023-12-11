@@ -1,9 +1,7 @@
-library(plotly)
 library(shiny)
 library(shinydashboard)
 source('PlottingStats.R')
-
-# source('AnalysisStats.R')
+source('AnaylsisStats.R')
 
 # Define UI
 ui <- dashboardPage(
@@ -18,7 +16,7 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       # what you will see when you are in the dashboard tab
-      tabItem(tabName = "exploratory", box(width = 12, htmlOutput('projectIntroduction'))
+      tabItem(tabName = "exploratory", box(width = 12, htmlOutput('projectIntroduction', style = "height: 597px; overflow-y: auto;"))
               ), # tabItem1
       tabItem(tabName = "Happiness",
               fluidRow(
@@ -28,12 +26,21 @@ ui <- dashboardPage(
                            tabPanel('About the World Happiness Report', 
                                     box(width = 12, htmlOutput('', 
                                                                style = "height: 250px; overflow-y: auto;"))))),
-                  tabPanel('graph 1', box(title = "", 
-                                          status = "primary", solidHeader = TRUE,
-                                          width = 7),
+                  tabPanel('Overview', box(status = "primary", solidHeader = TRUE,
+                                          width = 7, selectInput("indicator", "Select Indicator",
+                                                                 # names of the valid choices
+                                                                 choices = 
+                                                                   list('Log.GDP.Per.Capita', 
+                                                                        'Healthy.Life.Expectancy.At.Birth', 
+                                                                        'Generosity' ,'Positive.Affect', 
+                                                                        'Confidence.In.National.Government',
+                                                                        'Social.Support', 'Freedom.To.Make.Life.Choices',
+                                                                        'Perceptions.Of.Corruption', 'Negative.Affect'), 
+                                                                 selected = 'Log.GDP.Per.Capita'),
+                                          plotlyOutput("WHIandHappinessOverview")),
                            box(width = 5, htmlOutput('', style = "height: 440px; overflow-y: auto;"))),
-                  tabPanel('graph 2', box(width = 7, 
-                                          title = "", 
+                  tabPanel('Correlation', box(width = 7, 
+                                          title = "Correlation", 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
                                           selectInput("region_check", "Select Region",
@@ -60,15 +67,22 @@ ui <- dashboardPage(
                                                              'Social.Support', 'Freedom.To.Make.Life.Choices',
                                                              'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                       selected = 'Log.GDP.Per.Capita'), 
-                                          plotlyOutput('WHIandHappinessByContinent')),
+                                          plotlyOutput('WHIandHappinessByRegion')),
                            box(width = 5, htmlOutput('', style = "height: 597px; overflow-y: auto;")
                                )),
-                  tabPanel('graph 3', box(title = "", 
+                  tabPanel("Simpson's Paradox", 
+                           tabsetPanel(
+                             tabPanel('By Country', box(title = "Analysis of Possible Simpson's Paradox", 
+                                 status = "primary", solidHeader = TRUE,
+                                 width = 8, plotlyOutput('simpsonsPlot')), 
+                                 box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;"))),
+                             tabPanel('Top and Bottom 15', 
+                                      box(title = "Analysis of Possible Simpson's Paradox",
                                           status = "primary", solidHeader = TRUE,
-                                          width = 8, plotOutput('')
-                  ),
-                  box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;")
-                      )
+                                          width = 8, plotOutput('simpsonsPlot15')),
+                    box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;")
+                    ))
+                  )
                   ) # tabPanel
                 ))), # tabItem2
       tabItem(tabName = "trend",
@@ -96,10 +110,10 @@ ui <- dashboardPage(
 
 # Define server logic
 server <- function(input, output) {
-  # # text description 
-  # output$projectIntroduction <- renderUI({
-  #   tagList(projectIntroduction.content)
-  # })
+  # text description
+  output$projectIntroduction <- renderUI({
+    tagList(projectIntroduction.content)
+  })
   # 
   # output$influenceofHappiness.background <- renderUI({
   #   tagList(influenceofHappiness.background.content)
@@ -109,8 +123,27 @@ server <- function(input, output) {
   #   tagList(works.cited.content)
   # })
   
-  output$WHIandHappinessByContinent <- renderPlotly({
-    plot <- happydf %>%
+  output$WHIandHappinessOverview <- renderPlotly({
+    world_perception <- happydf %>%
+      group_by(Country.Name) %>% 
+      summarise(Life.Ladder = mean(Life.Ladder), indicator = mean(!!as.name(input$indicator)))
+    
+    plot <- ggplot(world_perception, aes(x = indicator, y = Life.Ladder, text = Country.Name)) +
+      geom_point(alpha = 0.3, color = "darkblue") + 
+      geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE, aes(group = 1)) +
+      labs(
+        title = paste("Relationship between", input$indicator, "and Happiness Index Across the World"),
+        x = input$indicator,
+        y = "Happiness Index"
+      ) +
+      theme_minimal() + 
+      ggeasy::easy_center_title()
+    
+    ggplotly(plot, data = world_perception)
+  })
+  
+  output$WHIandHappinessByRegion <- renderPlotly({
+    WHIandHappinessByRegion.plot <- happydf %>%
       filter(Regional.Indicator == input$region_check) %>%
       ggplot(aes(Life.Ladder, !!sym(input$WHI_check))) +
       geom_point(alpha=0.5) +
@@ -119,7 +152,15 @@ server <- function(input, output) {
       labs(title=input$region_check, x="Happiness", y=input$WHI_check) +
       ggeasy::easy_center_title()
   
-    ggplotly(plot)
+    ggplotly(WHIandHappinessByRegion.plot)
+  })
+  
+  output$simpsonsPlot <- renderPlotly({
+    ggplotly(simpsons.plot)
+  })
+  
+  output$simpsonsPlot15 <- renderPlot({
+    top.bottom.15.plot
   })
   
   output$HappinessPredictionByRegion <- renderPlotly({
@@ -134,6 +175,8 @@ server <- function(input, output) {
     
     ggplotly(plot)
   })
+  
+
   # output$happinessIndicatorDistribution <- renderUI({
   #   tagList(happinessIndicatorDistribution.content)
   # })
