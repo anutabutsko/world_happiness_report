@@ -8,9 +8,11 @@ ui <- dashboardPage(
   dashboardHeader(title = "World Happiness Index"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Exploratory Page", tabName = "exploratory", icon = icon("dashboard")),
+      menuItem("Introduction", tabName = "exploratory", icon = icon("dashboard")),
+      menuItem("Background", tabName = 'background', icon = icon('globe')),
       menuItem("Influencers of Happiness", tabName = "Happiness", icon = icon("globe")),
-      menuItem("Happiness Trend", tabName = "trend", icon = icon('globe'))
+      menuItem("Happiness Prediction", tabName = "trend", icon = icon('globe')),
+      menuItem("Multiple Linear Regression", tabName = "lineregs", icon = icon('globe'))
     )
   ),
   dashboardBody(
@@ -18,14 +20,37 @@ ui <- dashboardPage(
       # what you will see when you are in the dashboard tab
       tabItem(tabName = "exploratory", box(width = 12, htmlOutput('projectIntroduction', style = "height: 597px; overflow-y: auto;"))
               ), # tabItem1
+      tabItem(tabName = "background",
+              fluidRow(
+                tabsetPanel(
+                  tabPanel("Resarch Papers",
+                           box(width = 4, htmlOutput("State.ofWorld.Happiness", style="height: 597px; overflow-y: auto;")),
+                           box(width = 4,htmlOutput("Happiness.World.Satisfaction", style="height: 597px; overflow-y: auto;")),
+                           box(width = 4, htmlOutput("Analyze.and.Predict", style="height: 597px; overflow-y: auto;"))),
+                  tabPanel("Datasets",
+                           tabsetPanel(
+                             tabPanel("Covid Hospitalization",
+                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                                      ),
+                             tabPanel("Excess Mortality",
+                                      box(width = 12, htmlOutput("", style="height: 597px; overflow-y: auto;"))
+                                      ),
+                             tabPanel("WHO COVID-19 Global Data",
+                               box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                             ),
+                             tabPanel("World Happiness Report",
+                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                             ),
+                             tabPanel("Vaccination Data",
+                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                             ),
+                             
+                           ))
+                )
+              )), # tabItem background
       tabItem(tabName = "Happiness",
               fluidRow(
                 tabsetPanel(
-                  tabPanel('Background', box(width = 12, htmlOutput('influenceofHappiness.background')),
-                           tabsetPanel(
-                           tabPanel('About the World Happiness Report', 
-                                    box(width = 12, htmlOutput('', 
-                                                               style = "height: 250px; overflow-y: auto;"))))),
                   tabPanel('Overview', box(status = "primary", solidHeader = TRUE,
                                           width = 7, selectInput("indicator", "Select Indicator",
                                                                  # names of the valid choices
@@ -113,6 +138,18 @@ server <- function(input, output) {
   # text description
   output$projectIntroduction <- renderUI({
     tagList(projectIntroduction.content)
+  })
+  
+  output$State.ofWorld.Happiness <- renderUI({
+    tagList(State.ofWorld.Happiness.content)
+  })
+  
+  output$Happiness.World.Satisfaction <- renderUI({
+    tagList(Happiness.World.Satisfaction.content)
+  })
+  
+  output$Analyze.and.Predict <- renderUI({
+    tagList(Analyze.and.Predict.content)
   })
   # 
   # output$influenceofHappiness.background <- renderUI({
