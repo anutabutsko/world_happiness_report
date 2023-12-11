@@ -235,5 +235,41 @@ happydf %>%
 ```
 
 
+Correlation of Constructs:
+
+```{r}
+column_names <- colnames(happydf)
+column_names
+# Remove the Y column and non-numeric
+columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Country.Code")
+
+reduced_data <- happydf[, !(names(happydf) %in% columns_to_exclude)]
+reduced_data <- na.omit(reduced_data)
+
+# Compute correlation at 2 decimal places
+corr_matrix = round(cor(reduced_data), 2)
+# Compute a matrix of correlation p-values
+p.mat <- cor_pmat(reduced_data)
+
+
+#View(corr_matrix)
+# Compute and show the  result
+corr.plot <- ggcorrplot(corr_matrix, hc.order = TRUE, type = "lower", outline.col = "white",  p.mat = p.mat)
+ggplotly(corr.plot) #YUHAN
+
+#We see values with >.8 correlation
+high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
+correlation_values <- corr_matrix[high_correlations]
+variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
+correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
+
+result <- data.frame(
+  Variable1 = variable_names,
+  Variable2 = correlated_variable_names,
+  Correlation = correlation_values
+)
+
+print(result)
+```
 
 
