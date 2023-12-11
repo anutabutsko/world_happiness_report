@@ -400,8 +400,4 @@ path <- here("Datasets", "HappyDataFrame.csv")
 write.csv(happydf, path, row.names=FALSE)
 ```
 
-Export Data to CSV into Datasets
-```{r}
-path <- here("DataAnalysis","Datasets","WorldHappinessReport.csv")
-write.csv(happydf, path, row.names=FALSE)
-```
+
