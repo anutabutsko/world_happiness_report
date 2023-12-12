@@ -218,22 +218,32 @@ happydf <- happydf %>%
     TRUE ~ 0
   ))
 
-
 corruption_regression <- function(df, continent){
+  df_clean<- df[!is.na(df$Perceptions.Of.Corruption), ] %>%
+    filter(Continent==continent)
+  
+  correlation <- round(cor(df_clean$Life.Ladder, df_clean$Perceptions.Of.Corruption),2)
+  
   corruption <- df %>%
-    filter(Continent == continent) %>%
+    filter(Continent==continent) %>%
     group_by(Country.Name) %>% 
     summarise(Life.Ladder = mean(Life.Ladder), Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
-    mutate(Continent = continent)
-  
+    ggplot(aes(Perceptions.Of.Corruption, Life.Ladder)) +
+    geom_point(alpha=0.5, color="darkblue") + 
+    geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+    labs(title=continent, 
+         subtitle = paste("Correlation coefficient:", correlation), 
+         x="Corruption", 
+         y="Happiness") +
+    ggeasy::easy_center_title() +
+    theme_minimal()
   return(corruption)
 }
-
 cor_america <- corruption_regression(happydf, "Americas")
 cor_asia <- corruption_regression(happydf, "Asia")
 cor_europe <- corruption_regression(happydf, "Europe")
 cor_africa <- corruption_regression(happydf, "Africa")
-combined_df <- rbind(cor_america, cor_asia, cor_europe, cor_africa)
+combined_plot <- ggarrange(cor_america, cor_asia, cor_europe, cor_africa, ncol = 2, nrow =2, common.legend = TRUE, legend="bottom")
 
 
 top_happiness <- happydf %>%
@@ -247,3 +257,19 @@ low_happiness <- happydf %>%
   summarise(Life.Ladder = mean(Life.Ladder, na.rm = TRUE), corruption = mean(Perceptions.Of.Corruption, na.rm = TRUE)) %>%
   arrange(Life.Ladder) %>%
   head(15)
+
+WHO <- happydf %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Continent, 
+         Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, 
+         Epi_Pandemic_Year,Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
+  na.omit(happydf)
+
+columns_to_exclude <- c("Life.Ladder", "Country.Name", "Regional.Indicator", "Continent", "Epi_Pandemic_Year")
+
+reduced_data <- WHO[, !(names(WHO) %in% columns_to_exclude)]
+reduced_data <- na.omit(reduced_data)
+
+# Compute correlation at 2 decimal places
+corr_matrix = round(cor(reduced_data), 2)
+# Compute a matrix of correlation p-values
+p.mat <- cor_pmat(reduced_data)

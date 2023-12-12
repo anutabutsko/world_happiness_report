@@ -1,5 +1,5 @@
 projectIntroduction.content <- tagList(
-  tags$h3("World Happiness Report Analysis", style = "text-align: center;"),
+  tags$h3(tags$strong("World Happiness Report Analysis"), style = "text-align: center;"),
   tags$h5("by Emma Horton, Hanna Butsko, Jin YuHan Burgess", style = "text-align: center;"),
   tags$p(),
   tags$p(
@@ -32,7 +32,7 @@ projectIntroduction.content <- tagList(
 )
 
 State.ofWorld.Happiness.content <- tagList(
-  tags$h3("The State of World Happiness",style = "text-align: center;"),
+  tags$h3(tags$strong("The State of World Happiness"),style = "text-align: center;"),
   tags$p(),
   tags$p("This study utilizes statistical methods to examine central tendencies and dispersion in happiness data, employing 95% confidence intervals for these analyses. It focuses on average happiness factors over time, 
          standard deviations within regions and countries, and correlation analysis to understand differences in happiness between OECD countries and others. The report notes a limitation in its sample size and duration, 
@@ -41,16 +41,55 @@ State.ofWorld.Happiness.content <- tagList(
 )
 
 Happiness.World.Satisfaction.content <- tagList(
-  tags$h3("Happiness and Life Satisfaction", style = "text-align: center;"),
+  tags$h3(tags$strong("Happiness and Life Satisfaction"), style = "text-align: center;"),
   tags$p(),
-  tags$p("The study from Our World in Data performs distribution Analysis to understand how life satisfaction scores spread across different levels in various regions in order to identify patterns and disparities in happiness not 
-         found in simpler analysis such as averages alone. The article uses correlation analysis to examine the relationship between GDP per capita and average life satisfaction across countries which we understand to be linear relationships 
-         from the classroom preparation. Finally, stochastic Dominance is  used to compare distributions between regions to determine which region generally reports higher happiness levels. Although not covered in class, this is a way to compare 
-         two probability distributions (which are covered) to see which one generally has better results. It checks if one group is always as good as or better than the other in all situations.")
+  tags$p("The study from Our World in Data performs distribution analysis to understand how life satisfaction scores spread across different levels in various regions in order to identify patterns and disparities in happiness not found in simpler analysis such as averages alone. The article uses correlation analysis to examine the relationship between GDP per capita and average life satisfaction across countries, which we understand to be linear relationships from the classroom preparation. Finally, stochastic dominance is used to compare distributions between regions to determine which region generally reports higher happiness levels. Although not covered in class, this is a way to compare two probability distributions (which are covered) to see which one generally has better results. It checks if one group is always as good as or better than the other in all situations."),
+  tags$p(
+    tags$h5(tags$strong("Descriptive Statistics"), style = "text-align: center;"),
+    tags$p(),
+    tags$ul(
+      tags$li("Happiness Score Distribution: by country, region, and crossed with other possible impacting variables"),
+      tags$li("Happiness Trend: by country, region, and crossed with other possible impacting variables")
+    )
+  ),
+  tags$p(
+    tags$h5(tags$strong("Inferential Statistics"), style = "text-align: center;"),
+    tags$p(),
+    tags$ul(
+      tags$li("Regression analysis"),
+      tags$li("Confidence interval testing")
+    )
+  ),
+  tags$h5(tags$strong("Advantages and Limitations of Research"), style = "text-align: center;"), 
+  tags$p(), 
+  tags$strong("Advantages"), 
+  tags$p(
+    tags$ul(
+      tags$li("Factor Variability: looks at different factors that could affect happiness besides those indicated to affect happiness"), 
+      tags$li("Additional Research: Implements datasets from multiple sources")
+    )
+  ), 
+  tags$p(), 
+  tags$strong("Limitations"), 
+  tags$p(
+    tags$ul(
+      tags$li("Broad scope: leads to more descriptive analysis and could be lacking in some inferential analysis"),
+      tags$p(), 
+      tags$h5(tags$strong("Our Research"), style = "text-align: center;"), 
+      tags$p(), 
+      tags$strong("Implementations"), 
+      tags$p(
+        tags$ul(
+          tags$li("Look at another external factor: Looking at epi-/pandemics as another facet to happiness score")
+        )
+      ) 
+    ) 
+  )
 )
 
+
 Analyze.and.Predict.content <- tagList(
-  tags$h3("Analyze and Predict the 2022 World Happiness Report Based on the Past Year's Dataset",style = "text-align: center;"),
+  tags$h3(tags$strong("Analyze and Predict the 2022 World Happiness Report Based on the Past Year's Dataset"),style = "text-align: center;"),
   tags$p(),
   tags$p("This study utilizes linear regression to forecast happiness scores in various countries. By using linear regression, this study predicts ladder scores using each country’s GDP and provides the best fit linear equation. 
          It leverages data from previous World Happiness Reports, validating its predictions against 2022 outcomes, achieving an RMSE of 0.236 and an MSE of 0.056, the study emphasizes understanding key statistical measures like 
@@ -59,5 +98,52 @@ Analyze.and.Predict.content <- tagList(
   tags$p(), 
   tags$strong("Mean Absolute Error (MAE)"),
   tags$p("measures the average of the absolute difference between the actual and predicted values.  Mean Squared Error (MSE) measures the mean square error of the mismatch between predicted and real values. Root Mean Square Error (RMSE) 
-         is the square root of mean squared error." )
+         is the square root of mean squared error." ),
+  tags$p(
+         tags$h5(tags$strong("Descriptive Statistics"),style = "text-align: center;"),
+         tags$p(),
+         tags$ul(
+           tags$li("Mean happiness score across all countries between 2021-2022"),
+           tags$li("Happiness Score Distribution by Regional.Indicator"),
+           tags$li("Correlation coefficients between Life.Ladder and other happiness indicators")
+         )
+  ),
+  tags$p(
+         tags$h5(tags$strong("Inferential Statistics"),style = "text-align: center;"),
+         tags$p(),
+         tags$ul(
+           tags$li("Linear regression will predict ladder scores using each country’s GDP and provide the best fit linear equation"),
+           tags$li("Model evaluation using MAE, MSE, RMSE"),
+           tags$li("Infer statistical importance of GDP and happiness score"), 
+         )
+  ), 
+  tags$p(), 
+  tags$h5(tags$strong("Advantages and Limitations of Research"),style = "text-align: center;"), 
+  tags$p(), 
+  tags$strong("Advantages"), 
+  tags$p(
+    tags$ul(
+      tags$li("Predictive Modeling that is Replicable: a quantitative frameworks is established when the study uses machine learning models, linear regression, and comparison of previous research to identify trends"), 
+      tags$li("Additional Research: by comparing the linear regression attained in this research with other methods offering insight into the efficacy of other approaches"),
+    )
+  ), 
+  tags$p(), 
+  tags$strong("Limitations"), 
+  tags$p(
+    tags$ul(
+      tags$li("Limited Scope: the study mainly focus on GDP as a factor of happiness although there are other factors in play"), 
+      tags$li("Single Source: The study is only done on one dataset pulled from Kaggle"),
+      tags$li("Temporally Limited: The study is mainly focused between 2021-2022 which could limit the scope of how long lasting an effect could have")
+    ),
+    tags$p(), 
+    tags$h5(tags$strong("Our Research"),style = "text-align: center;"), 
+    tags$p(), 
+    tags$strong("Implementations"), 
+    tags$p(
+      tags$ul(
+        tags$li("Longitudinal Data: incorporate data related to COVID-19 to assess possible influence on happiness score"), 
+        tags$li("Partitioning: Implement partitioning based on possible regional similarities to identify possible differences"),
+      )
+    ), 
+  ) 
 )

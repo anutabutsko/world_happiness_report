@@ -5,8 +5,28 @@ library(ggpubr)
 library(plotly)
 library(viridis)
 library(tidyr)
+library(reshape2)
+library(DataExplorer)
+library(graphics)
+library(crosstalk)
+library(ggcorrplot)
+library(heatmaply)
 
 source("whiStats.R")
+
+boxplot.trend <- happydf %>%
+  ggplot(aes(x=as.factor(Year), y= Life.Ladder, fill = Year)) +
+  geom_boxplot(position = 'dodge') +
+  scale_fill_viridis(alpha=0.7, option= 'viridis')+
+  theme_minimal() +
+  labs(title = "Happiness Trend Over The Years", 
+                        x = "Year", 
+                        y = "Happiness Lvl")+ 
+  theme(legend.text = element_blank(), # font text of variables in legend
+        legend.position = 'none',
+        axis.title.x = element_blank())+
+  ggeasy::easy_center_title()
+
 
 # prediction
 linear_regression <- function(x, y, data) {
@@ -23,47 +43,35 @@ linear_regression <- function(x, y, data) {
               r_squared_percentage=r_squared_percentage))
 }
 
-simpsons.plot <- ggplot(combined_df, aes(x = Perceptions.Of.Corruption, y = Life.Ladder)) +
-  geom_point(alpha = 0.5, color = "darkblue", aes(text = Country.Name)) +
-  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-  facet_wrap(~Continent, scales="free") +
-  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
-       x = "Perceptions of Corruption", 
-       y = "Happiness Index") +
-  theme_minimal() +
-  geom_text(aes(label = Country.Name), vjust = -2, size = 1.8, check_overlap = TRUE) +
-  theme(strip.text = element_text(face = "bold"))+
-  ggeasy::easy_center_title()
-
-top_perception <- top_happiness %>%
-  ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
-  geom_point(show.legend = FALSE) + 
-  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
-       subtitle="Top 15 Happiest Countries",
-       x = "Perceptions of Corruption", 
-       y = "Happiness Index") +
-  geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
-  theme_minimal()
-
-low_perception <- low_happiness %>%
-  ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
-  geom_point(show.legend = FALSE) + 
-  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
-       subtitle="Top 15 Unhappies Countries",
-       x = "Perceptions of Corruption", 
-       y = "Happiness Index") +
-  geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
-  theme_minimal()
-region.mean.by.year <- happydf %>%
-  group_by(Regional.Indicator, Year) %>%
-  summarise(n = n(), Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
-
-combined.plot <- ggarrange(top_perception, low_perception, ncol = 1, nrow =2)
-top.bottom.15.plot <- annotate_figure(combined.plot, 
-                              top = text_grob("Happiness Trend Across Years", 
-                                              face = "bold", size = 16))
+# top_perception <- top_happiness %>%
+#   ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
+#   geom_point(show.legend = FALSE) + 
+#   geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+#   labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
+#        subtitle="Top 15 Happiest Countries",
+#        x = "Perceptions of Corruption", 
+#        y = "Happiness Index") +
+#   geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
+#   theme_minimal()
+# 
+# low_perception <- low_happiness %>%
+#   ggplot(aes(corruption, Life.Ladder, color=Life.Ladder)) +
+#   geom_point(show.legend = FALSE) + 
+#   geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+#   labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
+#        subtitle="Top 15 Unhappies Countries",
+#        x = "Perceptions of Corruption", 
+#        y = "Happiness Index") +
+#   geom_text(aes(label=Country.Name), color="black", vjust=-1, size=2.3) +
+#   theme_minimal()
+# region.mean.by.year <- happydf %>%
+#   group_by(Regional.Indicator, Year) %>%
+#   summarise(n = n(), Life.Ladder = mean(Life.Ladder, na.rm = TRUE))
+# 
+# combined.plot <- ggarrange(top_perception, low_perception, ncol = 1, nrow =2)
+# top.bottom.15.plot <- annotate_figure(combined.plot, 
+#                               top = text_grob("Happiness Trend Across Years", 
+#                                               face = "bold", size = 16))
 predict <- function(equation, df1){
   # before covid
   before_covid1 <- filter(df1, Year < 2021)
@@ -95,10 +103,10 @@ prediction.model <- function(df1, df2){
   
   result <- 
     ggplot(before_covid1, aes(x = Year, y = Life.Ladder)) +
-    geom_point(alpha = 0.5, position = "jitter", color="orange") +
+    geom_point(alpha = 0.5, position = "jitter", color="darkblue") +
     geom_line(data=predicted.happiness.df, color="red", size=2) +
     geom_point(data = before_covid2, size = 3, color="darkred", alpha=0.6) +
-    geom_smooth(method='lm', color = "darkred", fill="gray80", se = TRUE, size=0.6) +
+    geom_smooth(method='lm', color = "darkblue", fill="gray100", se = TRUE, size=0.6) +
     geom_text(data = before_covid2, aes(label = paste0("n=", n), y = 1, color = NULL), size = 2.5) +
     labs(title=paste("World Happiness Distribution Across the Years in", unique(df1$Regional.Indicator)), 
          subtitle=subtitle_before, 
@@ -121,9 +129,9 @@ prediction.model <- function(df1, df2){
     subtitle_after <- paste("After Covid Regression Equation: Happiness = ", round(after_equation$intercept, 2), '+ (', round(after_equation$slope, 2), " * Year)", "   R^2 =", after_equation$r_squared_percentage, "%")
     
     result <- result +
-      geom_point(data = after_covid1, alpha = 0.5, position = "jitter", color="orange") +
+      geom_point(data = after_covid1, alpha = 0.5, position = "jitter", color="darkblue") +
       geom_point(data = after_covid2, size = 3, color="darkred", alpha=0.6) + 
-      geom_smooth(data = after_covid1, method='lm', color = "darkred", fill="gray80", se = TRUE, size=0.6) +
+      geom_smooth(data = after_covid1, method='lm', color = "darkblue", fill="gray100", se = TRUE, size=0.6) +
       geom_text(data = after_covid2, aes(label = paste0("n=", n), y = 1, color = NULL), size = 2.5)
     
     result <- result +
@@ -138,3 +146,29 @@ prediction.model <- function(df1, df2){
   
   return(result)
 }
+
+
+
+# MLR Analysis 
+WHI.cor <- happydf[,4:13]
+WHI.cor <- na.omit(WHI.cor)
+whi.corr <- round(cor(WHI.cor), 2) 
+whi.p.mat <- cor_pmat(WHI.cor)
+whi.corr.plot <- ggcorrplot(whi.corr,
+           hc.order = TRUE,
+           type = "lower",
+           outline.color = "white",
+           p.mat = whi.p.mat)
+
+
+
+covid.corr.plot <- ggcorrplot(corr_matrix, hc.order = TRUE, 
+                        type = "lower", outline.col = "white", 
+                        p.mat = p.mat)
+
+
+MLR_who <- lm(Life.Ladder ~ Epi_Pandemic_Year+Avg_Daily_NewCases+Avg_Daily_NewDeaths+
+                Avg_Daily_ICU_Occupancy_Per_Million+Avg_Daily_Cumulative_Cases+
+                Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
+
+

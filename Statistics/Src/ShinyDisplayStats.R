@@ -10,8 +10,8 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Introduction", tabName = "exploratory", icon = icon("dashboard")),
       menuItem("Background", tabName = 'background', icon = icon('globe')),
-      menuItem("Influencers of Happiness", tabName = "Happiness", icon = icon("globe")),
-      menuItem("Happiness Prediction", tabName = "trend", icon = icon('globe')),
+      menuItem("Happiness", tabName = "Happiness", icon = icon("globe")),
+      menuItem("Trends and Predictions", tabName = "trend", icon = icon('globe')),
       menuItem("Multiple Linear Regression", tabName = "lineregs", icon = icon('globe'))
     )
   ),
@@ -51,27 +51,16 @@ ui <- dashboardPage(
       tabItem(tabName = "Happiness",
               fluidRow(
                 tabsetPanel(
-                  tabPanel('Overview', box(status = "primary", solidHeader = TRUE,
-                                          width = 7, selectInput("indicator", "Select Indicator",
-                                                                 # names of the valid choices
-                                                                 choices = 
-                                                                   list('Log.GDP.Per.Capita', 
-                                                                        'Healthy.Life.Expectancy.At.Birth', 
-                                                                        'Generosity' ,'Positive.Affect', 
-                                                                        'Confidence.In.National.Government',
-                                                                        'Social.Support', 'Freedom.To.Make.Life.Choices',
-                                                                        'Perceptions.Of.Corruption', 'Negative.Affect'), 
-                                                                 selected = 'Log.GDP.Per.Capita'),
-                                          plotlyOutput("WHIandHappinessOverview")),
-                           box(width = 5, htmlOutput('', style = "height: 440px; overflow-y: auto;"))),
-                  tabPanel('Correlation', box(width = 7, 
-                                          title = "Correlation", 
+                  tabPanel('Correlation', box(status = "primary", solidHeader = TRUE,
+                                          width = 8, plotlyOutput("WHIcorr"))),
+                  tabPanel('Distribution', box(width = 7, 
+                                          title = "Overlook", 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
                                           selectInput("region_check", "Select Region",
                                                       # names of the valid choices
                                                       choices =
-                                                        list('South Asia',"Southeast Asia",
+                                                        list('Cumulative', 'South Asia',"Southeast Asia",
                                                              "East Asia", "West Asia",
                                                              "Middle East",
                                                              'Middle East and North Africa',
@@ -81,7 +70,7 @@ ui <- dashboardPage(
                                                              "Central Europe", "Commonwealth of Independent States",
                                                              "Caribbean", 'Latin America and Caribbean',
                                                              'North America and ANZ'), 
-                                                      selected = 'South Asia'),
+                                                      selected = 'Cumulative'),
                                           selectInput("WHI_check", "Select Indicator",
                                                       # names of the valid choices
                                                       choices = 
@@ -93,39 +82,52 @@ ui <- dashboardPage(
                                                              'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                       selected = 'Log.GDP.Per.Capita'), 
                                           plotlyOutput('WHIandHappinessByRegion')),
-                           box(width = 5, htmlOutput('', style = "height: 597px; overflow-y: auto;")
+                           box(width = 5, htmlOutput('')
                                )),
-                  tabPanel("Simpson's Paradox", 
-                           tabsetPanel(
-                             tabPanel('By Country', box(title = "Analysis of Possible Simpson's Paradox", 
+                  tabPanel("Simpson's Paradox", box(title = "Analysis of Possible Simpson's Paradox", 
                                  status = "primary", solidHeader = TRUE,
-                                 width = 8, plotlyOutput('simpsonsPlot')), 
-                                 box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;"))),
-                             tabPanel('Top and Bottom 15', 
-                                      box(title = "Analysis of Possible Simpson's Paradox",
-                                          status = "primary", solidHeader = TRUE,
-                                          width = 8, plotOutput('simpsonsPlot15')),
-                    box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;")
-                    ))
-                  )
+                                 width = 8, plotOutput('simpsonsPlot')), 
+                                 box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;"))
+                             
                   ) # tabPanel
                 ))), # tabItem2
       tabItem(tabName = "trend",
-              fluidRow(box(width = 12, status = "primary", solidHeader = TRUE,
-                           selectInput("region_trend", "Select Region",
-                                       # names of the valid choices
-                                       choices =
-                                         list('South Asia',"Southeast Asia",
-                                              "East Asia", "West Asia",
-                                              "Middle East",
-                                              'Middle East and North Africa',
-                                              "North Africa","Central Africa","East Africa",
-                                              "Sub-Saharan Africa","Southern Africa", 
-                                              "Central and Eastern Europe", "Western Europe",
-                                              "Central Europe", "Commonwealth of Independent States",
-                                              "Caribbean", 'Latin America and Caribbean',
-                                              'North America and ANZ'), 
-                                       selected = 'South Asia'), plotlyOutput("HappinessPredictionByRegion")))),
+              fluidRow(
+                tabsetPanel(
+                  tabPanel('Happiness Lvl Trend', box(
+                    status = 'primary', solidHeader = TRUE,
+                    width = 12, plotlyOutput('HappyLvlTrend')
+                  )),
+                  tabPanel('Prediction', box(width = 12, status = "primary", solidHeader = TRUE,
+                                             selectInput("region_trend", "Select Region",
+                                                         # names of the valid choices
+                                                         choices =
+                                                           list('South Asia',"Southeast Asia",
+                                                                "East Asia", "West Asia",
+                                                                "Middle East",
+                                                                'Middle East and North Africa',
+                                                                "North Africa","Central Africa","East Africa",
+                                                                "Sub-Saharan Africa","Southern Africa", 
+                                                                "Central and Eastern Europe", "Western Europe",
+                                                                "Central Europe", "Commonwealth of Independent States",
+                                                                "Caribbean", 'Latin America and Caribbean',
+                                                                'North America and ANZ'), 
+                                                         selected = 'South Asia'), plotlyOutput("HappinessPredictionByRegion")))
+                ))),
+      tabItem(tabName = "lineregs", 
+              fluidRow(
+                tabsetPanel(
+                  tabPanel('Correlation Matrix',
+                           box(width = 7, status = "primary", solidHeader = TRUE,
+                               plotlyOutput('CovidCorr'))),
+                  tabPanel('Multiple Linear Regresion', 
+                           box(width = 12, status = "primary", solidHeader = TRUE,
+                               plotOutput('MLR.Who'))),
+                  tabPanel("MLR Summary", 
+                           box(width = 12, status = "primary", solidHeader = TRUE,
+                               verbatimTextOutput('sum')))
+                )
+              )),
       tabItem(tabName = "works",
               fluidRow(box(width = 12, htmlOutput('works.cited.content')))
       ) # tabItem4
@@ -160,26 +162,27 @@ server <- function(input, output) {
   #   tagList(works.cited.content)
   # })
   
-  output$WHIandHappinessOverview <- renderPlotly({
-    world_perception <- happydf %>%
-      group_by(Country.Name) %>% 
-      summarise(Life.Ladder = mean(Life.Ladder), indicator = mean(!!as.name(input$indicator)))
-    
-    plot <- ggplot(world_perception, aes(x = indicator, y = Life.Ladder, text = Country.Name)) +
-      geom_point(alpha = 0.3, color = "darkblue") + 
-      geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE, aes(group = 1)) +
-      labs(
-        title = paste("Relationship between", input$indicator, "and Happiness Index Across the World"),
-        x = input$indicator,
-        y = "Happiness Index"
-      ) +
-      theme_minimal() + 
-      ggeasy::easy_center_title()
-    
-    ggplotly(plot, data = world_perception)
+  output$HappyLvlTrend <- renderPlotly({
+    ggplotly(boxplot.trend)
+  })
+  
+  output$WHIcorr <- renderPlotly({
+    ggplotly(whi.corr.plot)
   })
   
   output$WHIandHappinessByRegion <- renderPlotly({
+    if (input$region_check =='Cumulative'){
+      world_perception <- happydf %>%
+        group_by(Country.Name) %>% 
+        summarise(Life.Ladder = mean(Life.Ladder), indicator = mean(!!as.name(input$WHI_check)))
+      
+      WHIandHappinessByRegion.plot <-  
+        ggplot(world_perception, aes(x = indicator, y = Life.Ladder, text = Country.Name)) +
+        geom_point(alpha = 0.3, color = "darkblue") + 
+        geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE, aes(group = 1)) +
+        theme_minimal() + 
+        ggeasy::easy_center_title()
+    }else{
     WHIandHappinessByRegion.plot <- happydf %>%
       filter(Regional.Indicator == input$region_check) %>%
       ggplot(aes(Life.Ladder, !!sym(input$WHI_check))) +
@@ -188,12 +191,14 @@ server <- function(input, output) {
       geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
       labs(title=input$region_check, x="Happiness", y=input$WHI_check) +
       ggeasy::easy_center_title()
-  
+    }
     ggplotly(WHIandHappinessByRegion.plot)
   })
   
-  output$simpsonsPlot <- renderPlotly({
-    ggplotly(simpsons.plot)
+  output$simpsonsPlot <- renderPlot({
+    final_plot <- annotate_figure(combined_plot, top = 
+                                    text_grob("Relationship between Perceptions of Corruption\nand Happiness Index", face = "bold", size = 13))
+    final_plot
   })
   
   output$simpsonsPlot15 <- renderPlot({
@@ -213,10 +218,33 @@ server <- function(input, output) {
     ggplotly(plot)
   })
   
+  output$CovidCorr <- renderPlotly({
+    ggplotly(covid.corr.plot)
+  })
+  
+  output$MLR.Who <- renderPlot({
+    #Get residuals
+    model_residuals = MLR_who$residuals
+    
+    # diagnostic plots #YUHAN
+    
+    par(mfrow = c(2, 2))  # grid for plots
+    #The histogram looks normal; hence we can conclude the normality with enough confidence.
+    
+    hist(model_residuals)
+    # residuals vs. fitted values (check homoscedasticity)
+    plot(MLR_who, 1)
+    # Q-Q Plot (check for normality of residuals)
+    plot(MLR_who, 2)
+    # Cook's distance (check outliers)
+    plot(MLR_who, 5)
+    par(mfrow = c(1, 1)) #  plotting layout
+  })
+  
+  output$sum <- renderPrint({
+    summary(MLR_who)
+  })
 
-  # output$happinessIndicatorDistribution <- renderUI({
-  #   tagList(happinessIndicatorDistribution.content)
-  # })
 
 }
 
