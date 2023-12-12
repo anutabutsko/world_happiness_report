@@ -146,7 +146,6 @@ x_vars <- c(
   "Avg_Daily_ICU_Occupancy_Per_Million",
   "Avg_Daily_NewCases",
   "Avg_Daily_Cumulative_Cases",
-  "Epi_Pandemic_Year",
   "Perceptions.Of.Corruption",
   "Avg_Daily_NewDeaths",
   "Avg_Daily_Cumulative_Death"
@@ -156,7 +155,7 @@ data_frame <- WHO
 y_var <- c("Life.Ladder")
 
 # Regression
-equation.before.covid <- mlr_regression(x_vars, y_var, WHO)
+#equation.before.covid <- mlr_regression(x_vars, y_var, WHO)
 
 # results
 intercept <- equation.before.covid$intercept
