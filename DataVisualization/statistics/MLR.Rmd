@@ -22,7 +22,7 @@ View(df)
 ```{r}
 
 WHO <- df %>%
-  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Continent, Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Epi_Pandemic_Year,Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
+  select(Country.Name,Regional.Indicator,Year, Life.Ladder, Continent, Avg_Daily_ICU_Occupancy_Per_Million, Avg_Daily_NewCases,Avg_Daily_Cumulative_Cases, Avg_Daily_ICU_Occupancy, Avg_Daily_NewDeaths, Avg_Daily_Cumulative_Death) %>%
   na.omit(df)
 
 # Calculate Missing-ness
@@ -30,7 +30,7 @@ WHO <- df %>%
 #print(missing_percent)
 
 # Perform multiple linear regression on the  dataframe
-MLR_who <- lm(Life.Ladder ~ Epi_Pandemic_Year+Avg_Daily_NewCases+Avg_Daily_NewDeaths+Avg_Daily_ICU_Occupancy_Per_Million+Avg_Daily_Cumulative_Cases+Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
+MLR_who <- lm(Life.Ladder ~ Avg_Daily_NewCases+Avg_Daily_NewDeaths+Avg_Daily_ICU_Occupancy_Per_Million+Avg_Daily_Cumulative_Cases+Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
 
 
 #Get residuals
@@ -105,23 +105,6 @@ See which performed better
 #MLR_who
 summary(MLR_who)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
