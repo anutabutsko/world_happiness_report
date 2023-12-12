@@ -1,25 +1,28 @@
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(ggeasy)
 library(ggpubr)
 ```
 
 ```{r}
-df <- read.csv("../../Datasets/HappyDataFrame.csv")
+df <- read.csv("../../DataAnalysis/DataFramesCreated/whi.df.clean.csv")
 ```
 
 ```{r}
-world_perception <- df %>%
+df_clean<- df[!is.na(df$Perceptions.Of.Corruption), ]
+
+correlation <- round(cor(df_clean$Life.Ladder, df_clean$Perceptions.Of.Corruption),2)
+
+world_perception <- df_clean %>%
   group_by(Country.Name) %>% 
   summarise(Life.Ladder = mean(Life.Ladder), Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
   ggplot(aes(x = Perceptions.Of.Corruption, y = Life.Ladder)) +
   geom_point(alpha = 0.2, color = "gold") + 
   geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index Across the World", 
+  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index Across the World",
+       subtitle = paste("Correlation coefficient:", correlation),
        x = "Perceptions of Corruption", 
        y = "Happiness Index") +
-  easy_center_title() +
   geom_text(aes(label = Country.Name), vjust = -1, size = 1.8, check_overlap = TRUE) +
   theme_minimal()
 
@@ -28,12 +31,24 @@ world_perception
 
 ```{r}
 corruption_regression <- function(df, continent){
+  df_clean<- df[!is.na(df$Perceptions.Of.Corruption), ] %>%
+    filter(Continent==continent)
+
+  correlation <- round(cor(df_clean$Life.Ladder, df_clean$Perceptions.Of.Corruption),2)
+
   corruption <- df %>%
-    filter(Continent == continent) %>%
+    filter(Continent==continent) %>%
     group_by(Country.Name) %>% 
     summarise(Life.Ladder = mean(Life.Ladder), Perceptions.Of.Corruption = mean(Perceptions.Of.Corruption)) %>%
-    mutate(Continent = continent)
-
+    ggplot(aes(Perceptions.Of.Corruption, Life.Ladder)) +
+    geom_point(alpha=0.5, color="gold") + 
+    geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
+    labs(title=continent, 
+         subtitle = paste("Correlation coefficient:", correlation), 
+         x="Corruption", 
+         y="Happiness") +
+    ggeasy::easy_center_title() +
+    theme_minimal()
   return(corruption)
 }
 
@@ -42,18 +57,9 @@ cor_asia <- corruption_regression(df, "Asia")
 cor_europe <- corruption_regression(df, "Europe")
 cor_africa <- corruption_regression(df, "Africa")
 
-combined_df <- rbind(cor_america, cor_asia, cor_europe, cor_africa)
+combined_plot <- ggarrange(cor_america, cor_asia, cor_europe, cor_africa, ncol = 2, nrow =2, common.legend = TRUE, legend="bottom")
 
-final_plot <- ggplot(combined_df, aes(x = Perceptions.Of.Corruption, y = Life.Ladder)) +
-  geom_point(alpha = 0.5, color = "gold") +
-  geom_smooth(method = "lm", color = "red", fill = "grey", se = TRUE) +
-  facet_wrap(~Continent, scales="free") +
-  labs(title = "Relationship between Perceptions of Corruption\nand Happiness Index", 
-       x = "Perceptions of Corruption", 
-       y = "Happiness Index") +
-  theme_minimal() +
-  theme(strip.text = element_text(face = "bold"))
-
+final_plot <- annotate_figure(combined_plot, top = text_grob("Relationship between Perceptions of Corruption\nand Happiness Index", face = "bold", size = 13))
 final_plot
 ```
 
@@ -98,6 +104,3 @@ low_perception <- low_happiness %>%
 
 low_perception
 ```
-
-
-
