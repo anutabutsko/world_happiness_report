@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(gt)
 source('PlottingStats.R')
 source('AnaylsisStats.R')
 
@@ -24,28 +25,37 @@ ui <- dashboardPage(
               fluidRow(
                 tabsetPanel(
                   tabPanel("Resarch Papers",
-                           box(width = 4, htmlOutput("State.ofWorld.Happiness", style="height: 597px; overflow-y: auto;")),
-                           box(width = 4,htmlOutput("Happiness.World.Satisfaction", style="height: 597px; overflow-y: auto;")),
-                           box(width = 4, htmlOutput("Analyze.and.Predict", style="height: 597px; overflow-y: auto;"))),
-                  tabPanel("Datasets",
                            tabsetPanel(
-                             tabPanel("Covid Hospitalization",
-                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                             tabPanel("State of World Happiness", 
+                                      box(width = 12, htmlOutput("State.of.World.Happiness"))
                                       ),
-                             tabPanel("Excess Mortality",
-                                      box(width = 12, htmlOutput("", style="height: 597px; overflow-y: auto;"))
+                             tabPanel("Happiness World Satisfication", 
+                                      box(width = 12, htmlOutput("Happiness.World.Satisfaction"))
                                       ),
-                             tabPanel("WHO COVID-19 Global Data",
-                               box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
-                             ),
-                             tabPanel("World Happiness Report",
-                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
-                             ),
-                             tabPanel("Vaccination Data",
-                                      box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
-                             ),
-                             
-                           ))
+                             tabPanel(" Analyze and Predict GDP",
+                                      box(width = 12, htmlOutput("Analyze.and.Predict"))
+                                      )
+                           )
+                        )
+                  # tabPanel("Datasets",
+                  #          tabsetPanel(
+                  #            tabPanel("Covid Hospitalization",
+                  #                     box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                  #                     ),
+                  #            tabPanel("Excess Mortality",
+                  #                     box(width = 12, htmlOutput("", style="height: 597px; overflow-y: auto;"))
+                  #                     ),
+                  #            tabPanel("WHO COVID-19 Global Data",
+                  #              box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                  #            ),
+                  #            tabPanel("World Happiness Report",
+                  #                     box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                  #            ),
+                  #            tabPanel("Vaccination Data",
+                  #                     box(width = 12, htmlOutput("", style="height: 550px; overflow-y: auto;"))
+                  #            ),
+                  #            
+                  #          ))
                 )
               )), # tabItem background
       tabItem(tabName = "Happiness",
@@ -53,7 +63,7 @@ ui <- dashboardPage(
                 tabsetPanel(
                   tabPanel('Correlation', box(status = "primary", solidHeader = TRUE,
                                           width = 8, plotlyOutput("WHIcorr"))),
-                  tabPanel('Distribution', box(width = 7, 
+                  tabPanel('Distribution', box(width = 12, 
                                           title = "Overlook", 
                                           status = "primary", solidHeader = TRUE,
                                           # select button used when you want to select multiple things
@@ -81,9 +91,8 @@ ui <- dashboardPage(
                                                              'Social.Support', 'Freedom.To.Make.Life.Choices',
                                                              'Perceptions.Of.Corruption', 'Negative.Affect'), 
                                                       selected = 'Log.GDP.Per.Capita'), 
-                                          plotlyOutput('WHIandHappinessByRegion')),
-                           box(width = 5, htmlOutput('')
-                               )),
+                                          plotlyOutput('WHIandHappinessByRegion'))
+                           ),
                   tabPanel("Simpson's Paradox", box(title = "Analysis of Possible Simpson's Paradox", 
                                  status = "primary", solidHeader = TRUE,
                                  width = 8, plotOutput('simpsonsPlot')), 
@@ -122,8 +131,8 @@ ui <- dashboardPage(
                   tabPanel('Correlation Matrix',
                            box(width = 7, status = "primary", solidHeader = TRUE,
                                plotlyOutput('CovidCorr')),
-                           box(width = 5, "primary", solidHeader = TRUE,
-                               verbatimTextOutput('high.correaltion.content'))),
+                           box(width = 7, status = "primary", solidHeader = TRUE,
+                               htmlOutput('high.correaltion.content'))),
                   tabPanel('Multiple Linear Regresion', 
                            box(width = 12, status = "primary", solidHeader = TRUE,
                                plotOutput('MLR.Who'))),
@@ -146,7 +155,7 @@ server <- function(input, output) {
     projectIntroduction.content
   })
   
-  output$State.ofWorld.Happiness <- renderUI({
+  output$State.of.World.Happiness <- renderUI({
     State.ofWorld.Happiness.content
   })
   
@@ -249,13 +258,8 @@ server <- function(input, output) {
     par(mfrow = c(1, 1)) #  plotting layout
   })
   
-  output$highCorrelation <- renderPrint({
-    high.correlation.content <- data.frame(
-      Variable1 = variable_names,
-      Variable2 = correlated_variable_names,
-      Correlation = correlation_values
-    )
-    print(high.correlation.content)
+  output$high.correaltion.content <- renderUI({
+    html_output
   })
   
   output$sum <- renderPrint({

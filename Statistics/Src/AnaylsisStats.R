@@ -13,9 +13,9 @@ projectIntroduction.content <- tagList(
   ),
   tags$p(),
   tags$strong("Null Hypothesis (H0):", style = "text-align: center;"),
-  tags$p("There is no difference in the mean happiness index scores of countries during a pandemic vs countries when there is not a pandemic"),
+  tags$p("There is no difference in the mean happiness index scores of countries during a pandemic vs not a pandemic"),
   tags$strong("Alternative Hypothesis (H1):", style = "text-align: center;"),
-  tags$p("There is a difference in the mean happiness index scores of countries during a pandemic vs countries when there is not a pandemic"),
+  tags$p("There is a difference in the mean happiness index scores of countries during a pandemic vs not a pandemic"),
   tags$p(),
   tags$strong('Descriptive and Inferential Analysis', style = "text-align: center;"),
   tags$p(tags$em('Descriptive statistics:'), 'The expected summaries will include central tendency and dispersion measures such as mean, median, standard deviation, variance, kurtosis, skewness, ',
@@ -29,35 +29,40 @@ projectIntroduction.content <- tagList(
 )
 
 State.ofWorld.Happiness.content <- tagList(
-  tags$h3(tags$strong("The State of World Happiness"),style = "text-align: center;"),
-  tags$p(),
-  tags$p("This study utilizes statistical methods to examine central tendencies and dispersion in happiness data, employing 95% confidence intervals for these analyses. It focuses on average happiness factors over time, 
-         standard deviations within regions and countries, and correlation analysis to understand differences in happiness between OECD countries and others. The report notes a limitation in its sample size and duration, 
-         hindering a comprehensive analysis of happiness inequality trends in relation to income inequality. Understanding these statistical concepts that we have covered in class will be pivotal in our ability to assess the 
-         data and form our own analysis.")
+  tags$h3(tags$strong("The State of World Happiness"), style = "text-align: center;"),
+  tags$p(
+    tags$ul(
+      tags$li("Utilizes statistical methods to analyze happiness data"),
+      tags$li("Analyzes average happiness factors over time, standard deviations, and correlations to understand differences in happiness between different countries"),
+      tags$li("Limitations include study’s sample size and duration"), 
+      tags$li("Acknowledges hindrance in analyzing happiness inequality trends related to income inequality")
+    )
+  ),
+  
+  tags$p(tags$em("Relevance to the project:"), "It directly applies statistical concepts covered in class making it a practical example for understanding and applying those concepts.")
 )
 
 Happiness.World.Satisfaction.content <- tagList(
   tags$h3(tags$strong("Happiness and Life Satisfaction"), style = "text-align: center;"),
   tags$p(),
-  tags$p("The study from Our World in Data performs distribution analysis to understand how life satisfaction scores spread across different levels in various regions in order to identify patterns and disparities in happiness not found in simpler analysis such as averages alone. The article uses correlation analysis to examine the relationship between GDP per capita and average life satisfaction across countries, which we understand to be linear relationships from the classroom preparation. Finally, stochastic dominance is used to compare distributions between regions to determine which region generally reports higher happiness levels. Although not covered in class, this is a way to compare two probability distributions (which are covered) to see which one generally has better results. It checks if one group is always as good as or better than the other in all situations."),
   tags$p(
-    tags$h5(tags$strong("Descriptive Statistics"), style = "text-align: center;"),
-    tags$p(),
     tags$ul(
-      tags$li("Happiness Score Distribution: by country, region, and crossed with other possible impacting variables"),
-      tags$li("Happiness Trend: by country, region, and crossed with other possible impacting variables")
+      tags$li("Analyzes how life satisfaction scores spread across various regions"),
+      tags$li("Identifies patterns and disparities in happiness not found in simpler analysis such as averages alone"),
+      tags$li("Examines the relationship between GDP per capita and average life satisfaction, understood to be linear from the lectures"), 
+      tags$li("Uses Stochastic Dominance to compare distributions between regions and determine which region generally reports higher happiness levels")
     )
   ),
+  tags$p(tags$em("Relevance to the project:"), "Although not covered in class, this paper delves into Stochastic Dominance, which is a method for 
+         comparing two probability distributions. It allows us to see which group consistently outperforms the other. While introducing new concepts 
+         not covered in class, it still relates to probability distributions and encourages deeper understanding of statistical analysis."),
+  tags$p(),
   tags$p(
-    tags$h5(tags$strong("Inferential Statistics"), style = "text-align: center;"),
-    tags$p(),
     tags$ul(
       tags$li("Regression analysis"),
       tags$li("Confidence interval testing")
     )
   ),
-  tags$h5(tags$strong("Advantages and Limitations of Research"), style = "text-align: center;"), 
   tags$p(), 
   tags$strong("Advantages"), 
   tags$p(
@@ -72,76 +77,39 @@ Happiness.World.Satisfaction.content <- tagList(
     tags$ul(
       tags$li("Broad scope: leads to more descriptive analysis and could be lacking in some inferential analysis")
     )
-  ),
-  tags$p(), 
-  tags$h5(tags$strong("Our Research"), style = "text-align: center;"), 
-  tags$p(), 
-  tags$strong("Implementations"), 
-  tags$p(
-    tags$ul(
-      tags$li("Look at another external factor: Looking at epi-/pandemics as another facet to happiness score")
-        )
-      ) 
+  )
 )
 
 
 Analyze.and.Predict.content <- tagList(
   tags$h3(tags$strong("Analyze and Predict the 2022 World Happiness Report Based on the Past Year's Dataset"),style = "text-align: center;"),
   tags$p(),
-  tags$p("This study utilizes linear regression to forecast happiness scores in various countries. By using linear regression, this study predicts ladder scores using each country’s GDP and provides the best fit linear equation. 
-         It leverages data from previous World Happiness Reports, validating its predictions against 2022 outcomes, achieving an RMSE of 0.236 and an MSE of 0.056, the study emphasizes understanding key statistical measures like 
-         Mean Absolute Error (MAE), Mean Squared Error (MSE), and Root Mean Square Error (RMSE) to evaluate the accuracy and reliability of its predictions. The study also performs Principal Component Analysis (PCA) to analyze 
-         gender equality and life satisfaction. Selection trees were used as well as for life satisfaction prediction."),
-  tags$p(), 
-  tags$strong("Mean Absolute Error (MAE)"),
-  tags$p("measures the average of the absolute difference between the actual and predicted values.  Mean Squared Error (MSE) measures the mean square error of the mismatch between predicted and real values. Root Mean Square Error (RMSE) 
-         is the square root of mean squared error." ),
-  tags$p(
-         tags$h5(tags$strong("Descriptive Statistics"),style = "text-align: center;"),
-         tags$p(),
-         tags$ul(
-           tags$li("Mean happiness score across all countries between 2021-2022"),
-           tags$li("Happiness Score Distribution by Regional.Indicator"),
-           tags$li("Correlation coefficients between Life.Ladder and other happiness indicators")
-         )
-  ),
-  tags$p(
-         tags$h5(tags$strong("Inferential Statistics"),style = "text-align: center;"),
-         tags$p(),
-         tags$ul(
-           tags$li("Linear regression will predict ladder scores using each country’s GDP and provide the best fit linear equation"),
-           tags$li("Model evaluation using MAE, MSE, RMSE"),
-           tags$li("Infer statistical importance of GDP and happiness score"), 
-         )
-  ), 
-  tags$p(), 
-  tags$h5(tags$strong("Advantages and Limitations of Research"),style = "text-align: center;"), 
-  tags$p(), 
-  tags$strong("Advantages"), 
   tags$p(
     tags$ul(
-      tags$li("Predictive Modeling that is Replicable: a quantitative frameworks is established when the study uses machine learning models, linear regression, and comparison of previous research to identify trends"), 
-      tags$li("Additional Research: by comparing the linear regression attained in this research with other methods offering insight into the efficacy of other approaches"),
+      tags$li("Utilizes linear regression to forecast happiness scores in various countries"),
+      tags$li("Uses each country’s GDP to predict happiness scores providing the best fit linear equation"),
+      tags$li("Validates data from its predictions with 2022 outcomes from World Happiness Reports"), 
+      tags$li("Accuracy metrics: RMSE of 0.236 and MSE of 0.056"),
+      tags$li("Focuses on the importance of statistical measures like Mean Absolute Error (MAE), Mean Squared Error (MSE), and Root Mean Square Error (RMSE) to evaluate prediction’s accuracy and reliability"), 
+      tags$li("The study also performs Principal Component Analysis (PCA) to analyze gender equality and life satisfaction")
     )
-  ), 
-  tags$p(), 
-  tags$strong("Limitations"), 
-  tags$p(
-    tags$ul(
-      tags$li("Limited Scope: the study mainly focus on GDP as a factor of happiness although there are other factors in play"), 
-      tags$li("Single Source: The study is only done on one dataset pulled from Kaggle"),
-      tags$li("Temporally Limited: The study is mainly focused between 2021-2022 which could limit the scope of how long lasting an effect could have")
-    ),
-    tags$p(), 
-    tags$h5(tags$strong("Our Research"),style = "text-align: center;"), 
-    tags$p(), 
-    tags$strong("Implementations"), 
+  ),
+  tags$p(tags$em("Relevance to the project:"), "Utilizes the same data from the World Happiness report as we are using in our project. This alignment allows for direct comparison of finding with our project’s work."),
+    tags$strong("Advantages"), 
     tags$p(
       tags$ul(
-        tags$li("Longitudinal Data: incorporate data related to COVID-19 to assess possible influence on happiness score"), 
-        tags$li("Partitioning: Implement partitioning based on possible regional similarities to identify possible differences"),
+        tags$li("Predictive Modeling that is Replicable: a quantitative frameworks is established when the study uses machine learning models, linear regression, and comparison of previous research to identify trends"), 
+        tags$li("Additional Research: by comparing the linear regression attained in this research with other methods offering insight into the efficacy of other approaches"),
       )
     ), 
+    tags$p(), 
+    tags$strong("Limitations"), 
+    tags$p(
+      tags$ul(
+        tags$li("Limited Scope: the study mainly focus on GDP as a factor of happiness although there are other factors in play"), 
+        tags$li("Single Source: The study is only done on one dataset pulled from Kaggle"),
+        tags$li("Temporally Limited: The study is mainly focused between 2021-2022 which could limit the scope of how long lasting an effect could have")
+      )
   ) 
 )
 
@@ -206,5 +174,38 @@ predicationAnalysis.content <- tagList(
       tags$li('South Africa'),
       tags$li('West Asia')
     )
+  )
+)
+
+html_output <- tags$table(
+  tags$tr(
+    tags$th("Variable1"),
+    tags$th(),
+    tags$th("Variable2"),
+    tags$th("Correlation")
+  ),
+  tags$tr(
+    tags$td("Avg_Daily_Cumulative_Cases"),
+    tags$td(),
+    tags$td("Avg_Daily_NewCases"),
+    tags$td("0.94")
+  ),
+  tags$tr(
+    tags$td("Avg_Daily_NewCases"),
+    tags$td(),
+    tags$td("Avg_Daily_Cumulative_Cases"),
+    tags$td("0.94")
+  ),
+  tags$tr(
+    tags$td("Avg_Daily_NewDeaths"),
+    tags$td(),
+    tags$td("Avg_Daily_ICU_Occupancy"),
+    tags$td("0.86")
+  ),
+  tags$tr(
+    tags$td("Avg_Daily_ICU_Occupancy"),
+    tags$td(),
+    tags$td("Avg_Daily_NewDeaths"),
+    tags$td("0.86")
   )
 )

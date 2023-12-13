@@ -280,9 +280,10 @@ correlation_values <- corr_matrix[high_correlations]
 variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
 correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
 
-# high.correlation.content <- data.frame(
-#   Variable1 = variable_names,
-#   Variable2 = correlated_variable_names,
-#   Correlation = correlation_values
-# )
+high.correlation.content <- data.frame(
+  Variable1 = variable_names,
+  Variable2 = correlated_variable_names,
+  Correlation = correlation_values
+)
+
 

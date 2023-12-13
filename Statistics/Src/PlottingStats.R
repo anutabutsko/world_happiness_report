@@ -1,4 +1,5 @@
 library(dplyr)
+library(gt)
 library(ggeasy)
 library(ggplot2)
 library(ggpubr)
@@ -106,7 +107,7 @@ prediction.model <- function(df1, df2){
     geom_point(alpha = 0.5, position = "jitter", color="darkblue") +
     geom_line(data=predicted.happiness.df, color="red", size=2) +
     geom_point(data = before_covid2, size = 3, color="darkred", alpha=0.6) +
-    geom_smooth(method='lm', color = "darkblue", fill="gray100", se = TRUE, size=0.6) +
+    geom_smooth(method='lm', color = "darkblue", fill="gray80", se = TRUE, size=0.6) +
     geom_text(data = before_covid2, aes(label = paste0("n=", n), y = 1, color = NULL), size = 2.5) +
     labs(title=paste("World Happiness Distribution Across the Years in", unique(df1$Regional.Indicator)), 
          subtitle=subtitle_before, 
@@ -131,7 +132,7 @@ prediction.model <- function(df1, df2){
     result <- result +
       geom_point(data = after_covid1, alpha = 0.5, position = "jitter", color="darkblue") +
       geom_point(data = after_covid2, size = 3, color="darkred", alpha=0.6) + 
-      geom_smooth(data = after_covid1, method='lm', color = "darkblue", fill="gray100", se = TRUE, size=0.6) +
+      geom_smooth(data = after_covid1, method='lm', color = "darkblue", fill="gray80", se = TRUE, size=0.6) +
       geom_text(data = after_covid2, aes(label = paste0("n=", n), y = 1, color = NULL), size = 2.5)
     
     result <- result +
@@ -172,3 +173,10 @@ MLR_who <- lm(Life.Ladder ~ Avg_Daily_NewCases+Avg_Daily_NewDeaths+
                 Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
 
 
+corr.table <- function(df){
+  table <- df%>%
+  gt()%>%
+  tab_header(title = md(title),
+             subtitle = md('High Correlation'))
+  return(table)
+}
