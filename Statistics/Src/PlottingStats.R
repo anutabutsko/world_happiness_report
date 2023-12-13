@@ -167,7 +167,7 @@ covid.corr.plot <- ggcorrplot(corr_matrix, hc.order = TRUE,
                         p.mat = p.mat)
 
 
-MLR_who <- lm(Life.Ladder ~ Epi_Pandemic_Year+Avg_Daily_NewCases+Avg_Daily_NewDeaths+
+MLR_who <- lm(Life.Ladder ~ Avg_Daily_NewCases+Avg_Daily_NewDeaths+
                 Avg_Daily_ICU_Occupancy_Per_Million+Avg_Daily_Cumulative_Cases+
                 Avg_Daily_ICU_Occupancy+Avg_Daily_Cumulative_Death, data = WHO)
 

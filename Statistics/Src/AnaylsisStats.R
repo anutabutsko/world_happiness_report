@@ -4,9 +4,12 @@ projectIntroduction.content <- tagList(
   tags$p(),
   tags$p(
     "The primary aim of this project is to undertake a comprehensive analysis of the extensive World Happiness Report dataset spanning from 2005 to the present,",
-    "which is available on Kaggle. Along with supplementary research and datasets to answer the question: Is there a statistically significant relationship between a country's World Happiness ",
-    "Index and the occurrence of a pandemic? Specifically, how do factors such as GDP, social support, freedom to make choices, generosity, and perception of corruption ",
-    "correlate with a country's happiness index during times of an epidemic or pandemic?"
+    "which is available on Kaggle. Along with supplementary research and datasets to answer the question:"),
+  tags$p(
+    tags$ul(
+      tags$li("Is there a statistically significant relationship between a country's World Happiness Index and the occurrence of a pandemic?"),
+      tags$li("How do factors such as GDP, social support, freedom to make choices, generosity, and perception of corruption correlate with a country's happiness index during times of an epidemic or pandemic?")
+    )
   ),
   tags$p(),
   tags$strong("Null Hypothesis (H0):", style = "text-align: center;"),
@@ -14,12 +17,6 @@ projectIntroduction.content <- tagList(
   tags$strong("Alternative Hypothesis (H1):", style = "text-align: center;"),
   tags$p("There is a difference in the mean happiness index scores of countries during a pandemic vs countries when there is not a pandemic"),
   tags$p(),
-  tags$strong("Datasets used in Project", style = "text-align: center;"),
-  tags$p("continents.csv"), tags$p("covid-hospitalizations.csv"), tags$p("excess_mortality.csv"),tags$p("PopulationData.csv"),
-  tags$p("WHO-COVID-19-global-data.csv"), tags$p("WorldHappinessReport.csv"),tags$p("vaccination-data.csv"),
-  tags$strong("Additional Research", style = "text-align: center;"),
-  tags$p('The State of World Happiness'), tags$p("Analyze and Predict the 2022 World Happiness Report Based on the Past Year's Dataset"),
-  tags$p('Happiness and Life Satisfaction - Our World in Data'),
   tags$strong('Descriptive and Inferential Analysis', style = "text-align: center;"),
   tags$p(tags$em('Descriptive statistics:'), 'The expected summaries will include central tendency and dispersion measures such as mean, median, standard deviation, variance, kurtosis, skewness, ',
          'range, minimum and maximum values. The report will include a combination between time series and boxplot to graph the distribution of within and between time periods (or groups).'),
@@ -73,18 +70,18 @@ Happiness.World.Satisfaction.content <- tagList(
   tags$strong("Limitations"), 
   tags$p(
     tags$ul(
-      tags$li("Broad scope: leads to more descriptive analysis and could be lacking in some inferential analysis"),
-      tags$p(), 
-      tags$h5(tags$strong("Our Research"), style = "text-align: center;"), 
-      tags$p(), 
-      tags$strong("Implementations"), 
-      tags$p(
-        tags$ul(
-          tags$li("Look at another external factor: Looking at epi-/pandemics as another facet to happiness score")
+      tags$li("Broad scope: leads to more descriptive analysis and could be lacking in some inferential analysis")
+    )
+  ),
+  tags$p(), 
+  tags$h5(tags$strong("Our Research"), style = "text-align: center;"), 
+  tags$p(), 
+  tags$strong("Implementations"), 
+  tags$p(
+    tags$ul(
+      tags$li("Look at another external factor: Looking at epi-/pandemics as another facet to happiness score")
         )
       ) 
-    ) 
-  )
 )
 
 
@@ -146,4 +143,68 @@ Analyze.and.Predict.content <- tagList(
       )
     ), 
   ) 
+)
+
+simpsons.content <- tagList(
+  tags$h5(tags$strong("Analysis"), style = "text-align: center;"),
+  tags$p("Simpson's Paradox occurs when a trend appears in several different groups of data but disappears or reverses when these 
+         groups are combined. This paradox highlights the importance of examining data within its specific context."), 
+  tags$p(
+    tags$ul(
+      tags$li("perception of corruption and the happiness index worldwide, correlation coefficient = -0.43."),
+      tags$p(),
+      tags$li("America correlation coefficient suggests a stronger negative relationship between corruption and happiness"),
+      tags$li("Europe correlation coefficient indicates a very strong negative relationship"),
+      tags$li("Asia correlation coefficient showing a weaker negative relationship"),
+      tags$li("Africa correlation coefficient suggests close to no relationship between corruption and happiness"),
+    )
+  )
+)
+
+predicationAnalysis.content <- tagList(
+  # tags$h5(tags$strong("Analysis"), style = "text-align: center;"),
+  # tags$p("In these plots, we can visualize the regression of the happiness index for pre-COVID years (2005 – 2020), the predicted 
+  #        happiness index for COVID years (2020-2022) based on that regression equation, and the actual happiness regression during the 
+  #        COVID years. The key observations based on these results are as follows:"), 
+  # tags$p(),
+  tags$p("1. Regions where the happiness index has decreased during COVID years:"),
+  tags$p(
+    tags$ul(
+      tags$li('Central Europe'),
+      tags$li('South Asia'),
+      tags$li('Sub-Saharan Africa'),
+      tags$li('North America')
+    )
+  ),
+  tags$p(),
+  tags$p('2. Regions where the happiness index has increased during COVID years:'),
+  tags$p(
+    tags$ul(
+      tags$li('East Asia'),
+      tags$li('Latin America'),
+      tags$li('Southeast Asia')
+    )
+  ),
+  tags$p(),
+  tags$p('3. Regions where the happiness index hasn’t or has barely changed:'),
+  tags$p(
+    tags$ul(
+      tags$li('Western Europe'),
+      tags$li('Eastern Europe'),
+      tags$li('North Africa')
+    )
+  ),
+  tags$p(),
+  tags$p('4. Regions with no data available for COVID years:'),
+  tags$p(
+    tags$ul(
+      tags$li('Caribbean'),
+      tags$li('Central Africa'),
+      tags$li('East Africa'),
+      tags$li('Middle East'),
+      tags$li('North Africa'),
+      tags$li('South Africa'),
+      tags$li('West Asia')
+    )
+  )
 )

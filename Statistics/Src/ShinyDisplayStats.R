@@ -87,7 +87,7 @@ ui <- dashboardPage(
                   tabPanel("Simpson's Paradox", box(title = "Analysis of Possible Simpson's Paradox", 
                                  status = "primary", solidHeader = TRUE,
                                  width = 8, plotOutput('simpsonsPlot')), 
-                                 box(width = 4, htmlOutput('', style = "height: 440px; overflow-y: auto;"))
+                                 box(width = 4, htmlOutput('simpsons', style = "height: 440px; overflow-y: auto;"))
                              
                   ) # tabPanel
                 ))), # tabItem2
@@ -98,7 +98,7 @@ ui <- dashboardPage(
                     status = 'primary', solidHeader = TRUE,
                     width = 12, plotlyOutput('HappyLvlTrend')
                   )),
-                  tabPanel('Prediction', box(width = 12, status = "primary", solidHeader = TRUE,
+                  tabPanel('Prediction', box(width = 7, status = "primary", solidHeader = TRUE,
                                              selectInput("region_trend", "Select Region",
                                                          # names of the valid choices
                                                          choices =
@@ -112,14 +112,18 @@ ui <- dashboardPage(
                                                                 "Central Europe", "Commonwealth of Independent States",
                                                                 "Caribbean", 'Latin America and Caribbean',
                                                                 'North America and ANZ'), 
-                                                         selected = 'South Asia'), plotlyOutput("HappinessPredictionByRegion")))
+                                                         selected = 'South Asia'), plotlyOutput("HappinessPredictionByRegion")),
+                           box(width = 5, status = 'primary', solidHeader = TRUE, 
+                               htmlOutput('predicationAnalysis', style = "height: 500px; overflow-y: auto;")))
                 ))),
       tabItem(tabName = "lineregs", 
               fluidRow(
                 tabsetPanel(
                   tabPanel('Correlation Matrix',
                            box(width = 7, status = "primary", solidHeader = TRUE,
-                               plotlyOutput('CovidCorr'))),
+                               plotlyOutput('CovidCorr')),
+                           box(width = 5, "primary", solidHeader = TRUE,
+                               verbatimTextOutput('high.correaltion.content'))),
                   tabPanel('Multiple Linear Regresion', 
                            box(width = 12, status = "primary", solidHeader = TRUE,
                                plotOutput('MLR.Who'))),
@@ -139,24 +143,28 @@ ui <- dashboardPage(
 server <- function(input, output) {
   # text description
   output$projectIntroduction <- renderUI({
-    tagList(projectIntroduction.content)
+    projectIntroduction.content
   })
   
   output$State.ofWorld.Happiness <- renderUI({
-    tagList(State.ofWorld.Happiness.content)
+    State.ofWorld.Happiness.content
   })
   
   output$Happiness.World.Satisfaction <- renderUI({
-    tagList(Happiness.World.Satisfaction.content)
+    Happiness.World.Satisfaction.content
   })
   
   output$Analyze.and.Predict <- renderUI({
-    tagList(Analyze.and.Predict.content)
+    Analyze.and.Predict.content
   })
-  # 
-  # output$influenceofHappiness.background <- renderUI({
-  #   tagList(influenceofHappiness.background.content)
-  # })
+
+  output$simpsons <- renderUI({
+    simpsons.content
+  })
+  
+  output$predicationAnalysis <- renderUI({
+    predicationAnalysis.content
+  })
   # 
   # output$works.cited.content <- renderUI({
   #   tagList(works.cited.content)
@@ -239,6 +247,15 @@ server <- function(input, output) {
     # Cook's distance (check outliers)
     plot(MLR_who, 5)
     par(mfrow = c(1, 1)) #  plotting layout
+  })
+  
+  output$highCorrelation <- renderPrint({
+    high.correlation.content <- data.frame(
+      Variable1 = variable_names,
+      Variable2 = correlated_variable_names,
+      Correlation = correlation_values
+    )
+    print(high.correlation.content)
   })
   
   output$sum <- renderPrint({

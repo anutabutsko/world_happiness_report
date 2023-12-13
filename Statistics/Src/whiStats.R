@@ -273,3 +273,16 @@ reduced_data <- na.omit(reduced_data)
 corr_matrix = round(cor(reduced_data), 2)
 # Compute a matrix of correlation p-values
 p.mat <- cor_pmat(reduced_data)
+
+
+high_correlations <- which(corr_matrix > 0.8 & corr_matrix < 0.99, arr.ind = TRUE)
+correlation_values <- corr_matrix[high_correlations]
+variable_names <- rownames(corr_matrix)[high_correlations[, 1]]
+correlated_variable_names <- colnames(corr_matrix)[high_correlations[, 2]]
+
+# high.correlation.content <- data.frame(
+#   Variable1 = variable_names,
+#   Variable2 = correlated_variable_names,
+#   Correlation = correlation_values
+# )
+
